@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HARP — Music AI Integration &amp; Reflection — Chuling LI</title>
+<meta name="description" content="My contributions to HARP: integrating music AI models, diagnosing validation failures, recovering legacy checkpoints, and reflecting on reliable tools for musicians.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Roman.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'IMFellSC';src:url('N2_复古油墨字体_可商用/IM Fell English SC/IMFellEnglishSC-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'OldNewspaper';src:url('N2_复古油墨字体_可商用/OldNewspaperTypes.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'StampWriter';src:url('N2_复古油墨字体_可商用/STAMPWRITER-KIT.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+
+:root{--paper:#F3F2EF;--paper-2:#ECEAE5;--ink:#26272C;--muted:#63646A;--sky:#D2DBE1;--butter:#E6E1D3;--violet:#5A6880;--line:rgba(38,39,44,.16);--serif:'Compagnon',serif;--display:'IMFellSC',serif;--stamp:'OldNewspaper',serif;--sans:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:2rem}
+body{background:var(--paper);color:var(--ink);font-family:var(--mono);font-weight:300}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit;text-underline-offset:.25em;text-decoration-thickness:1px}
+a:hover{color:var(--violet)}
+a:focus-visible{outline:2px solid var(--violet);outline-offset:5px;border-radius:2px}
+.skip{position:absolute;left:1rem;top:-5rem;padding:1rem;background:var(--paper);z-index:10}
+.skip:focus{top:1rem}
+.shell{width:min(1100px,92%);margin:auto}
+.topbar{display:flex;justify-content:space-between;gap:1rem;padding:2rem 0;border-bottom:1px solid var(--line);align-items:center}
+.back,.eyebrow,.top-note,.section-label,.case-label,.status,.source-link,.jump-links,.foot{font-family:var(--mono);font-size:.68rem;line-height:1.7;letter-spacing:.08em;text-transform:uppercase}
+.back{text-decoration:none}.top-note{color:var(--muted)}
+.hero{padding:3rem 0 2rem}
+.eyebrow{color:var(--violet);margin-bottom:1.5rem}
+h1{font-family:var(--stamp);font-weight:400;font-size:clamp(4rem,11vw,8rem);line-height:1;margin:0 0 1.5rem}
+.hero-title{font-family:var(--mono);font-weight:400;font-size:clamp(1.5rem,3.3vw,2.5rem);line-height:1.25;max-width:27ch}
+.intro{font-family:var(--mono);font-size:1.08rem;line-height:1.7;max-width:67ch;color:var(--muted);margin-top:1.5rem}
+.facts{display:grid;grid-template-columns:1.2fr 1.5fr .8fr;gap:2rem;padding:1.7rem 0;margin-top:2.7rem;border-top:1px solid var(--line)}
+.facts dt{font-family:var(--mono);font-size:.8rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.45rem;color:var(--muted)}
+.facts dd{font-family:var(--mono);font-size:.96rem;line-height:1.6}
+.overview-strip{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--butter);border-radius:12px;padding:1.8rem 0;margin:0 0 2.5rem}
+.stat{padding:.3rem 2rem;border-right:1px solid rgba(38,39,44,.15)}.stat:last-child{border:0}
+.stat strong{display:block;font-family:var(--stamp);font-weight:400;font-size:3rem;line-height:1.1;margin-bottom:.65rem}
+.stat span{display:block;font-family:var(--mono);font-size:1rem;line-height:1.5;max-width:23ch}
+.jump-links{display:flex;flex-wrap:wrap;gap:.8rem 2rem;padding-bottom:2rem;border-bottom:1px solid var(--line)}
+.jump-links a{text-decoration:none}
+.section{display:grid;grid-template-columns:180px minmax(0,1fr);gap:3rem;padding:2.7rem 0;border-bottom:1px solid var(--line)}
+.section-label{color:var(--violet);padding-top:.35rem}
+.section-body{min-width:0}
+.section-body h3{margin-top:1.7rem}
+h2{font-family:var(--stamp);font-weight:400;font-size:clamp(1.65rem,3.2vw,2.35rem);line-height:1.2;margin-bottom:1.3rem}
+h3{font-family:var(--mono);font-size:1.2rem;font-weight:400;line-height:1.35;margin-bottom:.7rem}
+p{font-family:var(--mono);font-weight:300;font-size:1.02rem;line-height:1.75;color:var(--muted);margin-bottom:1.1rem}
+p:last-child{margin-bottom:0}strong{font-weight:700;color:var(--ink)}
+.case{padding:0 0 2.6rem;margin-bottom:2.6rem;border-bottom:1px solid var(--line)}.case:last-child{padding-bottom:0;margin-bottom:0;border:0}
+.case-label{color:var(--violet);margin-bottom:.65rem}
+.result{border-left:2px solid var(--violet);padding:.2rem 0 .2rem 1.2rem;margin:1.3rem 0}
+.result p{font-size:.98rem}
+.status{font-size:.62rem;color:var(--muted);margin-top:1rem}
+.source-link{font-size:.65rem;display:inline-block;margin-top:.2rem}
+.note-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.7rem;margin-top:1.5rem}
+.note{padding:1.5rem;background:var(--paper-2);border-radius:8px}.note p{font-size:.96rem}
+.reflection{background:linear-gradient(135deg,rgba(210,219,225,.55),rgba(230,225,211,.45));border-radius:12px;margin:2.5rem 0 0;padding:2.5rem}
+.reflection .section-label{margin-bottom:1rem}
+.reflection-lead{font-family:var(--mono);font-size:clamp(1.35rem,2.6vw,1.9rem);line-height:1.45;color:var(--ink);max-width:42ch;margin-bottom:2rem}
+.reflection-grid{display:grid;grid-template-columns:1fr;gap:1.6rem;max-width:76ch}.reflection-grid p{font-size:1rem}
+.context p{font-size:.95rem}
+.links{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.5rem}
+.links a{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:99px;padding:.85rem 1.25rem;text-decoration:none}
+.links .primary{background:var(--ink);color:var(--paper)}
+.foot{color:var(--muted);display:flex;justify-content:space-between;gap:1rem;padding:2rem 0 3rem;font-size:.6rem}
+@media(max-width:760px){.section{grid-template-columns:1fr;gap:1.2rem;padding:2.5rem 0}.hero{padding-top:3rem}.facts{grid-template-columns:1fr 1fr;gap:1.5rem}.facts div:last-child{grid-column:1/-1}.stat{padding:.3rem 1rem}.stat strong{font-size:2.3rem}.stat span{font-size:.9rem}.reflection{padding:1.7rem}.reflection-grid,.note-grid{grid-template-columns:1fr;gap:1.5rem}.top-note{display:none}}
+@media(max-width:420px){.facts{grid-template-columns:1fr}.overview-strip{grid-template-columns:1fr;padding:.6rem 1.3rem}.stat{display:grid;grid-template-columns:65px 1fr;gap:1rem;padding:1rem 0;border-right:0;border-bottom:1px solid var(--line);align-items:center}.stat strong{margin:0}.stat span{max-width:none}.foot{flex-direction:column}.links a{width:100%;text-align:center}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+  <header class="topbar">
+    <a class="back" href="portfolio_site.html#projects">← Back to portfolio</a>
+    <span class="top-note">Research software / Music &amp; audio AI</span>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="project-title">
+      <p class="eyebrow">TEAMuP · NSF-supported research · 2026</p>
+      <h1 id="project-title">HARP</h1>
+      <div class="links" aria-label="Project links">
+        <a class="primary" href="https://github.com/TEAMuP-dev/HARP">HARP repository ↗</a>
+        <a href="https://www.warner.rochester.edu/faculty-research/TEAMuP">TEAMuP project ↗</a>
+      </div>
+      <p class="intro">I contribute to HARP, a TEAMuP research project connecting music AI models with musicians’ production tools.<br>My role: model integration, deployment, and validation.</p>
+    </section>
+
+    <section class="section" id="context" aria-labelledby="context-title">
+      <div class="section-label">01 / The project</div>
+      <div class="section-body">
+        <h2 id="context-title">What is HARP?</h2>
+        <p><strong>HARP lets musicians use different AI models through one application, standalone or alongside their DAW.</strong> It loads each model’s controls for tasks such as separating vocals, transcribing audio to MIDI, or generating musical variations. Models run locally or in the cloud, and results return to HARP for playback, saving, or sending back to the DAW.</p>
+        <p>It is part of <strong>TEAMuP</strong>, an NSF-funded collaboration between the University of Rochester and Northwestern University. The initiative is led by <strong>Raffaella Borasi</strong>, alongside Zhiyao Duan, Rachel Roberts, Jonathan Herington, and Bryan Pardo.</p>
+      </div>
+    </section>
+
+    <section class="section" id="contribution" aria-labelledby="contribution-title">
+      <div class="section-label">02 / My work</div>
+      <div class="section-body">
+        <h2 id="contribution-title">Making the models usable</h2>
+        <p>Across <strong>26 music and audio AI models</strong>, I worked on integration, deployment, and validation. I adapted research code with PyHARP and investigated failures in model loading, inputs, and outputs. This work involved questioning assumptions in both the models and the tests used to assess them.</p>
+        <p>I also traced validation failures to unsuitable test inputs and missing text-output support, submitting configurations for six models and fixes to the shared validator. My observation that DDSP-Guitar was being tested with piano MIDI prompted instrument and channel configuration, implemented by Frank Cwitkowitz and merged into HARP.</p>
+        <a class="source-link" href="https://github.com/TEAMuP-dev/HARP/pulls?q=is%3Apr+author%3AimChuling">My contributions on GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="reflection" id="reflection" aria-labelledby="reflection-title">
+      <div class="section-label">03 / Reflection</div>
+      <h2 id="reflection-title">What this changed for me</h2>
+      <div class="reflection-grid">
+        <article>
+          <h3>Every model brings musical assumptions</h3>
+          <p>Working across models showed me that a shared interface still contains different assumptions about music. Input duration, instrument settings, and output formats shape what a model can do. The DDSP-Guitar mismatch made this concrete: a technically valid MIDI file could represent the wrong instrument. I learned to ask what musical situation each test actually represents.</p>
+        </article>
+        <article>
+          <h3>Turn observations into evidence</h3>
+          <p>Restoring MIDI-VAE taught me to trace a plausible output back to its weights and equations before trusting it. Raising the guitar-input issue taught me to make a finding reproducible and explain its relevance so a teammate could build on it. Together, these experiences strengthened how I investigate problems and contribute to shared research software.</p>
+        </article>
+        <article>
+          <h3>The research question I want to pursue</h3>
+          <p><strong>How should music AI tools communicate their capabilities, limits, and controls so musicians can make informed creative decisions?</strong> HARP led me to this question; my work so far establishes functional reliability. I would next explore it through listening sessions and complete DAW tasks, examining how musicians understand a model’s controls and whether its results support their intentions.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="foot"><a href="portfolio_site.html#projects">← All projects</a><span>Chuling LI © 2026</span></footer>
+</div>
+
+</body>
+</html>
