@@ -171,6 +171,19 @@ nav{
 .hero-action:hover{transform:translateY(-2px);border-color:var(--violet);background:var(--paper-2)}
 .hero-action.primary:hover{background:var(--violet);color:var(--paper)}
 .hero-action:focus-visible{outline:2px solid var(--violet);outline-offset:5px}
+.hero-research{margin-top:2rem;padding-top:1.15rem;border-top:1px solid var(--line)}
+.hero-research-head{display:flex;justify-content:space-between;align-items:baseline;gap:.75rem 1.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.hero-research-head h2{font:400 .65rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero-research-status{font:300 .65rem/1.6 var(--mono);color:var(--muted)}
+.hero-papers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem}
+.hero-paper{min-width:0}
+.hero-paper h3{font:400 clamp(1.05rem,1.45vw,1.35rem)/1.45 var(--stamp);letter-spacing:.01em;margin-bottom:.55rem}
+.hero-paper a{display:block;position:relative;padding-right:1.4rem;color:var(--ink);text-decoration:none;text-underline-offset:4px;text-decoration-thickness:1px;transition:color .3s}
+.hero-paper a span{position:absolute;right:0;top:0}
+.hero-paper a:hover{color:var(--violet);text-decoration:underline}
+.hero-paper a:focus-visible{outline:2px solid var(--violet);outline-offset:4px}
+.hero-paper-credit{font:400 .73rem/1.7 var(--serif);color:var(--muted)}
+@media(max-width:680px){.hero-research{margin-top:1.5rem}.hero-papers{grid-template-columns:1fr;gap:1.25rem}.hero-research-head{gap:.5rem}.hero-paper-credit{font-size:.7rem}}
 .hero-skills{margin-top:2rem;padding-top:1.15rem;border-top:1px solid var(--line)}
 .hero-skills-label{font:400 .65rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .skills-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem 2rem;padding:1.8rem 0 .3rem}
@@ -179,9 +192,9 @@ nav{
 .skills-group ul{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:300 .73rem/1.65 var(--mono);color:var(--muted)}
 .skills-group li{max-width:100%;overflow-wrap:anywhere}
 
-.hero-identity,.hero-sub,.hero-skills{opacity:0;transform:translateY(12px);transition:opacity .8s,transform .8s cubic-bezier(.22,1,.36,1)}
-.hero.hero-ready .hero-identity,.hero.hero-ready .hero-sub,.hero.hero-ready .hero-skills{opacity:1;transform:none}
-.hero-sub{transition-delay:.35s}.hero-skills{transition-delay:.5s}
+.hero-identity,.hero-sub,.hero-research,.hero-skills{opacity:0;transform:translateY(12px);transition:opacity .8s,transform .8s cubic-bezier(.22,1,.36,1)}
+.hero.hero-ready .hero-identity,.hero.hero-ready .hero-sub,.hero.hero-ready .hero-research,.hero.hero-ready .hero-skills{opacity:1;transform:none}
+.hero-sub{transition-delay:.35s}.hero-research{transition-delay:.45s}.hero-skills{transition-delay:.55s}
 #projects,#story,#contact{scroll-margin-top:5rem}
 @media(max-width:1000px){
  .hero-identity{align-items:flex-start;flex-direction:column;gap:.6rem}
@@ -202,7 +215,7 @@ nav{
  .hero-skills{margin-top:1.5rem}.hero-skills-label{font-size:.6rem}.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem;padding-top:1.3rem}.skills-group h3{font-size:.95rem}.skills-group ul{font-size:.68rem}
  #projects,#story,#contact{scroll-margin-top:6rem}
 }
-@media(prefers-reduced-motion:reduce){.hero-identity,.hero-sub,.hero-skills{opacity:1;transform:none}.hero-action:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.hero-identity,.hero-sub,.hero-research,.hero-skills{opacity:1;transform:none}.hero-action:hover{transform:none}}
 
 /* ---------- image placeholder system ---------- */
 .ph{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.4rem;position:relative;overflow:hidden}
@@ -500,6 +513,22 @@ footer{
       <a class="hero-action" href="#music" data-hover>Watch &amp; listen <span aria-hidden="true">↗</span></a>
     </div>
   </div>
+  <div class="hero-research" role="region" aria-labelledby="hero-research-heading">
+    <div class="hero-research-head">
+      <h2 id="hero-research-heading">Research · 2026</h2>
+      <p class="hero-research-status">Submitted to ISMIR Late-Breaking Demo, 2026</p>
+    </div>
+    <div class="hero-papers">
+      <article class="hero-paper">
+        <h3><a href="project-quill.html" data-hover>Quill: Learning Timbre and Performance Behavior as Separate, Swappable Assets <span aria-hidden="true">↗</span></a></h3>
+        <p class="hero-paper-credit">Chuling Li · Independent research · First author</p>
+      </article>
+      <article class="hero-paper">
+        <h3><a href="project-pocketproducer.html" data-hover>Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal <span aria-hidden="true">↗</span></a></h3>
+        <p class="hero-paper-credit">Chuling Li · Independent research · First author</p>
+      </article>
+    </div>
+  </div>
   <div class="hero-skills" role="region" aria-labelledby="skills-heading">
     <h2 id="skills-heading" class="hero-skills-label">Skills &amp; tools</h2>
     <div class="skills-grid">
@@ -530,7 +559,7 @@ footer{
         </div>
         <div class="proj-card-body">
           <div class="proj-card-head">
-            <h3>QUILL<em>Individual Project · Accepted at ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
+            <h3>QUILL<em>Independent Research · First Author · Submitted to ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
             <span class="proj-card-go">→</span>
           </div>
           <p class="proj-desc">A system that learns timbre and performance behaviour as separate, swappable assets — letting musicians remix not just notes, but the way an instrument feels and responds.</p>
@@ -558,7 +587,7 @@ footer{
         </div>
         <div class="proj-card-body">
           <div class="proj-card-head">
-            <h3>PocketProducer<em>Individual Project · Accepted at ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
+            <h3>PocketProducer<em>Independent Research · First Author · Submitted to ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
             <span class="proj-card-go">→</span>
           </div>
           <p class="proj-desc">Session-conditioned retrieval that puts the musician in control — proposing sounds, loops, and ideas based on what you've already built, not just what's popular.</p>
