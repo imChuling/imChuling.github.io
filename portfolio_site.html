@@ -170,25 +170,16 @@ nav{
 .hero-action.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .hero-action:hover{transform:translateY(-2px);border-color:var(--violet);background:var(--paper-2)}
 .hero-action.primary:hover{background:var(--violet);color:var(--paper)}
-.hero-action:focus-visible,.hero-skills summary:focus-visible{outline:2px solid var(--violet);outline-offset:5px}
+.hero-action:focus-visible{outline:2px solid var(--violet);outline-offset:5px}
 .hero-skills{margin-top:2rem;padding-top:1.15rem;border-top:1px solid var(--line)}
-.hero-skills summary{display:flex;align-items:center;gap:1.5rem;list-style:none;cursor:pointer;border-radius:4px}
-.hero-skills summary::-webkit-details-marker{display:none}
 .hero-skills-label{font:400 .65rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-.hero-skills-preview{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem 1.25rem;flex:1;font:400 .9rem var(--serif)}
-.hero-skills-preview span{white-space:nowrap}
-.hero-skills-toggle{display:flex;align-items:center;gap:.65rem;font:300 .65rem var(--mono);color:var(--muted);white-space:nowrap}
-.hero-skills-toggle::after{content:'+';font:300 1.25rem var(--sans);transition:transform .3s}
-.hero-skills[open] .hero-skills-toggle::after{transform:rotate(45deg)}
-.hero-skills .skills-less{display:none}.hero-skills[open] .skills-less{display:inline}.hero-skills[open] .skills-more{display:none}
-.hero-skills summary:hover .hero-skills-toggle{color:var(--ink)}
-.skills-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem 2rem;padding:1.8rem 0 .3rem;animation:skills-in .4s ease-out}
+.skills-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem 2rem;padding:1.8rem 0 .3rem}
 .skills-group{border-top:1px solid var(--line);padding-top:.8rem;min-width:0}
 .skills-group:nth-child(6){grid-column:span 2}
-.skills-group h2{font:400 1.05rem var(--stamp);letter-spacing:.02em;margin-bottom:.7rem}
+.skills-group h3{font:400 1.05rem var(--stamp);letter-spacing:.02em;margin-bottom:.7rem}
 .skills-group ul{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:300 .73rem/1.65 var(--mono);color:var(--muted)}
 .skills-group li{max-width:100%;overflow-wrap:anywhere}
-@keyframes skills-in{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
+
 .hero-identity,.hero-sub,.hero-skills{opacity:0;transform:translateY(12px);transition:opacity .8s,transform .8s cubic-bezier(.22,1,.36,1)}
 .hero.hero-ready .hero-identity,.hero.hero-ready .hero-sub,.hero.hero-ready .hero-skills{opacity:1;transform:none}
 .hero-sub{transition-delay:.35s}.hero-skills{transition-delay:.5s}
@@ -197,7 +188,7 @@ nav{
  .hero-identity{align-items:flex-start;flex-direction:column;gap:.6rem}
  .hero-sub{grid-template-columns:1fr;gap:1.2rem}
  .hero-actions{flex-direction:row;flex-wrap:wrap}.hero-action{gap:1.7rem}
- .hero-skills summary{gap:1rem}.hero-skills-preview{gap:.5rem .9rem;font-size:.82rem}.skills-grid{gap:1.3rem}
+ .skills-grid{gap:1.3rem}
 }
 @media(max-width:680px){
  nav{padding:1rem 5vw;align-items:flex-start;gap:.7rem;flex-wrap:wrap;background:rgba(243,242,239,.94)}
@@ -209,7 +200,7 @@ nav{
  .h-line.perspective{margin-top:.7rem}.h-line.perspective .txt{font-size:clamp(1.35rem,5.9vw,2rem);line-height:1.4;letter-spacing:-.04em}
  .hero-sub{margin-top:1.3rem}.hero-sub p{font-size:.85rem;line-height:1.8}
  .hero-actions{gap:.6rem}.hero-action{font-size:.72rem;padding:.8rem 1rem;gap:.9rem}
- .hero-skills{margin-top:1.5rem}.hero-skills summary{flex-wrap:wrap;justify-content:space-between;gap:.8rem}.hero-skills-preview{order:3;flex-basis:100%;font-size:.85rem;gap:.5rem 1rem}.hero-skills-label,.hero-skills-toggle{font-size:.6rem}.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem;padding-top:1.3rem}.skills-group:nth-child(6){grid-column:auto}.skills-group h2{font-size:.95rem}.skills-group ul{font-size:.68rem}
+ .hero-skills{margin-top:1.5rem}.hero-skills-label{font-size:.6rem}.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem;padding-top:1.3rem}.skills-group:nth-child(6){grid-column:auto}.skills-group h3{font-size:.95rem}.skills-group ul{font-size:.68rem}
  #projects,#story,#contact{scroll-margin-top:6rem}
 }
 @media(prefers-reduced-motion:reduce){.hero-identity,.hero-sub,.hero-skills{opacity:1;transform:none}.hero-action:hover{transform:none}}
@@ -510,22 +501,18 @@ footer{
       <a class="hero-action" href="#music" data-hover>Watch &amp; listen <span aria-hidden="true">↗</span></a>
     </div>
   </div>
-  <details class="hero-skills">
-    <summary data-hover>
-      <span class="hero-skills-label">Skills &amp; tools</span>
-      <span class="hero-skills-preview"><span>Python</span><span>PyTorch</span><span>Audio/MIDI</span><span>Max/MSP</span><span>Logic Pro</span><span>Arduino</span></span>
-      <span class="hero-skills-toggle"><span class="skills-more">View all</span><span class="skills-less">Show less</span></span>
-    </summary>
+  <div class="hero-skills" role="region" aria-labelledby="skills-heading">
+    <h2 id="skills-heading" class="hero-skills-label">Skills &amp; tools</h2>
     <div class="skills-grid">
-      <div class="skills-group"><h2>Programming</h2><ul><li>Python (advanced)</li><li>Java</li><li>C</li><li>MATLAB</li><li>JavaScript / TypeScript</li><li>HTML / CSS</li></ul></div>
-      <div class="skills-group"><h2>Data &amp; ML</h2><ul><li>NumPy</li><li>pandas</li><li>Matplotlib</li><li>scikit-learn</li><li>PyTorch</li><li>Hugging Face</li><li>Transformers</li></ul></div>
-      <div class="skills-group"><h2>Audio Tools</h2><ul><li>Logic Pro</li><li>Ableton Live</li><li>Melodyne</li></ul></div>
-      <div class="skills-group"><h2>Creative Tech</h2><ul><li>Max/MSP</li><li>Pure Data</li><li>TouchDesigner</li></ul></div>
-      <div class="skills-group"><h2>Audio &amp; DSP</h2><ul><li>Audio/MIDI Processing</li><li>MIDI</li><li>DSP</li></ul></div>
-      <div class="skills-group"><h2>Dev Tools</h2><ul><li>Git / GitHub</li><li>Linux</li><li>Jupyter Notebook</li><li>LaTeX</li><li>Flask</li><li>FastAPI</li><li>Firebase</li><li>Google Cloud Storage</li><li>MongoDB Atlas / Vector Search</li></ul></div>
-      <div class="skills-group"><h2>Hardware</h2><ul><li>Arduino</li><li>BCI</li></ul></div>
+      <div class="skills-group"><h3>Programming</h3><ul><li>Python (advanced)</li><li>Java</li><li>C</li><li>MATLAB</li><li>JavaScript / TypeScript</li><li>HTML / CSS</li></ul></div>
+      <div class="skills-group"><h3>Data &amp; ML</h3><ul><li>NumPy</li><li>pandas</li><li>Matplotlib</li><li>scikit-learn</li><li>PyTorch</li><li>Hugging Face</li><li>Transformers</li></ul></div>
+      <div class="skills-group"><h3>Audio Tools</h3><ul><li>Logic Pro</li><li>Ableton Live</li><li>Melodyne</li></ul></div>
+      <div class="skills-group"><h3>Creative Tech</h3><ul><li>Max/MSP</li><li>Pure Data</li><li>TouchDesigner</li></ul></div>
+      <div class="skills-group"><h3>Audio &amp; DSP</h3><ul><li>Audio/MIDI Processing</li><li>MIDI</li><li>DSP</li></ul></div>
+      <div class="skills-group"><h3>Dev Tools</h3><ul><li>Git / GitHub</li><li>Linux</li><li>Jupyter Notebook</li><li>LaTeX</li><li>Flask</li><li>FastAPI</li><li>Firebase</li><li>Google Cloud Storage</li><li>MongoDB Atlas / Vector Search</li></ul></div>
+      <div class="skills-group"><h3>Hardware</h3><ul><li>Arduino</li><li>BCI</li></ul></div>
     </div>
-  </details>
+  </div>
 </header>
 
 <!-- ============ PROJECTS ============ -->
