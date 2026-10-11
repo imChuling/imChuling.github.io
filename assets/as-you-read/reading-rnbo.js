@@ -3,12 +3,12 @@ const $=id=>document.getElementById(id),reduced=matchMedia('(prefers-reduced-mot
 let errorMessage='',engine,initializing,enabled=false,loaded=false,busy=false,chapter='reading',visited=false,original=false,motion=0,lastY=scrollY,lastScroll=0,frame=0;
 const marks=[],journey=[];
 const state=()=>original?'original':chapter==='stage'?'passing':visited?'returning':'first';
-async function getEngine(){if(engine)return engine;if(!initializing){const C=window.AudioContext||window.webkitAudioContext;initializing=new RNBOSound(new C()).init().then(e=>(engine=e)).catch(e=>{initializing=null;throw e;});}return initializing;}
+async function getEngine(){if(engine)return engine;if(!initializing){const C=window.AudioContext||window.webkitAudioContext;const candidate=new RNBOSound(new C());initializing=candidate.init().then(e=>(engine=e)).catch(e=>{candidate.dispose();initializing=null;throw e;});}return initializing;}
 function update(){
  document.body.dataset.playing=String(enabled);document.body.dataset.memory=String(visited&&chapter==='reading');
  $('sound').setAttribute('aria-pressed',String(enabled));$('sound-label').textContent=enabled?'暂停声音':'开启声音';
  $('begin').textContent=busy?'正在加载…':!loaded?'先选择一段声音 ↗':enabled?'正在聆听 · 向下浏览 ↓':'开启声音，开始浏览 ↗';
- $('begin').setAttribute('aria-pressed',String(enabled));$('begin').disabled=busy;$('sound').disabled=busy;$('replay').disabled=!loaded||busy;$('compare').disabled=!enabled;
+ $('begin').setAttribute('aria-pressed',String(enabled));$('audio-file').disabled=busy;$('begin').disabled=busy;$('sound').disabled=busy;$('replay').disabled=!loaded||busy;$('compare').disabled=!enabled;
  $('compare').setAttribute('aria-pressed',String(original));$('compare').textContent=original?'回到当前声场':'对照初始声音';
  const label={first:'初见：声音还保留最初的轮廓。',passing:'经过：颗粒逐渐展开，声音变得稠密。',returning:'回返：你经过的地方，仍留在声音里。',original:'对照：暂时退去颗粒与空间处理。'};
  $('chapter-state').textContent=errorMessage||(enabled?label[state()]:loaded?'声音已就绪。点击开启，开始浏览。':'选择一段吉他、键盘或环境录音开始。');
@@ -20,7 +20,7 @@ async function play(){if(busy)return;if(!loaded){$('audio-file').click();return;
 $('audio-file').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;stop();errorMessage='';busy=true;loaded=false;update();try{const e=await getEngine();$('engine-status').textContent='MAX / RNBO · 引擎已连接';await e.load(file);loaded=true;$('file-name').textContent=file.name;$('engine-status').textContent=e.combined?'MAX / RNBO · GRANULAR → OVERDRIVE → PLATE REVERB':'MAX / RNBO · JR-GRANULAR';}catch(e){$('file-name').textContent='无法读取音频：'+e.message;}finally{busy=false;update();}});
 $('begin').addEventListener('click',()=>enabled?stop():play());$('sound').addEventListener('click',()=>enabled?stop():play());$('replay').addEventListener('click',play);
 $('volume').addEventListener('input',()=>{if(enabled)engine.volume(Number($('volume').value)/100);});$('compare').addEventListener('click',()=>{original=!original;apply();});
-$('reset').addEventListener('click',()=>{visited=false;original=false;marks.length=journey.length=0;chapter='reading';window.scrollTo({top:0,behavior:'instant'});lastY=0;apply();});
+$('reset').addEventListener('click',()=>{visited=false;original=false;marks.length=journey.length=0;if(enabled)journey.push('01');chapter='reading';motion=0;window.scrollTo({top:0,behavior:'instant'});lastY=0;apply();});
 addEventListener('scroll',()=>{const now=performance.now(),delta=Math.abs(scrollY-lastY);lastY=scrollY;motion=Math.min(1,delta/Math.max(16,now-lastScroll)*.25);lastScroll=now;
  const next=$('stage').getBoundingClientRect().top<innerHeight*.45?'stage':'reading';if(next!==chapter){chapter=next;original=false;if(enabled){if(next==='stage')visited=true;journey.push(next==='stage'?'02':'01');if(journey.length>12)journey.shift();}apply();}
  if(enabled){engine.setState(state(),motion);marks.push({y:scrollY,state:state(),motion});if(marks.length>60)marks.shift();}

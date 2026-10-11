@@ -5304,7 +5304,7 @@
         "box": {
           "id": "credits",
           "maxclass": "comment",
-          "text": "Sound engine: JR-Granular / szkkng · GPL-3.0. Interface & reading states adapted for Chuling Li.\nGranular layer only; distortion/reverb and browser export are still in progress.",
+          "text": "Sound engine: JR-Granular / szkkng (GPL-3.0). Max/RNBO Web Export verified.\nReading-state adaptation for Chuling Li. This patch is the granular layer; the pedal chain is a separate unfinished study.",
           "patching_rect": [
             40,
             699,

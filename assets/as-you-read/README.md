@@ -17,7 +17,7 @@ JavaScript handles local file playback, smooth parameter changes, volume and int
 
 ## Unfinished sound design
 
-`max/shoegaze-modular.maxpat` composes the existing granular, overdrive and plate-reverb graphs. Its combined Web Export still reports `rnbo~: error exporting`; it is **not the active website engine**. The additional export/flat-pedal patches are development experiments, not verified deliverables. The webpage does not claim to run these pedals.
+`max/shoegaze-modular.maxpat` composes the existing granular, overdrive and plate-reverb graphs. Its combined Web Export still reports `rnbo~: error exporting`; it is **not the active website engine**. Earlier export/flat-pedal patches are archived in `../../docs/as-you-read/archive/` and are not verified deliverables. The webpage does not claim to run these pedals. The automatic export helper has been corrected to use Web Export’s `file_name` configuration field; successful combined output still requires verification.
 
 The current version is a granular feasibility study, not a finished shoegaze composition. Selecting a suitable sustained guitar recording and validating the pedal chain remain necessary for the intended sound. Original `shoegaze-granular-study.maxpat` user edits are preserved.
 
@@ -26,3 +26,7 @@ The current version is a granular feasibility study, not a finished shoegaze com
 The browser was tested with a local official-package sample, used only from `/tmp`, not copied into the website. Downloads-folder recording access was denied by macOS in this session; readable local WAV input succeeded. Browser signal detection validates execution, not perceived audio quality. Final listening should be done with the intended source recording.
 
 Legacy `prototype.js`, `audio-engine.mjs`, `max/as-you-read.maxpat` and `max/as-you-read.rnbopat` belong to the earlier tone sketch and are not loaded by the active page. `tests/reading-memory.test.mjs` tests that legacy model only.
+
+## Chinese guide
+
+See `../../docs/as-you-read/操作与实现思路.md` for the concept, local playback instructions, parameter mapping, workflow and maintenance notes. Run current mapping checks with `node --test tests/rnbo-mapping.test.mjs` from the website root.
