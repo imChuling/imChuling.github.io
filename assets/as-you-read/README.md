@@ -1,24 +1,28 @@
-# As You Read — study 001
+# As You Read — RNBO listening study
 
-Open `/as-you-read.html` through the portfolio's local web server. Turn sound on, scroll from chapter 01 to chapter 02, and return to 01. The four-note sequence stays the same; the returning voice carries some of chapter 02's partials and attack. Use the original-colour comparison on return.
+## Current working version (2026-10-11)
 
-This is a **Web Audio feasibility prototype**, not an exported RNBO device. No remote services or extra libraries are used. All tones are synthesized; there are no vocal recordings. Visits exist only in page memory. The main portfolio HTML is unchanged.
+Open `/as-you-read.html` through the local web server. Select a local guitar, keyboard or field recording, enable sound, visit section 02, then return to 01. Files are decoded locally and are not uploaded. No microphone permission is required. No recording is bundled with this prototype.
 
-`max/as-you-read.maxpat` is a native Max sketch of the four notes and five-partial voice. `max/as-you-read.rnbopat` is an RNBO voice draft with frequency, memory and level parameters. Both are generated source files with JSON/connection validation only: the local Max application's UI repeatedly timed out, so neither has been compiled, auditioned or exported in Max. The native sketch is monophonic with a linear envelope; the browser uses overlapping voices with exponential decays. They are not claimed to sound identical.
+The browser now hosts an actual **Max 9.0.9 / RNBO 1.3.5 Web Export** of JR-Granular, not the previous JavaScript oscillator sketch. `rnbo-export/scene.export.json` is the active export; `granular.export.json` preserves the same verified granular engine. `max/shoegaze-granular-studio.maxpat` is its editable host. Max's exporter reported successful Web Export. Browser verification found nonzero output and mix transitions from 35 (first) to 85 (passing) to 65 (returning).
 
-The RNBO draft is intentionally silent until a host schedules the level envelope. Actual RNBO export, polyphony, effects and browser integration remain separate work. Do not rename the browser engine as Max/RNBO in a portfolio credit.
+JavaScript handles local file playback, smooth parameter changes, volume and interface state. Creative DSP comes from JR-Granular. Revisit memory is currently a state-dependent preset, not a recording of the user's journey. A click is required to enable audio. Hidden pages pause playback. Restarting playback starts the selected file from the beginning. Reset clears navigation history, not the DSP's internal delay memory.
 
-Run the state-model checks with `node --test tests/reading-memory.test.mjs` from the site root. Manual browser checks should include actual nonzero audio output, chapter 01 → 02 → 01, comparison, reset, mute, hidden-page pause, keyboard navigation and narrow layouts. Real user understanding has not been evaluated.
+## Sources and licensing
 
-## 2026-10-10: Shoegaze direction and reuse
+- JR-Granular by szkkng: https://github.com/szkkng/jr-granular — GPL-3.0, pinned commit 409fb96f6ec9379a9168b99fc53ff71e03eb801a. Original source, license and provenance are in `vendor/jr-granular/`. Its granular DSP is reused unchanged.
+- RNBO browser adapter 1.3.5: https://cdn.cycling74.com/rnbo/1.3.5/rnbo.min.js — MIT notice retained in `vendor/rnbo-1.3.5.min.js`.
+- RNBO-generated code license: `rnbo-export/patch.export.license`; retain with distributions. The reused GPL source and notices must accompany redistribution as required by its license.
+- RNBO Guitar Pedals 1.0.4 by Manuel Poletti / Cycling '74: https://cycling74.com/products/rnbo-guitar-pedals — MIT, source and notices in `vendor/rnbo-guitar-pedals/`. No package audio examples are distributed here.
 
-The user rejected the Web Audio tone sketch as the desired sound engine. The live preview still runs that earlier engine; it has NOT been replaced or relabelled as Max/RNBO.
+## Unfinished sound design
 
-- Installed Max confirmed as 9.0.9; bundled RNBO 1.3.5.
-- Two Max window-control attempts timed out after the update. Finder was readable, although delayed. This is a control/verification blocker, not evidence of a missing Max/RNBO license or proof that Max itself is frozen.
-- Downloaded pinned upstream JR-Granular patch and GPL-3.0 license into `vendor/jr-granular/`. Adapted study: `max/shoegaze-granular-study.maxpat`. Its connected RNBO DSP is unchanged. Three provisional parameter messages explore first reading, passing through and returning; only JSON and connection structure have been checked.
-- This patch processes incoming audio. Its demo playlist is cleared; it does not contain a guitar recording or produce a complete shoegaze composition by itself.
-- Additional candidate: Manuel Poletti / Cycling '74 RNBO Guitar Pedals, https://cycling74.com/products/rnbo-guitar-pedals . Official source explicitly supports copying and Web Export; package-specific notices and sample licenses still need inspection before redistributing assets. It is NOT installed/integrated here yet.
-- JR-Granular source: https://github.com/szkkng/jr-granular . Its project is GPL-3.0 and archived. RNBO_CombGrain was not chosen because no explicit repository license was visible in the inspected tree/page.
+`max/shoegaze-modular.maxpat` composes the existing granular, overdrive and plate-reverb graphs. Its combined Web Export still reports `rnbo~: error exporting`; it is **not the active website engine**. The additional export/flat-pedal patches are development experiments, not verified deliverables. The webpage does not claim to run these pedals.
 
-Next practical gate: open the adapted patch in Max, load a licensed/owned guitar phrase, audition the presets, add existing distortion/reverb modules, and produce a real RNBO Web Export. Only then replace the browser audio engine. Website motion will control granular mix/density, and section return will keep a slower-decaying trace; these mappings remain proposed until auditioned.
+The current version is a granular feasibility study, not a finished shoegaze composition. Selecting a suitable sustained guitar recording and validating the pedal chain remain necessary for the intended sound. Original `shoegaze-granular-study.maxpat` user edits are preserved.
+
+## Checks
+
+The browser was tested with a local official-package sample, used only from `/tmp`, not copied into the website. Downloads-folder recording access was denied by macOS in this session; readable local WAV input succeeded. Browser signal detection validates execution, not perceived audio quality. Final listening should be done with the intended source recording.
+
+Legacy `prototype.js`, `audio-engine.mjs`, `max/as-you-read.maxpat` and `max/as-you-read.rnbopat` belong to the earlier tone sketch and are not loaded by the active page. `tests/reading-memory.test.mjs` tests that legacy model only.
