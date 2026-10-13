@@ -1,10 +1,10 @@
 # As You Read — RNBO listening study
 
-## Current working version (2026-10-11)
+## Current working version (2026-10-13)
 
 Open `/as-you-read.html` through the local web server. Select a local guitar, keyboard or field recording, enable sound, visit section 02, then return to 01. Files are decoded locally and are not uploaded. No microphone permission is required. No recording is bundled with this prototype.
 
-The browser now hosts an actual **Max 9.0.9 / RNBO 1.3.5 Web Export** of JR-Granular, not the previous JavaScript oscillator sketch. `rnbo-export/scene.export.json` is the active export; `granular.export.json` preserves the same verified granular engine. `max/shoegaze-granular-studio.maxpat` is its editable host. Max's exporter reported successful Web Export. Browser verification found nonzero output and mix transitions from 35 (first) to 85 (passing) to 65 (returning).
+The browser now hosts an actual **Max 9.0.9 / RNBO 1.3.5 Web Export** of JR-Granular, not the previous JavaScript oscillator sketch. `rnbo-export/scene.export.json` now contains the verified granular → overdrive → plate reverb chain; `granular.export.json` preserves the same verified granular engine. `max/shoegaze-granular-studio.maxpat` is its editable host. Max's exporter reported successful Web Export. Browser verification found nonzero output and mix transitions from 35 (first) to 85 (passing) to 65 (returning).
 
 JavaScript handles local file playback, smooth parameter changes, volume and interface state. Creative DSP comes from JR-Granular. Revisit memory is currently a state-dependent preset, not a recording of the user's journey. A click is required to enable audio. Hidden pages pause playback. Restarting playback starts the selected file from the beginning. Reset clears navigation history, not the DSP's internal delay memory.
 
@@ -15,11 +15,13 @@ JavaScript handles local file playback, smooth parameter changes, volume and int
 - RNBO-generated code license: `rnbo-export/patch.export.license`; retain with distributions. The reused GPL source and notices must accompany redistribution as required by its license.
 - RNBO Guitar Pedals 1.0.4 by Manuel Poletti / Cycling '74: https://cycling74.com/products/rnbo-guitar-pedals — MIT, source and notices in `vendor/rnbo-guitar-pedals/`. No package audio examples are distributed here.
 
-## Unfinished sound design
+## Combined export verified
 
-`max/shoegaze-modular.maxpat` composes the existing granular, overdrive and plate-reverb graphs. Its combined Web Export still reports `rnbo~: error exporting`; it is **not the active website engine**. Earlier export/flat-pedal patches are archived in `../../docs/as-you-read/archive/` and are not verified deliverables. The webpage does not claim to run these pedals. The automatic export helper has been corrected to use Web Export’s `file_name` configuration field; successful combined output still requires verification.
+The combined graph successfully exported through RNBO’s Web Export panel on 2026-10-13. Browser verification loaded the combined engine, produced nonzero output (observed peaks approximately 0.037–0.059), and confirmed mix transitions 35 → 85 → 65. Mapping tests pass against all actual combined parameter IDs and ranges. The original granular export is retained as a fallback.
 
-The current version is a granular feasibility study, not a finished shoegaze composition. Selecting a suitable sustained guitar recording and validating the pedal chain remain necessary for the intended sound. Original `shoegaze-granular-study.maxpat` user edits are preserved.
+Generic MCP `export` messages still returned errors even for the known-working granular control. That automation issue remains unresolved; it is distinct from DSP validity. MCP handles patch construction and inspection; the successful final export used the native panel. Source host: `max/mcp-export-host.maxpat`, with the same embedded graph as `max/shoegaze-modular-engine.rnbopat`.
+
+A suitable default recording and subjective shoegaze sound design remain unfinished. The test WAV was loaded locally, not bundled or published. The updated local preview is http://127.0.0.1:8766/as-you-read.html (the old 8765 address returned 404).
 
 ## Checks
 
