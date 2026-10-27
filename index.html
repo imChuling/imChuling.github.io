@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chuling LI — I sing. I code. I build what's between.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Roman.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-LightItalic.otf') format('opentype');font-weight:300;font-style:italic;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'InknutAntiqua';src:url('N2_复古油墨字体_可商用/InknutAntiqua/InknutAntiqua-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'InknutAntiqua';src:url('N2_复古油墨字体_可商用/InknutAntiqua/InknutAntiqua-Light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'InknutAntiqua';src:url('N2_复古油墨字体_可商用/InknutAntiqua/InknutAntiqua-Medium.ttf') format('truetype');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'IMFellSC';src:url('N2_复古油墨字体_可商用/IM Fell English SC/IMFellEnglishSC-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'OldNewspaper';src:url('N2_复古油墨字体_可商用/OldNewspaperTypes.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'StampWriter';src:url('N2_复古油墨字体_可商用/STAMPWRITER-KIT.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Innurz';src:url('N2_复古油墨字体_可商用/Ínnurz.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+:root{
+  /* misty rain palette — muted, composed */
+  --paper:#F3F2EF;
+  --paper-2:#ECEAE5;
+  --ink:#26272C;
+  --muted:#63646A;     /* deepened from #7C7D82 → ~5.3:1 on paper, clears WCAG AA for body text; still a soft grey */
+  --peach:#E3DAD0;      /* warm greige */
+  --rose:#DCD1D6;       /* grey mauve */
+  --lavender:#D3D5E0;   /* rain lilac */
+  --sky:#D2DBE1;        /* fog blue */
+  --butter:#E6E1D3;     /* pale sand */
+  --violet:#5A6880;     /* slate blue — the only "color" */
+  --line:rgba(38,39,44,.12);
+  --serif:'Compagnon',serif;
+  --display:'IMFellSC',serif;
+  --inknut:'InknutAntiqua',serif;
+  --stamp:'OldNewspaper',serif;
+  --stencil:'StampWriter',monospace;
+  --hand:'Innurz',cursive;
+  --sans:'Space Grotesk',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+}
+::selection{background:var(--ink);color:var(--paper)}
+
+/* ---------- soft light washes : plain CSS gradients, zero runtime cost ---------- */
+#washes{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(ellipse 42% 34% at 86% 6%,rgba(227,218,208,.5),transparent 70%),
+    radial-gradient(ellipse 36% 30% at 4% 46%,rgba(211,213,224,.5),transparent 70%),
+    radial-gradient(ellipse 32% 26% at 76% 96%,rgba(220,209,214,.45),transparent 70%),
+    radial-gradient(ellipse 26% 22% at 44% 78%,rgba(201,204,199,.35),transparent 70%);
+}
+
+/* grain */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.04'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- preloader : frosted glass that melts clear ---------- */
+#loader{
+  position:fixed;inset:0;z-index:10000;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;overflow:hidden;
+  background:rgba(238,239,238,.62);
+  -webkit-backdrop-filter:blur(30px) saturate(1.05);
+  backdrop-filter:blur(30px) saturate(1.05);
+  transition:
+    -webkit-backdrop-filter 1.5s cubic-bezier(.4,0,.2,1),
+    backdrop-filter 1.5s cubic-bezier(.4,0,.2,1),
+    background 1.5s cubic-bezier(.4,0,.2,1);
+}
+#loader.done{
+  -webkit-backdrop-filter:blur(0px) saturate(1);
+  backdrop-filter:blur(0px) saturate(1);
+  background:rgba(238,239,238,0);
+}
+#loader.done .l-center,#loader.done .l-num,#loader.done .l-bar{opacity:0}
+.l-center{text-align:center;transition:opacity .55s ease}
+.l-title{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,6.5vw,5rem);letter-spacing:.02em}
+.l-title em{font-style:normal;color:inherit}
+.l-sub{
+  margin-top:1.2rem;font-family:var(--mono);font-weight:300;font-size:.64rem;
+  letter-spacing:.42em;text-transform:uppercase;color:var(--muted);
+  animation:subPulse 2.2s ease-in-out infinite;
+}
+@keyframes subPulse{0%,100%{opacity:.45}50%{opacity:1}}
+.l-num{
+  position:absolute;right:4vw;bottom:3.4vw;
+  font-family:var(--mono);font-weight:200;font-size:clamp(2.2rem,7vw,5rem);line-height:1;
+  transition:opacity .6s;
+}
+.l-num{transition:opacity .55s ease}
+.l-bar{
+  position:absolute;left:0;bottom:0;height:2px;width:0%;
+  background:linear-gradient(90deg,var(--violet),var(--rose));
+  transition:width .35s ease;
+}
+.l-bar{transition:width .35s ease,opacity .55s ease}
+
+/* ---------- cursor ---------- */
+.cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
+.cursor-dot{width:6px;height:6px;background:var(--ink)}
+.cursor-ring{width:34px;height:34px;border:1px solid rgba(24,21,31,.4);transition:width .3s,height .3s,background .3s,border-color .3s}
+body.hovering .cursor-ring{width:62px;height:62px;background:rgba(91,67,240,.08);border-color:var(--violet)}
+@media (hover:none){.cursor-dot,.cursor-ring{display:none}body{cursor:auto}}
+
+/* ---------- nav ---------- */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.4rem 4vw;
+  backdrop-filter:blur(10px);
+  background:linear-gradient(to bottom,rgba(247,244,238,.85),rgba(247,244,238,0));
+}
+.logo{font-family:var(--display);font-weight:400;font-size:1.15rem;letter-spacing:.04em}
+.logo em{font-style:normal;color:inherit}
+.nav-links{display:flex;gap:2.2rem;align-items:center}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-family:var(--display);font-weight:400;
+  font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:-4px;width:100%;height:1.5px;
+  background:var(--violet);transform:scaleX(0);transform-origin:right;transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+@media(max-width:680px){.nav-links{display:none}}
+
+/* ---------- HERO : identity, musical perspective, and a direct route to the work ---------- */
+.hero{padding:7.7rem 4vw 3rem;max-width:1500px;margin:0 auto;overflow:hidden;scroll-margin-top:5rem}
+.hero-identity{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;margin-bottom:1.8rem}
+.hero-name{font:400 clamp(2rem,3vw,2.8rem)/1.1 var(--display);letter-spacing:.02em}
+.hero-kicker{font:400 .66rem/1.8 var(--display);letter-spacing:.17em;color:var(--muted)}
+.hero-title{font-weight:400;margin:0}
+.h-line{display:flex;align-items:center;gap:1.4rem;overflow:hidden;margin-bottom:.6rem}
+.h-line .txt{font-family:var(--stamp);font-weight:400;font-size:clamp(2.6rem,6.5vw,5.8rem);line-height:1.1;letter-spacing:.01em;position:relative;z-index:2;transform:translateY(118%);transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
+.h-line.free{overflow:visible}
+.h-line.in .txt{transform:none}
+.h-line .strip{display:block;flex:1;min-width:100px;height:clamp(80px,8.5vw,120px);border-radius:99px;overflow:hidden;position:relative;transform:scaleX(0);transform-origin:left;transition:transform 1.2s cubic-bezier(.22,1,.36,1) .15s}
+.h-line.in .strip{transform:none}
+.h-line .strip .ph{position:absolute;inset:0;transform:scale(1.08);will-change:transform}
+.h-line .strip .ph::before,.h-line .strip .ph::after{display:none}
+.h-line .strip .ph img{width:100%;height:100%;object-fit:cover;object-position:30% 30%;filter:saturate(.7)}
+.h-line .performance-strip{max-width:none;margin-left:auto}
+.h-line .sound-strip{flex:0 1 240px;height:clamp(68px,7vw,100px)}
+.h-line .sound-strip .ph{background:var(--lavender)}
+.h-line:nth-child(odd) .strip{transform-origin:right}
+.h-line.perspective{margin-top:.9rem}
+.h-line.perspective .txt{font:300 italic clamp(1.7rem,3.6vw,3.2rem)/1.25 var(--serif);color:var(--violet);letter-spacing:-.035em}
+.hero-sub{margin-top:2rem;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2.2rem;align-items:center}
+.hero-sub p{max-width:66ch;font:300 .95rem/1.85 var(--sans);color:var(--muted)}
+.hero-sub strong{font-weight:500;color:var(--ink)}
+.hero-actions{display:flex;flex-direction:column;gap:.7rem;align-items:stretch}
+.hero-action{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:.9rem 1.25rem;border:1px solid var(--line);border-radius:99px;font:400 .78rem var(--sans);text-decoration:none;color:var(--ink);transition:background .3s,transform .3s,border-color .3s}
+.hero-action.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.hero-action:hover{transform:translateY(-2px);border-color:var(--violet);background:var(--paper-2)}
+.hero-action.primary:hover{background:var(--violet);color:var(--paper)}
+.hero-action:focus-visible{outline:2px solid var(--violet);outline-offset:5px}
+.hero-research{margin-top:2rem;padding-top:1.15rem;border-top:1px solid var(--line)}
+.hero-research-head{display:flex;justify-content:space-between;align-items:baseline;gap:.75rem 1.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.hero-research-head h2{font:400 .65rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero-papers{list-style:none;display:grid;gap:1rem;margin:0;padding:0}
+.hero-paper{display:grid;grid-template-columns:3.3rem minmax(0,1fr);gap:1rem;min-width:0}
+.hero-paper+.hero-paper{border-top:1px solid var(--line);padding-top:1rem}
+.hero-paper-year{font:300 .72rem/1.9 var(--mono);color:var(--muted);padding-top:.1rem}
+.hero-paper-citation{font:300 .94rem/1.7 var(--sans);color:var(--ink);max-width:110ch}
+.hero-paper-citation strong{font-weight:500}
+.hero-paper-citation cite{font-style:normal}
+.hero-paper a{color:var(--ink);text-decoration:none;text-underline-offset:4px;text-decoration-thickness:1px;transition:color .3s}
+.hero-paper a:hover{color:var(--violet);text-decoration:underline}
+.hero-paper a:focus-visible{outline:2px solid var(--violet);outline-offset:4px}
+.hero-paper-meta{display:flex;align-items:baseline;flex-wrap:wrap;gap:.4rem .85rem;margin-top:.35rem;font:300 .72rem/1.7 var(--sans);color:var(--muted)}
+.hero-paper-meta em{font-style:italic}
+.hero-paper-accepted{font:400 .6rem/1.5 var(--mono);letter-spacing:.06em;color:var(--violet);border:1px solid rgba(90,104,128,.25);border-radius:4px;padding:.15rem .4rem;background:rgba(211,213,224,.25)}
+.hero-paper-credit{font:400 .68rem/1.7 var(--serif);color:var(--muted)}
+@media(max-width:680px){.hero-research{margin-top:1.5rem}.hero-research-head{gap:.5rem}.hero-paper{grid-template-columns:2.5rem minmax(0,1fr);gap:.6rem}.hero-paper-citation{font-size:.83rem}.hero-paper-year{font-size:.65rem}.hero-paper-meta{font-size:.68rem}.hero-paper-credit{font-size:.65rem}}
+.about-skills{grid-column:1/-1;margin-top:0;padding-top:1.15rem;border-top:1px solid var(--line)}
+.about-skills-label{font:400 .65rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.skills-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem 2rem;padding:1.8rem 0 .3rem}
+.skills-group{border-top:1px solid var(--line);padding-top:.8rem;min-width:0}
+.skills-group h3{font:400 1.05rem var(--stamp);letter-spacing:.02em;margin-bottom:.7rem}
+.skills-group ul{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:300 .73rem/1.65 var(--mono);color:var(--muted)}
+.skills-group li{max-width:100%;overflow-wrap:anywhere}
+
+.hero-identity,.hero-sub,.hero-research{opacity:0;transform:translateY(12px);transition:opacity .8s,transform .8s cubic-bezier(.22,1,.36,1)}
+.hero.hero-ready .hero-identity,.hero.hero-ready .hero-sub,.hero.hero-ready .hero-research{opacity:1;transform:none}
+.hero-sub{transition-delay:.35s}.hero-research{transition-delay:.45s}
+#projects,#story,#contact{scroll-margin-top:5rem}
+@media(max-width:1000px){
+ .hero-identity{align-items:flex-start;flex-direction:column;gap:.6rem}
+ .hero-sub{grid-template-columns:1fr;gap:1.2rem}
+ .hero-actions{flex-direction:row;flex-wrap:wrap}.hero-action{gap:1.7rem}
+ .skills-grid{gap:1.3rem}
+}
+@media(max-width:680px){
+ nav{padding:1rem 5vw;align-items:flex-start;gap:.7rem;flex-wrap:wrap;background:rgba(243,242,239,.94)}
+ .nav-links{display:flex;gap:1.1rem;flex-wrap:wrap}.nav-links a{font-size:.62rem;letter-spacing:.08em}
+ .hero{padding:7rem 5vw 2rem}.hero-identity{margin-bottom:1.4rem}.hero-name{font-size:2rem}.hero-kicker{font-size:.55rem;letter-spacing:.12em}
+ .h-line{gap:.65rem;margin-bottom:.55rem}.h-line .txt{font-size:clamp(1.8rem,8.5vw,3.5rem)}
+ .h-line .performance-strip{min-width:75px;height:70px}.h-line .sound-strip{flex:0 0 65px;min-width:0;height:48px}
+ .h-line .strip .ph img{object-position:30% 30%}
+ .h-line.perspective{margin-top:.7rem}.h-line.perspective .txt{font-size:clamp(1.35rem,5.9vw,2rem);line-height:1.4;letter-spacing:-.04em}
+ .hero-sub{margin-top:1.3rem}.hero-sub p{font-size:.85rem;line-height:1.8}
+ .hero-actions{gap:.6rem}.hero-action{font-size:.72rem;padding:.8rem 1rem;gap:.9rem}
+ .about-skills{margin-top:0}.about-skills-label{font-size:.6rem}.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem;padding-top:1.3rem}.skills-group h3{font-size:.95rem}.skills-group ul{font-size:.68rem}
+ #projects,#story,#contact{scroll-margin-top:6rem}
+}
+@media(prefers-reduced-motion:reduce){.hero-identity,.hero-sub,.hero-research{opacity:1;transform:none}.hero-action:hover{transform:none}}
+
+/* ---------- image placeholder system ---------- */
+.ph{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.4rem;position:relative;overflow:hidden}
+.ph span{font-family:var(--mono);font-weight:300;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(24,21,31,.55);text-align:center;padding:0 .8rem;position:relative;z-index:1}
+.ph::before{content:'';position:absolute;inset:0}
+.ph.stage::before{background:linear-gradient(140deg,var(--rose),var(--peach))}
+.ph.gear::before{background:linear-gradient(140deg,var(--sky),var(--lavender))}
+.ph.retro::before{background:linear-gradient(140deg,#DDD8CE,#C9C2B4)}
+.ph.abstract::before{background:linear-gradient(150deg,var(--lavender),var(--sky))}
+.ph.dim::after{content:'';position:absolute;inset:0;background:rgba(38,39,44,.06)}
+.ph .gen-art{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+
+/* ---------- rain window (fog + droplets, wipeable) ---------- */
+.rain-fog{position:absolute;inset:0;z-index:3;width:100%;height:100%}
+.rain-hint{
+  position:absolute;left:50%;bottom:1.1rem;transform:translateX(-50%);z-index:4;pointer-events:none;
+  font-family:var(--mono);font-weight:300;font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;
+  color:rgba(38,39,44,.6);background:rgba(243,242,239,.55);backdrop-filter:blur(6px);
+  padding:.5rem 1.1rem;border-radius:99px;transition:opacity 1s;
+}
+.rain-done .rain-hint{opacity:0}
+
+/* ---------- STORY : pinned scrollytelling ---------- */
+.story{position:relative}
+.story .sticky{
+  position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1.1fr .9fr;
+  align-items:center;gap:5vw;padding:0 4vw;max-width:1500px;margin:0 auto;
+}
+.story-steps{position:relative;height:520px}
+.story-step{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  opacity:0;transform:translateY(36px);transition:opacity .7s,transform .7s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;
+}
+.story-step.active{opacity:1;transform:none}
+.story-step .s-num{font-family:var(--display);font-weight:400;font-size:.68rem;letter-spacing:.24em;color:var(--violet);margin-bottom:1.6rem}
+.story-step h3{
+  font-family:var(--stamp);font-weight:400;font-size:clamp(1.8rem,4.2vw,3.4rem);line-height:1.18;letter-spacing:.01em;
+}
+.story-step h3 em{font-style:normal;color:inherit}
+.story-step p{margin-top:1.4rem;color:var(--muted);font-size:.98rem;line-height:1.9;max-width:46ch}
+.story-visual{position:relative;aspect-ratio:4/5;max-height:74vh;border-radius:24px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(24,21,31,.45)}
+.story-visual .ph{position:absolute;inset:0;opacity:0;transform:scale(1.06);transition:opacity .8s,transform 1.2s cubic-bezier(.22,1,.36,1)}
+.story-visual .ph.active{opacity:1;transform:none}
+.story-track{height:400vh}
+@media(max-width:880px){
+  .story .sticky{grid-template-columns:1fr;gap:1.5rem;padding-top:6rem}
+  .story-steps{height:300px}
+  .story-visual{max-height:38vh;aspect-ratio:16/10}
+}
+
+/* ---------- marquee band ---------- */
+.marquee{overflow:hidden;padding:2.2rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.35);backdrop-filter:blur(8px)}
+.mq-track{display:flex;gap:2.4rem;width:max-content;animation:scrollX 52s linear infinite;align-items:center}
+.mq-track h4{
+  font-family:var(--serif);font-style:italic;font-weight:300;
+  font-size:clamp(1.6rem,3.4vw,2.8rem);white-space:nowrap;
+}
+.mq-track .mq-img{width:clamp(120px,16vw,210px);height:clamp(56px,7vw,86px);border-radius:99px;overflow:hidden;flex-shrink:0;position:relative}
+.mq-track .mq-img .ph{position:absolute;inset:0}
+@keyframes scrollX{to{transform:translateX(-50%)}}
+
+/* ---------- shared ---------- */
+section{padding:9rem 4vw}
+#projects{min-height:100vh;display:flex;align-items:center;padding-top:4rem;padding-bottom:4rem;padding-left:calc(4vw + 3rem);padding-right:calc(4vw + 3rem)}
+#projects .shell{width:100%}
+.shell{max-width:1500px;margin:0 auto}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:2rem;margin-bottom:4.5rem;flex-wrap:wrap}
+.sec-title{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,6vw,4.6rem);letter-spacing:.02em;line-height:1.04}
+.sec-title em{font-style:normal;color:inherit}
+.sec-num{font-family:var(--display);font-weight:400;font-size:.74rem;letter-spacing:.22em;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(44px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:none}
+
+/* ---------- projects : card grid ---------- */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(2rem,5vw,7rem);margin:0 auto}
+.proj-card{
+  display:block;text-decoration:none;color:inherit;
+  border-radius:16px;overflow:hidden;
+  background:rgba(255,255,255,.45);border:1px solid var(--line);
+  transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s;
+}
+.proj-card:hover{transform:translateY(-6px);box-shadow:0 30px 60px -24px rgba(24,21,31,.25)}
+.proj-thumb{aspect-ratio:16/9;overflow:hidden;position:relative}
+.proj-thumb .ph{position:absolute;inset:0;transition:transform .7s cubic-bezier(.22,1,.36,1)}
+.proj-card:hover .proj-thumb .ph{transform:scale(1.04)}
+.proj-card-body{padding:clamp(.9rem,1.4vw,1.4rem) clamp(1rem,1.5vw,1.4rem) clamp(1rem,1.5vw,1.4rem)}
+.proj-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;margin-bottom:.5rem}
+.proj-card h3{font-family:var(--stamp);font-weight:400;letter-spacing:.02em}
+.proj-card h3{font-size:clamp(1rem,1.5vw,1.6rem);line-height:1.2;letter-spacing:.02em}
+.proj-card h3 em{font-style:normal;font-weight:400;display:block;font-size:.7em;color:var(--muted);margin-top:.3rem;font-family:var(--serif);letter-spacing:0}
+.proj-desc{font-family:var(--mono);font-weight:300;font-size:.78rem;line-height:1.6;color:var(--muted);margin-top:.6rem}
+.proj-card-links{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.proj-card-links span{font-family:var(--display);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .65rem;border-radius:99px;background:var(--ink);color:var(--paper);cursor:pointer;transition:opacity .3s}
+.proj-card-links span:hover{opacity:.75}
+.proj-card-go{
+  width:clamp(28px,3vw,36px);height:clamp(28px,3vw,36px);border:1px solid var(--ink);border-radius:50%;
+  display:grid;place-items:center;font-size:.8rem;color:var(--ink);flex-shrink:0;
+  transition:background .4s,color .4s,transform .4s;
+}
+.proj-card:hover .proj-card-go{background:var(--ink);color:var(--paper);transform:rotate(-45deg)}
+.tag-row{margin-top:clamp(.6rem,1vw,1.1rem);display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{
+  font-family:var(--display);font-weight:400;font-size:clamp(.54rem,.65vw,.64rem);letter-spacing:.12em;text-transform:uppercase;
+  padding:.35rem .7rem;border:1px solid var(--line);border-radius:99px;color:var(--muted);
+  background:rgba(255,255,255,.4);
+}
+@media(max-width:1080px){
+  .proj-grid{gap:1.8rem}
+  #projects{min-height:auto}
+}
+@media(max-width:640px){
+  .proj-grid{grid-template-columns:1fr;gap:1.4rem;max-width:400px}
+  .proj-thumb{aspect-ratio:16/10}
+}
+
+/* ---------- stats ---------- */
+.stats{border-top:1px solid var(--line)}
+.stats .shell{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem}
+.stat{padding:2.4rem 0}
+.stat .n{
+  font-family:var(--serif);font-weight:400;font-size:clamp(3rem,7vw,5.6rem);line-height:1;letter-spacing:-.02em;
+}
+.stat .n em{font-style:italic;color:var(--violet)}
+.stat .d{margin-top:.9rem;font-family:var(--mono);font-weight:300;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);line-height:1.9}
+@media(max-width:880px){.stats .shell{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- music : the original cover stack & track list ---------- */
+.music-wrap{scroll-margin-top:5rem;position:relative;margin:4rem 6vw}
+.music-scroll{height:200vh}
+.music{position:sticky;top:2vh;min-height:0;display:flex;align-items:center;padding:4rem 4vw;background:linear-gradient(160deg,#454A56,#383B43);color:var(--paper);border-radius:48px;overflow:hidden}
+.music::before,.music::after{content:'';position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px)}
+.music::before{width:65vw;height:65vw;background:linear-gradient(140deg,var(--violet),var(--rose));opacity:.23;top:-40vw;right:-20vw}
+.music::after{width:40vw;height:40vw;background:var(--peach);opacity:.1;bottom:-30vw;left:-10vw}
+.music .shell{position:relative;z-index:1;max-width:1200px}
+.music .sec-title{color:var(--paper)}
+.music .sec-num{color:#C0C3CA}
+.music .sec-head{margin-bottom:2.4rem}
+.music-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4rem;align-items:center}
+.music-stack{position:relative;aspect-ratio:1.22;isolation:isolate}
+.music-panel{position:absolute;inset:14% 5% auto;width:90%;transform:translate(0,0) rotate(-2deg);transition:transform .7s cubic-bezier(.22,1,.36,1),opacity .55s;z-index:1;opacity:1}
+.music-panel[data-layer="1"]{transform:translate(5%,10%) rotate(5deg);z-index:3}
+.music-panel[data-layer="2"]{transform:translate(-4%,-10%) rotate(-7deg);z-index:2}
+.music-panel[data-layer="3"]{transform:translate(1%,-16%) rotate(2deg);z-index:1}
+.music-panel.is-active{transform:translate(0,0) rotate(-2deg);z-index:4}
+.music-panel:not(.is-active){pointer-events:none}
+.music-panel:not(.is-active)::after{content:'';position:absolute;inset:0;background:rgba(30,33,40,.38);border-radius:12px;pointer-events:none}
+.music-cover{display:block;position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(247,244,238,.22);border-radius:12px;background:#252932;color:var(--paper);padding:0;font:inherit;box-shadow:0 24px 55px -25px rgba(0,0,0,.65);transition:box-shadow .6s,translate .6s}
+.music-cover img{display:block;width:100%;height:100%;object-fit:contain}
+.music-cover:disabled{opacity:1;cursor:default}
+.music-cover:not(:disabled){cursor:pointer}
+.music-cover::before{content:'';position:absolute;inset:0;background:rgba(18,20,26,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .5s cubic-bezier(.22,1,.36,1);z-index:1;border-radius:12px}
+.music-cover::after{content:'↗';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);width:3.6rem;height:3.6rem;display:grid;place-items:center;border:1.5px solid rgba(243,242,239,.5);border-radius:50%;font:400 1.1rem var(--sans);color:var(--paper);opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.22,1,.36,1);z-index:2;pointer-events:none}
+.is-active .music-cover:hover::before{opacity:1}
+.is-active .music-cover:hover::after{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.music-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:radial-gradient(ellipse at 30% 20%,#62616A,transparent 80%),#363842}
+.music-placeholder.synthesis{background:radial-gradient(ellipse at 70% 30%,#50636B,transparent 80%),#2D3540}
+.music-placeholder svg{width:48%;height:32%;opacity:.65}
+.music-placeholder-title{font:400 clamp(1.4rem,2.5vw,2.3rem) var(--stamp);letter-spacing:.02em}
+.music-stack-note{position:absolute;bottom:3%;left:5%;right:5%;display:flex;align-items:center;justify-content:space-between;gap:1rem;font:300 .56rem var(--mono);letter-spacing:.14em;color:#C7CAD1;text-transform:uppercase}
+.music-stack-count{color:var(--peach)}
+.music-copy h3{font:400 clamp(1.5rem,2.5vw,2.3rem) var(--stamp);letter-spacing:.02em;margin-bottom:.8rem;color:var(--peach)}
+.music-intro{font:300 .8rem/1.8 var(--mono);color:#CDD0D7;max-width:52ch;margin-bottom:1.5rem}
+.music-tracks{border-bottom:1px solid rgba(247,244,238,.18)}
+.music-track{position:relative;display:grid;grid-template-columns:1.6rem minmax(0,1fr) 1rem;gap:.75rem;align-items:center;width:100%;padding:.9rem .65rem;border:0;border-top:1px solid rgba(247,244,238,.18);background:transparent;color:var(--paper);text-align:left;cursor:pointer;transition:background .4s}
+.music-track::before{content:'';position:absolute;top:22%;bottom:22%;left:0;width:2px;background:var(--peach);transform:scaleY(0);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.music-track[aria-selected="true"]{background:rgba(247,244,238,.045)}
+.music-track[aria-selected="true"]::before{transform:scaleY(1)}
+.music-track-index{font:300 .6rem var(--mono);color:#C2C6CF}
+.music-track-body{display:block;transition:translate .45s cubic-bezier(.22,1,.36,1)}
+.music-track-title{display:block;font:400 clamp(1rem,1.5vw,1.4rem)/1.3 var(--stamp);letter-spacing:.02em}
+.music-track-credit{display:block;font:400 .72rem/1.7 var(--serif);color:#D3D5DD;margin-top:.25rem}
+.music-track-meta{display:block;font:300 .58rem/1.7 var(--mono);color:#BFC4CE;margin-top:.2rem}
+.music-track-arrow{font-size:.8rem;opacity:.3;translate:-3px 0;transition:opacity .4s,translate .4s}
+.music-track[aria-selected="true"] .music-track-arrow{opacity:1;translate:0 0}
+.music-track:focus-visible,.music-cover:focus-visible{outline:2px solid var(--peach);outline-offset:4px}
+.music .reveal{transform:translateY(18px);transition:opacity 1s,transform 1s cubic-bezier(.22,1,.36,1)}
+.music .reveal.visible{transform:none}
+.music-copy.reveal{transition-delay:.12s}
+@media(hover:hover) and (pointer:fine){
+ .music-stack:hover .is-active .music-cover{translate:0 -4px;box-shadow:0 30px 65px -26px rgba(0,0,0,.72)}
+ .music-track:hover{background:rgba(247,244,238,.055)}
+ .music-track:hover .music-track-body{translate:3px 0}
+}
+@media(max-width:880px){.music-wrap{margin:2rem 0}.music{border-radius:0}.music-grid{gap:2rem}.music-track{padding:.8rem .5rem;gap:.5rem}.music-stack{aspect-ratio:1}}
+@media(max-width:680px){.music{padding:3rem 5vw}.music .sec-head{margin-bottom:1.6rem}.music-grid{grid-template-columns:1fr;gap:.8rem}.music-stack{aspect-ratio:1.38;max-width:480px;width:100%;margin:0 auto}.music-stack-note{bottom:0}.music-copy h3{font-size:1.6rem}.music-intro{margin-bottom:1rem}.music-track-title{font-size:1.15rem}.music-track{padding:.8rem .6rem}.music-placeholder-title{font-size:clamp(1.25rem,5vw,1.8rem)}}
+@media(prefers-reduced-motion:reduce){.music *,.music *::before{transition:none!important;animation:none!important}.music .reveal{transform:none}.music-stack:hover .is-active .music-cover,.music-track:hover .music-track-body{translate:none}}
+
+/* ---------- about-me strip ---------- */
+.me{border-top:1px solid var(--line)}
+.me .shell{display:grid;grid-template-columns:.8fr 1.2fr;gap:2.5rem 5rem;align-items:center}
+.me-photo{aspect-ratio:3/4;border-radius:20px;overflow:hidden;position:relative;max-width:380px;box-shadow:0 40px 80px -40px rgba(24,21,31,.4)}
+.me-photo .ph{position:absolute;inset:0}
+.me-copy h3{font-family:var(--stamp);font-weight:400;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.2;margin-bottom:1.4rem}
+.me-copy h3 em{font-style:normal;color:inherit}
+.me-links{grid-column:1/-1;margin-top:0}
+.me-link{
+  display:inline-flex;align-items:center;gap:.8rem;text-decoration:none;
+  font-family:var(--display);font-weight:400;font-size:.82rem;letter-spacing:.16em;color:var(--paper);
+  background:var(--ink);border-radius:99px;padding:1.1rem 2.4rem;
+  transition:transform .45s,box-shadow .45s;
+}
+.me-link:hover{box-shadow:0 18px 36px -14px rgba(38,39,44,.4);transform:translateY(-2px)}
+.me-meta{display:flex;gap:1.4rem;margin-top:1.4rem;font-family:var(--display);font-weight:400;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.me-social{display:flex;gap:1.2rem;margin-top:1rem}
+.me-social a{font-family:var(--display);font-weight:400;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;transition:color .3s}
+.me-social a:hover{color:var(--violet)}
+.me-copy p{font-family:var(--mono);font-weight:300;color:var(--muted);font-size:.88rem;line-height:1.8;max-width:56ch}
+@media(max-width:880px){.me .shell{grid-template-columns:1fr;gap:2.5rem}}
+
+/* ---------- footer ---------- */
+footer{
+  color:var(--ink);border-top:1px solid var(--line);
+  padding:2.4rem 4vw;text-align:center;
+}
+/* magnetic elements drift toward the cursor */
+.magnet{transition:transform .35s cubic-bezier(.22,1,.36,1);will-change:transform}
+/* tilt frames respond in 3D */
+.tilt{transform-style:preserve-3d;transition:transform .3s ease-out;will-change:transform}
+.foot-meta{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-weight:200;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  position:relative;z-index:2;
+}
+@media(max-width:640px){.foot-meta{flex-direction:column;gap:.7rem;align-items:center}}
+
+/* ---------- accessibility : honor the OS "reduce motion" setting ----------
+   ONLY affects visitors who explicitly turned on Reduce Motion (usually for
+   vestibular/motion-sickness reasons). Everyone else — including you — still
+   gets the full experience untouched. Instead of hiding content, animated
+   elements snap straight to their final visible state. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  /* guarantee anything that starts hidden for an intro is shown */
+  .reveal{opacity:1 !important;transform:none !important}
+  .h-line .txt,.h-line .strip{transform:none !important}
+  /* resting pulses sit at full opacity rather than blinking */
+  .l-sub,.scroll-pill i{animation:none !important;opacity:1 !important}
+}
+
+.harp-thumb{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:clamp(1rem,3vw,2.8rem);background:linear-gradient(135deg,var(--butter),var(--sky));color:var(--ink)}
+.ph.harp-thumb span{color:var(--ink);padding:0;text-align:left}
+.ph.harp-thumb .harp-thumb-label,.ph.harp-thumb .harp-thumb-note{font-family:var(--mono);font-size:clamp(.52rem,.85vw,.76rem);line-height:1.5;letter-spacing:.08em;text-transform:uppercase}
+.ph.harp-thumb .harp-thumb-title{font-family:var(--stamp);font-size:clamp(2.5rem,6vw,6rem);line-height:1;font-weight:400;letter-spacing:.03em}
+</style>
+</head>
+<body>
+
+<div id="washes"></div>
+
+<div id="loader">
+  <div class="l-center">
+    <div class="l-title">Chuling <em>LI</em></div>
+    <div class="l-sub">music · technology · portfolio</div>
+  </div>
+  <div class="l-num">0%</div>
+  <div class="l-bar"></div>
+</div>
+
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<nav>
+  <div class="logo">Chuling <em>LI</em></div>
+  <div class="nav-links">
+    <a href="#projects" data-hover>Projects</a>
+    <a href="#music" data-hover>Music</a>
+    <a href="#story" data-hover>Story</a>
+    <a href="#contact" data-hover>About &amp; Contact</a>
+  </div>
+</nav>
+
+<!-- ============ HERO : musical practice informs the technology ============ -->
+<header class="hero" id="top" aria-labelledby="hero-heading">
+  <div class="hero-identity">
+    <p class="hero-name">Chuling Li</p>
+    <p class="hero-kicker">COMPUTER SCIENCE · VOCALIST · KEYBOARDIST</p>
+  </div>
+  <h1 class="hero-title" id="hero-heading">
+    <span class="h-line"><span class="txt">Music AI &amp;</span><span class="strip performance-strip" aria-hidden="true"><span class="ph"><img src="images/hero-music.jpg" alt="" width="8102" height="1012" fetchpriority="high" decoding="async"></span></span></span>
+    <span class="h-line"><span class="strip sound-strip" aria-hidden="true"><span class="ph"><canvas class="gen-art"></canvas></span></span><span class="txt">creative tools,</span></span>
+    <span class="h-line perspective"><span class="txt">from a musician’s perspective.</span></span>
+  </h1>
+  <div class="hero-sub">
+    <p>I study <strong>Computer Science with Artificial Intelligence</strong> at the University of Nottingham, and perform as a <strong>vocalist and keyboardist</strong>. My work explores how technology can give musicians more control over sound and creative expression.</p>
+    <div class="hero-actions">
+      <a class="hero-action primary" href="#projects" data-hover>Explore my projects <span aria-hidden="true">↗</span></a>
+      <a class="hero-action" href="#music" data-hover>Watch &amp; listen <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+  <div class="hero-research" role="region" aria-labelledby="hero-research-heading">
+    <div class="hero-research-head">
+      <h2 id="hero-research-heading">Publications</h2>
+    </div>
+    <ol class="hero-papers">
+      <li class="hero-paper">
+        <time class="hero-paper-year" datetime="2026">2026</time>
+        <div>
+          <p class="hero-paper-citation"><strong>C. Li.</strong> <cite><a href="project-quill.html" data-hover>Quill: Learning Timbre and Performance Behavior as Separate, Swappable Assets.</a></cite></p>
+          <div class="hero-paper-meta"><em>ISMIR Late-Breaking Demo (LBD), 2026.</em><span class="hero-paper-accepted">Accepted</span><span class="hero-paper-credit">Independent research · First author</span></div>
+        </div>
+      </li>
+      <li class="hero-paper">
+        <time class="hero-paper-year" datetime="2026">2026</time>
+        <div>
+          <p class="hero-paper-citation"><strong>C. Li.</strong> <cite><a href="project-pocketproducer.html" data-hover>Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal.</a></cite></p>
+          <div class="hero-paper-meta"><em>ISMIR Late-Breaking Demo (LBD), 2026.</em><span class="hero-paper-accepted">Accepted</span><span class="hero-paper-credit">Independent research · First author</span></div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+</header>
+
+<!-- ============ PROJECTS ============ -->
+<section id="projects">
+  <div class="shell">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">Selected <em>work</em></h2>
+      <span class="sec-num">01 — PROJECTS</span>
+    </div>
+    <div class="proj-grid">
+
+      <a class="proj-card reveal" href="project-quill.html" data-hover>
+        <div class="proj-thumb">
+          <div class="ph gear dim"><span>[ Quill thumbnail ]</span></div>
+        </div>
+        <div class="proj-card-body">
+          <div class="proj-card-head">
+            <h3>QUILL<em>Independent Research · First Author · Accepted at ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
+            <span class="proj-card-go">→</span>
+          </div>
+          <p class="proj-desc">Quill factorizes a monophonic recording into a lightweight DDSP timbre model (~500K params) and a note-level style library of pitch/energy trajectories. Either asset can be swapped across instruments without retraining. Validated by 12/12 source-attribution checks and a listening study (N=19).</p>
+          <div class="tag-row"><span class="tag">Timbre</span><span class="tag">DDSP</span><span class="tag">Cross-Instrument Synthesis</span></div>
+          <div class="proj-card-links"><span onclick="event.preventDefault();window.open('https://ismir2026program.ismir.net/lbd_613.html#details','_blank')">ISMIR 2026 ↗</span></div>
+        </div>
+      </a>
+
+      <a class="proj-card reveal" href="project-secondself.html" data-hover>
+        <div class="proj-thumb">
+          <div class="ph stage dim"><span>[ Second Self thumbnail ]</span></div>
+        </div>
+        <div class="proj-card-body">
+          <div class="proj-card-head">
+            <h3>Second Self<em>Individual Project · [subtitle placeholder]</em></h3>
+            <span class="proj-card-go">→</span>
+          </div>
+          <p class="proj-desc">[占位符：项目简介，2-3句话描述这个项目做什么、解决什么问题。]</p>
+          <div class="tag-row"><span class="tag">[Tag]</span></div>
+        </div>
+      </a>
+
+      <a class="proj-card reveal" href="project-pocketproducer.html" data-hover>
+        <div class="proj-thumb">
+          <div class="ph abstract dim"><canvas class="gen-art"></canvas><span>[ PocketProducer thumbnail ]</span></div>
+        </div>
+        <div class="proj-card-body">
+          <div class="proj-card-head">
+            <h3>PocketProducer<em>Independent Research · First Author · Accepted at ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
+            <span class="proj-card-go">→</span>
+          </div>
+          <p class="proj-desc">A retrieval prototype that ranks library fragments against what's already in the musician's open session — using five interpretable signals and a selectable BPR fusion. Results are surfaced as inspectable, reversible proposals, not automated decisions.</p>
+          <div class="tag-row"><span class="tag">Retrieval</span><span class="tag">Session Context</span><span class="tag">Creativity Support</span></div>
+          <div class="proj-card-links"><span onclick="event.preventDefault();window.open('https://ismir2026program.ismir.net/lbd_609.html#details','_blank')">ISMIR 2026 ↗</span><span onclick="event.preventDefault();window.open('https://pocketproducer.vercel.app','_blank')">Live Demo ↗</span></div>
+        </div>
+      </a>
+
+      <a class="proj-card reveal" href="project-harp.html" data-hover>
+        <div class="proj-thumb">
+          <div class="ph harp-thumb" aria-hidden="true"><span class="harp-thumb-label">TEAMuP · Collaborative research</span><span class="harp-thumb-title">HARP</span><span class="harp-thumb-note">Choose a model. Shape the sound.</span></div>
+        </div>
+        <div class="proj-card-body">
+          <div class="proj-card-head">
+            <h3>HARP<em>Music AI models in one interface · Team project</em></h3>
+            <span class="proj-card-go">→</span>
+          </div>
+          <p class="proj-desc">I contribute to TEAMuP’s HARP, an application for using AI models to separate, transcribe, and generate music alongside a DAW. My work focuses on model integration and validation.</p>
+          <div class="tag-row"><span class="tag">Music AI</span><span class="tag">Research Software</span><span class="tag">TEAMuP</span></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ MUSIC ============ -->
+<section id="music" class="music-wrap" aria-labelledby="music-heading">
+  <div class="music-scroll">
+  <div class="music" role="presentation">
+  <div class="shell">
+    <div class="sec-head reveal"><h2 id="music-heading" class="sec-title">Sound <em>&amp; stage</em></h2><span class="sec-num">02 — MUSIC</span></div>
+    <div class="music-grid">
+      <div class="music-stack reveal">
+        <div class="music-panel" id="music-panel-piano-song" role="tabpanel" tabindex="0" aria-labelledby="music-tab-piano-song" data-layer="3" aria-hidden="true" inert><button class="music-cover music-placeholder" type="button" data-music="piano-song" data-title="Piano Song" data-detail="music-piano-song.html" aria-label="Piano Song">
+          <svg viewBox="0 0 360 100" fill="none" aria-hidden="true"><rect x="5" y="5" width="350" height="90" rx="3" stroke="currentColor"/><path d="M55 5v90M105 5v90M155 5v90M205 5v90M255 5v90M305 5v90" stroke="currentColor"/><path d="M45 5h20v55H45zM95 5h20v55H95zM195 5h20v55h-20zM245 5h20v55h-20zM295 5h20v55h-20z" fill="#D3CDD0"/></svg>
+          <span class="music-placeholder-title">Piano Song</span>
+        </button></div>
+        <div class="music-panel is-active" id="music-panel-live-band-highlights" role="tabpanel" tabindex="0" aria-labelledby="music-tab-live-band-highlights" data-layer="0" aria-hidden="false"><button class="music-cover" type="button" data-music="live-band-highlights" data-title="Live Band Highlights" data-detail="music-live-band.html" aria-label="Live Band Highlights">
+          <img src="assets/music/live-band-highlights.jpg" alt="Chuling Li singing and playing keyboard on stage with her band; Live Band Highlights cover" width="2560" height="1440" loading="lazy" decoding="async">
+        </button></div>
+        <div class="music-panel" id="music-panel-maxmsp" role="tabpanel" tabindex="0" aria-labelledby="music-tab-maxmsp" data-layer="1" aria-hidden="true" inert><button class="music-cover music-placeholder synthesis" type="button" data-music="maxmsp" data-title="Max/MSP Sound Study" data-detail="music-maxmsp.html" aria-label="Max/MSP Sound Study">
+          <svg viewBox="0 0 360 100" fill="none" aria-hidden="true"><path d="M0 50h360" stroke="currentColor" opacity=".25"/><path d="M0 50C15 50 15 15 30 15S45 85 60 85 75 15 90 15 105 85 120 85 135 15 150 15 165 85 180 85 195 15 210 15 225 85 240 85 255 15 270 15 285 85 300 85 315 15 330 15 345 50 360 50" stroke="currentColor" stroke-width="1.5"/><path d="M0 50Q90 0 180 50T360 50" stroke="currentColor" opacity=".5"/></svg>
+          <span class="music-placeholder-title">Sound study / 01</span>
+        </button></div>
+        <div class="music-panel" id="music-panel-heartbreaker" role="tabpanel" tabindex="0" aria-labelledby="music-tab-heartbreaker" data-layer="2" aria-hidden="true" inert><button class="music-cover" type="button" data-music="heartbreaker" data-title="HEARTBREAKER" data-detail="music-heartbreaker.html" aria-label="HEARTBREAKER">
+          <img src="assets/music/heartbreaker.jpg" alt="HEARTBREAKER — Led Zeppelin cover; Chuling Li on lead vocals with Richard Bird" width="2560" height="1440" loading="lazy" decoding="async">
+        </button></div>
+        <div class="music-stack-note" aria-hidden="true"><span>Selected recordings</span><span class="music-stack-count">02 / 04</span></div>
+      </div>
+      <div class="music-copy reveal">
+        <h3>Voice, keys &amp; experiments.</h3>
+        <p class="music-intro">Vocal performances, moments with my band, and explorations in sound synthesis.</p>
+        <div class="music-tracks" role="tablist" aria-label="Select a music work to preview" aria-orientation="vertical">
+        <button class="music-track" id="music-tab-piano-song" type="button" role="tab" aria-controls="music-panel-piano-song" aria-selected="false" tabindex="-1" data-preview="piano-song" data-detail="music-piano-song.html">
+          <span class="music-track-index">01</span><span class="music-track-body"><span class="music-track-title">Piano Song</span><span class="music-track-credit">Chuling Li · Vocals</span><span class="music-track-meta">Vocal performance</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="music-track" id="music-tab-live-band-highlights" type="button" role="tab" aria-controls="music-panel-live-band-highlights" aria-selected="true" tabindex="0" data-preview="live-band-highlights" data-detail="music-live-band.html">
+          <span class="music-track-index">02</span><span class="music-track-body"><span class="music-track-title">Live Band Highlights</span><span class="music-track-credit">Chuling Li · Keyboards &amp; lead vocals</span><span class="music-track-meta">Live band · Highlights</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="music-track" id="music-tab-maxmsp" type="button" role="tab" aria-controls="music-panel-maxmsp" aria-selected="false" tabindex="-1" data-preview="maxmsp" data-detail="music-maxmsp.html">
+          <span class="music-track-index">03</span><span class="music-track-body"><span class="music-track-title">Max/MSP Sound Study</span><span class="music-track-credit">Chuling Li · Sound synthesis</span><span class="music-track-meta">Audio synthesis · Sound study</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="music-track" id="music-tab-heartbreaker" type="button" role="tab" aria-controls="music-panel-heartbreaker" aria-selected="false" tabindex="-1" data-preview="heartbreaker" data-detail="music-heartbreaker.html">
+          <span class="music-track-index">04</span><span class="music-track-body"><span class="music-track-title">HEARTBREAKER</span><span class="music-track-credit">Led Zeppelin cover · Chuling Li, lead vocals</span><span class="music-track-meta">With Richard Bird · Full performance</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</section>
+<script src="assets/music/music.js" defer></script>
+
+<!-- ============ STORY : pinned scrollytelling ============ -->
+<div class="story" id="story">
+  <div class="story-track">
+    <div class="sticky">
+      <div class="story-steps">
+        <div class="story-step" data-step="0">
+          <span class="s-num">CHAPTER 01 — 1/4</span>
+          <h3>Trained in <em>bel canto.</em><br>Fluent in Python.</h3>
+          <p>[占位符：童年学钢琴美声、央音乐理；后来写代码。两个世界如何同时长大。40-60词。]</p>
+        </div>
+        <div class="story-step" data-step="1">
+          <span class="s-num">CHAPTER 01 — 2/4</span>
+          <h3>Fronting a band<br>by <em>night,</em></h3>
+          <p>[占位符：乐队主唱键盘手，blues/funk/soul。舞台教会你什么。40-60词。]</p>
+        </div>
+        <div class="story-step" data-step="2">
+          <span class="s-num">CHAPTER 01 — 3/4</span>
+          <h3>building instruments<br>by <em>day.</em></h3>
+          <p>[占位符：PocketProducer、取色笔、3DGS——为什么开始造工具。40-60词。]</p>
+        </div>
+        <div class="story-step" data-step="3">
+          <span class="s-num">CHAPTER 01 — 4/4</span>
+          <h3>My work lives in<br>the room <em>between.</em></h3>
+          <p>[占位符：为什么申请音乐科技——把两个房间打通。40-60词。]</p>
+        </div>
+      </div>
+      <div class="story-visual rain tilt" data-hover>
+        <div class="ph retro" data-step="0"><span>[ 复古档案照 · 老钢琴/早期录音棚 ]</span></div>
+        <div class="ph stage" data-step="1"><span>[ 演出照 · 乐队现场 ]</span></div>
+        <div class="ph gear" data-step="2"><span>[ 器材特写 · 代码屏+MIDI键盘 ]</span></div>
+        <div class="ph abstract" data-step="3"><span>[ 抽象视觉图 · 可用项目渲染图/频谱艺术图 ]</span></div>
+        <canvas class="rain-fog"></canvas>
+        <div class="rain-hint">wipe the window</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ABOUT ME ============ -->
+<section class="me" id="contact" aria-label="About and contact">
+  <div class="shell">
+    <div class="me-photo reveal rain tilt" data-hover>
+      <div class="ph stage"><span>[ 个人形象照占位 ]</span></div>
+      <canvas class="rain-fog"></canvas>
+      <div class="rain-hint">wipe</div>
+    </div>
+    <div class="me-copy reveal">
+      <h3>Hi, I'm Chuling — nice to meet you.</h3>
+      <p>[占位符：第一人称介绍。诺丁汉CS在读、乐队主唱键盘手、做音乐科技工具；正在申请什么、在寻找什么合作。120-160词。语气真诚轻松，这一栏是"人"不是"作品"。]</p>
+    </div>
+  <div class="about-skills reveal" role="region" aria-labelledby="skills-heading">
+    <h2 id="skills-heading" class="about-skills-label">Skills &amp; tools</h2>
+    <div class="skills-grid">
+      <div class="skills-group"><h3>Programming</h3><ul><li>Python (advanced)</li><li>Java</li><li>C</li><li>MATLAB</li><li>JavaScript / TypeScript</li><li>HTML / CSS</li></ul></div>
+      <div class="skills-group"><h3>Data &amp; ML</h3><ul><li>NumPy</li><li>pandas</li><li>Matplotlib</li><li>scikit-learn</li><li>PyTorch</li><li>Hugging Face</li><li>Transformers</li></ul></div>
+      <div class="skills-group"><h3>Musicianship</h3><ul><li>Vocals</li><li>Keyboards</li><li>Piano</li><li>Acoustic guitar</li><li>Electric guitar</li></ul></div>
+      <div class="skills-group"><h3>Audio Tools</h3><ul><li>Logic Pro</li><li>Ableton Live</li><li>Melodyne</li></ul></div>
+      <div class="skills-group"><h3>Creative Tech</h3><ul><li>Max/MSP</li><li>Pure Data</li><li>TouchDesigner</li></ul></div>
+      <div class="skills-group"><h3>Audio &amp; DSP</h3><ul><li>Audio/MIDI Processing</li><li>MIDI</li><li>DSP</li></ul></div>
+      <div class="skills-group"><h3>Dev Tools</h3><ul><li>Git / GitHub</li><li>Linux</li><li>Jupyter Notebook</li><li>LaTeX</li><li>Flask</li><li>FastAPI</li><li>Firebase</li><li>Google Cloud Storage</li><li>MongoDB Atlas / Vector Search</li></ul></div>
+      <div class="skills-group"><h3>Hardware</h3><ul><li>Arduino</li><li>BCI</li></ul></div>
+    </div>
+  </div>
+      <div class="me-links">
+        <a class="me-link" href="mailto:chuling.li.cs@gmail.com" data-hover>chuling.li.cs@gmail.com ↗</a>
+        <div class="me-meta">
+          <span>Nottingham, UK</span>
+          <span>Open to collaborate</span>
+        </div>
+        <div class="me-social">
+          <a href="https://github.com/imChuling" target="_blank" data-hover>[GitHub]</a>
+        </div>
+      </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-meta">
+    <span>Chuling LI © 2026</span>
+    <span>Nottingham — somewhere loud</span>
+  </div>
+</footer>
+
+<script>
+/* respect the OS "reduce motion" setting — used to calm autoplay motion (rain, parallax)
+   for visitors who asked for it. Has no effect on the default experience. */
+const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ============ preloader : frosted glass melts clear ============ */
+(function(){
+  const loader=document.getElementById('loader'),num=loader.querySelector('.l-num'),bar=loader.querySelector('.l-bar');
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*22;
+    if(p>=100){p=100;clearInterval(iv);
+      num.textContent='100%';bar.style.width='100%';
+      setTimeout(()=>{
+        loader.classList.add('done');   /* the glass demists : blur 30 → 0 */
+        heroIn();
+        setTimeout(()=>loader.remove(),1600);
+      },380);
+    }else{num.textContent=Math.floor(p)+'%';bar.style.width=p+'%';}
+  },120);
+})();
+
+/* ============ hero lines stagger in ============ */
+function heroIn(){
+  document.querySelector('.hero').classList.add('hero-ready');
+  document.querySelectorAll('.h-line').forEach((l,i)=>{
+    setTimeout(()=>l.classList.add('in'),i*160);
+    setTimeout(()=>l.classList.add('free'),i*160+1250);  /* release the mask once the line has landed */
+  });
+}
+
+/* ============ cursor ============ */
+const dot=document.querySelector('.cursor-dot'),ring=document.querySelector('.cursor-ring');
+let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+(function ringLoop(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ringLoop);})();
+document.querySelectorAll('[data-hover],a').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+
+/* ============ hero strips : parallax INSIDE the pill (never escapes its frame) ============ */
+addEventListener('scroll',()=>{
+  if(REDUCE)return;
+  const sy=Math.min(scrollY,600);
+  document.querySelectorAll('.h-line .strip .ph').forEach((ph,i)=>{
+    ph.style.transform=`scale(1.14) translateX(${(i%2?1:-1)*sy*.018}px)`;
+  });
+},{passive:true});
+
+/* ============ story scrollytelling ============ */
+(function(){
+  const track=document.querySelector('.story-track');
+  const steps=document.querySelectorAll('.story-step');
+  const visuals=document.querySelectorAll('.story-visual .ph');
+  function update(){
+    const r=track.getBoundingClientRect();
+    const total=r.height-innerHeight;
+    const prog=Math.min(Math.max(-r.top/total,0),1);
+    const idx=Math.min(Math.floor(prog*steps.length),steps.length-1);
+    steps.forEach((s,i)=>s.classList.toggle('active',i===idx));
+    visuals.forEach((v,i)=>v.classList.toggle('active',i===idx));
+  }
+  addEventListener('scroll',update,{passive:true});
+  update();
+})();
+
+/* ============ stats count-up ============ */
+function countUp(el){
+  const target=+el.dataset.count,dur=1400,t0=performance.now();
+  (function tick(t){
+    const p=Math.min((t-t0)/dur,1);
+    el.textContent=Math.floor(target*(1-Math.pow(1-p,3)));
+    if(p<1)requestAnimationFrame(tick);
+  })(t0);
+}
+
+/* ============ reveal ============ */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){
+    e.target.classList.add('visible');
+    e.target.querySelectorAll('[data-count]').forEach(countUp);
+    if(e.target.dataset.count)countUp(e.target);
+    io.unobserve(e.target);
+  }
+}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ============ generative sound-visualization art (muted) ============ */
+function genArt(canvas,seed){
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const w=canvas.clientWidth||600,h=canvas.clientHeight||500;
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  const x=canvas.getContext('2d');x.scale(dpr,dpr);
+  let s=seed||7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+  /* paper base */
+  const bg=x.createLinearGradient(0,0,w,h);
+  bg.addColorStop(0,'#E9EAEC');bg.addColorStop(1,'#DFE3E6');
+  x.fillStyle=bg;x.fillRect(0,0,w,h);
+  /* layered waveform strands — a frozen piece of sound */
+  const inks=['rgba(90,104,128,','rgba(124,125,130,','rgba(154,148,158,','rgba(38,39,44,'];
+  const L=34;
+  for(let i=0;i<L;i++){
+    const yBase=h*.18+ (h*.64)*(i/L);
+    const amp=(8+rnd()*30)*Math.sin(Math.PI*i/L);
+    const freq=.004+rnd()*.012,ph=rnd()*6.28;
+    x.beginPath();
+    for(let px=0;px<=w;px+=3){
+      const y=yBase+Math.sin(px*freq+ph)*amp+Math.sin(px*freq*2.7+ph*2)*amp*.3;
+      px===0?x.moveTo(px,y):x.lineTo(px,y);
+    }
+    x.strokeStyle=inks[i%4]+(.10+rnd()*.25)+')';
+    x.lineWidth=i%9===0?1.4:.7;
+    x.stroke();
+  }
+  /* sparse vertical ticks — like a score */
+  for(let i=0;i<14;i++){
+    const tx=rnd()*w;
+    x.fillStyle='rgba(38,39,44,'+(.06+rnd()*.12)+')';
+    x.fillRect(tx,h*.5-(rnd()*h*.3),1,rnd()*h*.45);
+  }
+}
+document.querySelectorAll('.gen-art').forEach((c,i)=>{
+  requestAnimationFrame(()=>genArt(c,7+i*131));
+});
+
+/* ============ rain window : FROSTED GLASS + physical droplets ============
+   雾层 = 底图的高斯模糊快照 + 白纱 → 真正的毛玻璃(擦开才见清晰图)
+   水珠 = 凝结→积累→突滑→走停→吞并→变细消亡 的状态机                    */
+const PH_GRADS={
+  stage:['#DCD1D6','#E3DAD0'],gear:['#D2DBE1','#D3D5E0'],
+  retro:['#DDD8CE','#C9C2B4'],abstract:['#D3D5E0','#D2DBE1']
+};
+function phSnapshot(ph,w,h){
+  /* blurred frosted copy of whatever is behind the fog */
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const g=c.getContext('2d');
+  const img=ph.querySelector('img');
+  g.filter='blur(16px)';
+  if(img&&img.complete){
+    g.drawImage(img,-20,-20,w+40,h+40);
+  }else{
+    let type='abstract';for(const k in PH_GRADS)if(ph.classList.contains(k))type=k;
+    const lg=g.createLinearGradient(0,0,w,h);
+    lg.addColorStop(0,PH_GRADS[type][0]);lg.addColorStop(1,PH_GRADS[type][1]);
+    g.fillStyle=lg;g.fillRect(-20,-20,w+40,h+40);
+  }
+  g.filter='none';
+  g.fillStyle='rgba(244,246,248,.5)';g.fillRect(0,0,w,h);  /* frost veil */
+  return c;
+}
+function rainify(container){
+  const canvas=container.querySelector('.rain-fog');
+  if(!canvas)return;
+  let w,h;const x=canvas.getContext('2d');
+  const snaps=new Map();
+  function activePh(){return container.querySelector('.ph.active')||container.querySelector('.ph');}
+  function snap(){
+    const ph=activePh();
+    if(!snaps.has(ph))snaps.set(ph,phSnapshot(ph,w,h));
+    return snaps.get(ph);
+  }
+  function size(){
+    w=container.clientWidth;h=container.clientHeight;
+    canvas.width=w;canvas.height=h;
+    snaps.clear();
+    x.globalAlpha=1;x.drawImage(snap(),0,0);
+  }
+  size();addEventListener('resize',size);
+
+  /* --- droplet state machines --- */
+  /* dew = static residue droplets on the glass (also left behind by runs) */
+  const beads=Array.from({length:60},()=>({x:Math.random(),y:Math.random(),r:.6+Math.random()*1.6}));
+  function addBead(nx,ny,nr){
+    if(beads.length>120)beads.splice(Math.floor(Math.random()*30),1);
+    beads.push({x:nx,y:ny,r:nr});
+  }
+  /* a raindrop's life : SPLAT (hits glass) → SIT (clings) → RUN (slides) */
+  const sliders=[];
+  function spawnSlider(){
+    const d={x:Math.random()*w,y:Math.random()*h*.55,r:2.2+Math.random()*1.8,
+             vy:0,state:'splat',sit:40+Math.random()*160,jog:0,lastRes:0};
+    d.lastRes=d.y;
+    sliders.push(d);
+    /* impact splat : irregular burst + satellite micro-drops */
+    x.globalCompositeOperation='destination-out';
+    for(let k=0;k<5;k++){
+      const a=Math.random()*6.28,dist=d.r*(0.4+Math.random()*1.4);
+      x.beginPath();x.arc(d.x+Math.cos(a)*dist,d.y+Math.sin(a)*dist,d.r*(.5+Math.random()*.6),0,7);
+      x.fillStyle='rgba(0,0,0,.5)';x.fill();
+    }
+    x.globalCompositeOperation='source-over';
+    for(let k=0;k<3;k++){
+      addBead((d.x+(Math.random()-.5)*d.r*7)/w,(d.y+(Math.random()-.5)*d.r*7)/h,.5+Math.random()*.9);
+    }
+  }
+  let spawnTimer=0;
+
+  /* pause the whole simulation when off-screen */
+  let onScreen=false;
+  new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;},{threshold:.02}).observe(container);
+
+  let wiping=false,lx=0,ly=0;
+  container.addEventListener('mousemove',e=>{
+    const r=container.getBoundingClientRect();
+    const cx=e.clientX-r.left,cy=e.clientY-r.top;
+    x.globalCompositeOperation='destination-out';
+    const steps=wiping?Math.ceil(Math.hypot(cx-lx,cy-ly)/6)||1:1;
+    for(let i=1;i<=steps;i++){
+      const bx=lx+(cx-lx)*i/steps,by=ly+(cy-ly)*i/steps;
+      const g=x.createRadialGradient(bx,by,0,bx,by,46);
+      g.addColorStop(0,'rgba(0,0,0,.55)');g.addColorStop(1,'rgba(0,0,0,0)');
+      x.fillStyle=g;x.beginPath();x.arc(bx,by,46,0,7);x.fill();
+    }
+    x.globalCompositeOperation='source-over';
+    lx=cx;ly=cy;wiping=true;
+    container.classList.add('rain-done');
+  });
+  container.addEventListener('mouseleave',()=>wiping=false);
+
+  function step(){
+    /* slow re-frosting with the blurred snapshot (not flat white) */
+    x.globalCompositeOperation='source-over';
+    x.globalAlpha=.012;x.drawImage(snap(),0,0);x.globalAlpha=1;
+
+    /* static condensation beads (dew) */
+    beads.forEach(b=>{
+      const px=b.x*w,py=b.y*h;
+      x.globalCompositeOperation='destination-out';
+      x.beginPath();x.arc(px,py,b.r,0,7);x.fillStyle='rgba(0,0,0,.18)';x.fill();
+      x.globalCompositeOperation='source-over';
+      x.beginPath();x.arc(px-b.r*.3,py-b.r*.3,b.r*.4,0,7);x.fillStyle='rgba(255,255,255,.18)';x.fill();
+    });
+
+    /* raindrop life cycle */
+    spawnTimer++;
+    if(spawnTimer>26&&sliders.length<16){spawnTimer=0;spawnSlider();}
+    for(let i=sliders.length-1;i>=0;i--){
+      const d=sliders[i];
+
+      if(d.state==='splat'){d.state='sit';}
+      else if(d.state==='sit'){
+        d.sit--;
+        /* condensation feeds it while it clings */
+        d.r+=.002;
+        if(d.sit<=0||d.r>4.2)d.state='run';
+      }
+      else{ /* run : stick-slip, follows micro-imperfections */
+        d.vy+=d.r*.0045;
+        d.vy=Math.min(d.vy,2.0);
+        if(Math.random()<.018&&d.vy<.5){d.state='sit';d.sit=20+Math.random()*60;d.vy=0;}
+        /* occasional lateral jog, decays — not a sine sway */
+        if(Math.random()<.05)d.jog=(Math.random()-.5)*1.6;
+        d.jog*=.9;
+        d.y+=d.vy;
+        d.x+=d.jog;
+
+        /* absorb dew on the path → grow */
+        for(let bi=beads.length-1;bi>=0;bi--){
+          const b=beads[bi];
+          if(Math.abs(b.x*w-d.x)<d.r+3&&Math.abs(b.y*h-d.y)<d.r+3){
+            d.r=Math.min(d.r+b.r*.18,4.8);
+            beads.splice(bi,1);
+          }
+        }
+        /* mass loss ∝ distance travelled → the further it runs, the thinner */
+        d.r-=.0085*Math.max(d.vy,.3);
+        /* leaves tiny residue droplets along the path, like a real run */
+        if(d.y-d.lastRes>9){
+          d.lastRes=d.y;
+          if(Math.random()<.8)addBead(d.x/w+(Math.random()-.5)*.004,(d.y-d.r*2)/h,.4+Math.random()*.7);
+        }
+      }
+
+      /* draw : head clears glass; wake is thin & tied to remaining mass */
+      x.globalCompositeOperation='destination-out';
+      if(d.state==='run'){
+        x.beginPath();x.arc(d.x,d.y-d.r*1.1,d.r*.45,0,7);
+        x.fillStyle='rgba(0,0,0,'+(.22*Math.min(d.r/3,1))+')';x.fill();
+      }
+      x.beginPath();x.arc(d.x,d.y,d.r,0,7);
+      x.fillStyle='rgba(0,0,0,.65)';x.fill();
+      x.globalCompositeOperation='source-over';
+      x.beginPath();x.arc(d.x-d.r*.35,d.y-d.r*.35,d.r*.4,0,7);x.fillStyle='rgba(255,255,255,.35)';x.fill();
+      x.beginPath();x.arc(d.x,d.y+d.r*.55,d.r*.48,0,7);x.fillStyle='rgba(90,104,128,.12)';x.fill();
+
+      /* dies : whatever's left becomes one more dew bead */
+      if(d.y>h+12){sliders.splice(i,1);}
+      else if(d.r<1.05){addBead(d.x/w,d.y/h,.8);sliders.splice(i,1);}
+    }
+    /* condensation keeps the dew population alive */
+    if(beads.length<55&&Math.random()<.1)addBead(Math.random(),Math.random(),.5+Math.random()*1.2);
+  }
+  /* 预下雨 : age the glass before anyone sees it — drops mid-run, trails half-faded */
+  if(!REDUCE){
+    for(let i=0;i<440;i++)step();
+    (function loop(){
+      requestAnimationFrame(loop);
+      if(onScreen)step();
+    })();
+  }
+  /* reduced-motion : the frosted snapshot from size() is already drawn, and the
+     wipe handler stays live — so it's a calm static glass you can still clear. */
+}
+document.querySelectorAll('.rain').forEach(rainify);
+
+/* ============ magnetic elements ============ */
+document.querySelectorAll('.magnet').forEach(el=>{
+  el.addEventListener('mousemove',e=>{
+    const r=el.getBoundingClientRect();
+    const dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+    el.style.transform=`translate(${dx*.28}px,${dy*.34}px)`;
+  });
+  el.addEventListener('mouseleave',()=>{el.style.transform='';});
+});
+
+/* ============ 3D tilt frames ============ */
+document.querySelectorAll('.tilt').forEach(el=>{
+  el.addEventListener('mousemove',e=>{
+    const r=el.getBoundingClientRect();
+    const nx=((e.clientX-r.left)/r.width)*2-1;
+    const ny=((e.clientY-r.top)/r.height)*2-1;
+    el.style.transform=`perspective(1100px) rotateY(${nx*3.4}deg) rotateX(${-ny*3.4}deg)`;
+  });
+  el.addEventListener('mouseleave',()=>{el.style.transform='';});
+});
+</script>
+</body>
+</html>
