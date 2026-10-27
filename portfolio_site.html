@@ -155,8 +155,8 @@ nav{
 .h-line.in .strip{transform:none}
 .h-line .strip .ph{position:absolute;inset:0;transform:scale(1.08);will-change:transform}
 .h-line .strip .ph::before,.h-line .strip .ph::after{display:none}
-.h-line .strip .ph img{width:100%;height:100%;object-fit:cover;object-position:60% 10%;filter:saturate(.7)}
-.h-line .performance-strip{max-width:460px;margin-left:auto}
+.h-line .strip .ph img{width:100%;height:100%;object-fit:cover;object-position:30% 30%;filter:saturate(.7)}
+.h-line .performance-strip{max-width:none;margin-left:auto}
 .h-line .sound-strip{flex:0 1 240px;height:clamp(68px,7vw,100px)}
 .h-line .sound-strip .ph{background:var(--lavender)}
 .h-line:nth-child(odd) .strip{transform-origin:right}
@@ -213,7 +213,7 @@ nav{
  .hero{padding:7rem 5vw 2rem}.hero-identity{margin-bottom:1.4rem}.hero-name{font-size:2rem}.hero-kicker{font-size:.55rem;letter-spacing:.12em}
  .h-line{gap:.65rem;margin-bottom:.55rem}.h-line .txt{font-size:clamp(1.8rem,8.5vw,3.5rem)}
  .h-line .performance-strip{min-width:75px;height:70px}.h-line .sound-strip{flex:0 0 65px;min-width:0;height:48px}
- .h-line .strip .ph img{object-position:61% 10%}
+ .h-line .strip .ph img{object-position:30% 30%}
  .h-line.perspective{margin-top:.7rem}.h-line.perspective .txt{font-size:clamp(1.35rem,5.9vw,2rem);line-height:1.4;letter-spacing:-.04em}
  .hero-sub{margin-top:1.3rem}.hero-sub p{font-size:.85rem;line-height:1.8}
  .hero-actions{gap:.6rem}.hero-action{font-size:.72rem;padding:.8rem 1rem;gap:.9rem}
@@ -313,6 +313,9 @@ section{padding:9rem 4vw}
 .proj-card h3{font-size:clamp(1rem,1.5vw,1.6rem);line-height:1.2;letter-spacing:.02em}
 .proj-card h3 em{font-style:normal;font-weight:400;display:block;font-size:.7em;color:var(--muted);margin-top:.3rem;font-family:var(--serif);letter-spacing:0}
 .proj-desc{font-family:var(--mono);font-weight:300;font-size:.78rem;line-height:1.6;color:var(--muted);margin-top:.6rem}
+.proj-card-links{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.proj-card-links span{font-family:var(--display);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .65rem;border-radius:99px;background:var(--ink);color:var(--paper);cursor:pointer;transition:opacity .3s}
+.proj-card-links span:hover{opacity:.75}
 .proj-card-go{
   width:clamp(28px,3vw,36px);height:clamp(28px,3vw,36px);border:1px solid var(--ink);border-radius:50%;
   display:grid;place-items:center;font-size:.8rem;color:var(--ink);flex-shrink:0;
@@ -346,7 +349,9 @@ section{padding:9rem 4vw}
 @media(max-width:880px){.stats .shell{grid-template-columns:repeat(2,1fr)}}
 
 /* ---------- music : the original cover stack & track list ---------- */
-.music{scroll-margin-top:5rem;padding:4.5rem 4vw;background:linear-gradient(160deg,#454A56,#383B43);color:var(--paper);border-radius:48px;margin:4rem 2vw;position:relative;overflow:hidden}
+.music-wrap{scroll-margin-top:5rem;position:relative;margin:4rem 6vw}
+.music-scroll{height:200vh}
+.music{position:sticky;top:2vh;min-height:0;display:flex;align-items:center;padding:4rem 4vw;background:linear-gradient(160deg,#454A56,#383B43);color:var(--paper);border-radius:48px;overflow:hidden}
 .music::before,.music::after{content:'';position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px)}
 .music::before{width:65vw;height:65vw;background:linear-gradient(140deg,var(--violet),var(--rose));opacity:.23;top:-40vw;right:-20vw}
 .music::after{width:40vw;height:40vw;background:var(--peach);opacity:.1;bottom:-30vw;left:-10vw}
@@ -362,14 +367,15 @@ section{padding:9rem 4vw}
 .music-panel[data-layer="3"]{transform:translate(1%,-16%) rotate(2deg);z-index:1}
 .music-panel.is-active{transform:translate(0,0) rotate(-2deg);z-index:4}
 .music-panel:not(.is-active){pointer-events:none}
-.music-panel:not(.is-active) .music-status{visibility:hidden}
 .music-panel:not(.is-active)::after{content:'';position:absolute;inset:0;background:rgba(30,33,40,.38);border-radius:12px;pointer-events:none}
 .music-cover{display:block;position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(247,244,238,.22);border-radius:12px;background:#252932;color:var(--paper);padding:0;font:inherit;box-shadow:0 24px 55px -25px rgba(0,0,0,.65);transition:box-shadow .6s,translate .6s}
 .music-cover img{display:block;width:100%;height:100%;object-fit:contain}
 .music-cover:disabled{opacity:1;cursor:default}
 .music-cover:not(:disabled){cursor:pointer}
-.music-status{position:absolute;right:.8rem;bottom:.8rem;padding:.45rem .7rem;border:1px solid rgba(243,242,239,.25);border-radius:30px;background:rgba(24,27,32,.9);font:300 .56rem var(--mono);letter-spacing:.06em}
-.music-status.ready::before{content:'▶';margin-right:.5rem}
+.music-cover::before{content:'';position:absolute;inset:0;background:rgba(18,20,26,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .5s cubic-bezier(.22,1,.36,1);z-index:1;border-radius:12px}
+.music-cover::after{content:'↗';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);width:3.6rem;height:3.6rem;display:grid;place-items:center;border:1.5px solid rgba(243,242,239,.5);border-radius:50%;font:400 1.1rem var(--sans);color:var(--paper);opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.22,1,.36,1);z-index:2;pointer-events:none}
+.is-active .music-cover:hover::before{opacity:1}
+.is-active .music-cover:hover::after{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .music-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:radial-gradient(ellipse at 30% 20%,#62616A,transparent 80%),#363842}
 .music-placeholder.synthesis{background:radial-gradient(ellipse at 70% 30%,#50636B,transparent 80%),#2D3540}
 .music-placeholder svg{width:48%;height:32%;opacity:.65}
@@ -390,7 +396,7 @@ section{padding:9rem 4vw}
 .music-track-meta{display:block;font:300 .58rem/1.7 var(--mono);color:#BFC4CE;margin-top:.2rem}
 .music-track-arrow{font-size:.8rem;opacity:.3;translate:-3px 0;transition:opacity .4s,translate .4s}
 .music-track[aria-selected="true"] .music-track-arrow{opacity:1;translate:0 0}
-.music-track:focus-visible,.music-cover:focus-visible,.music-close:focus-visible,.music-watch:focus-visible{outline:2px solid var(--peach);outline-offset:4px}
+.music-track:focus-visible,.music-cover:focus-visible{outline:2px solid var(--peach);outline-offset:4px}
 .music .reveal{transform:translateY(18px);transition:opacity 1s,transform 1s cubic-bezier(.22,1,.36,1)}
 .music .reveal.visible{transform:none}
 .music-copy.reveal{transition-delay:.12s}
@@ -399,17 +405,9 @@ section{padding:9rem 4vw}
  .music-track:hover{background:rgba(247,244,238,.055)}
  .music-track:hover .music-track-body{translate:3px 0}
 }
-@media(max-width:880px){.music{margin:2rem 0;border-radius:0}.music-grid{gap:2rem}.music-track{padding:.8rem .5rem;gap:.5rem}.music-stack{aspect-ratio:1}}
-@media(max-width:680px){.music{padding:3rem 5vw}.music .sec-head{margin-bottom:1.6rem}.music-grid{grid-template-columns:1fr;gap:.8rem}.music-stack{aspect-ratio:1.38;max-width:480px;width:100%;margin:0 auto}.music-stack-note{bottom:0}.music-copy h3{font-size:1.6rem}.music-intro{margin-bottom:1rem}.music-track-title{font-size:1.15rem}.music-track{padding:.8rem .6rem}.music-status{font-size:.5rem}.music-placeholder-title{font-size:clamp(1.25rem,5vw,1.8rem)}}
+@media(max-width:880px){.music-wrap{margin:2rem 0}.music{border-radius:0}.music-grid{gap:2rem}.music-track{padding:.8rem .5rem;gap:.5rem}.music-stack{aspect-ratio:1}}
+@media(max-width:680px){.music{padding:3rem 5vw}.music .sec-head{margin-bottom:1.6rem}.music-grid{grid-template-columns:1fr;gap:.8rem}.music-stack{aspect-ratio:1.38;max-width:480px;width:100%;margin:0 auto}.music-stack-note{bottom:0}.music-copy h3{font-size:1.6rem}.music-intro{margin-bottom:1rem}.music-track-title{font-size:1.15rem}.music-track{padding:.8rem .6rem}.music-placeholder-title{font-size:clamp(1.25rem,5vw,1.8rem)}}
 @media(prefers-reduced-motion:reduce){.music *,.music *::before{transition:none!important;animation:none!important}.music .reveal{transform:none}.music-stack:hover .is-active .music-cover,.music-track:hover .music-track-body{translate:none}}
-.music-dialog{position:fixed;inset:0;margin:auto;width:min(1040px,94vw);max-height:92dvh;padding:1.2rem;border:1px solid #626874;border-radius:18px;background:#22262E;color:var(--paper);overflow:auto;cursor:auto}
-.music-dialog::backdrop{background:rgba(12,15,20,.88);backdrop-filter:blur(8px)}
-.music-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem}
-.music-dialog h3{font:400 1.45rem var(--stamp);letter-spacing:.02em}
-.music-close{flex-shrink:0;padding:.65rem 1rem;border:1px solid #777D88;border-radius:30px;background:transparent;color:var(--paper);cursor:pointer;font:400 .75rem var(--sans)}
-.music-player{aspect-ratio:16/9;background:#111}
-.music-player iframe{display:block;width:100%;height:100%;border:0}
-.music-watch{display:inline-block;margin-top:1rem;color:var(--paper);font-size:.8rem;text-underline-offset:4px;cursor:pointer}
 
 /* ---------- about-me strip ---------- */
 .me{border-top:1px solid var(--line)}
@@ -507,7 +505,7 @@ footer{
     <p class="hero-kicker">COMPUTER SCIENCE · VOCALIST · KEYBOARDIST</p>
   </div>
   <h1 class="hero-title" id="hero-heading">
-    <span class="h-line"><span class="txt">Music AI &amp;</span><span class="strip performance-strip" aria-hidden="true"><span class="ph"><img src="assets/hero/chuling-live.jpg" alt="" width="1600" height="1067" fetchpriority="high" decoding="async"></span></span></span>
+    <span class="h-line"><span class="txt">Music AI &amp;</span><span class="strip performance-strip" aria-hidden="true"><span class="ph"><img src="images/hero-music.jpg" alt="" width="8102" height="1012" fetchpriority="high" decoding="async"></span></span></span>
     <span class="h-line"><span class="strip sound-strip" aria-hidden="true"><span class="ph"><canvas class="gen-art"></canvas></span></span><span class="txt">creative tools,</span></span>
     <span class="h-line perspective"><span class="txt">from a musician’s perspective.</span></span>
   </h1>
@@ -560,8 +558,9 @@ footer{
             <h3>QUILL<em>Independent Research · First Author · Accepted at ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
             <span class="proj-card-go">→</span>
           </div>
-          <p class="proj-desc">A system that learns timbre and performance behaviour as separate, swappable assets — letting musicians remix not just notes, but the way an instrument feels and responds.</p>
-          <div class="tag-row"><span class="tag">Timbre</span><span class="tag">Deep Learning</span><span class="tag">Music Generation</span></div>
+          <p class="proj-desc">Quill factorizes a monophonic recording into a lightweight DDSP timbre model (~500K params) and a note-level style library of pitch/energy trajectories. Either asset can be swapped across instruments without retraining. Validated by 12/12 source-attribution checks and a listening study (N=19).</p>
+          <div class="tag-row"><span class="tag">Timbre</span><span class="tag">DDSP</span><span class="tag">Cross-Instrument Synthesis</span></div>
+          <div class="proj-card-links"><span onclick="event.preventDefault();window.open('https://ismir2026program.ismir.net/lbd_613.html#details','_blank')">ISMIR 2026 ↗</span></div>
         </div>
       </a>
 
@@ -588,8 +587,9 @@ footer{
             <h3>PocketProducer<em>Independent Research · First Author · Accepted at ISMIR 2026 LBD · Audiotool Let's Build Hackathon Shortlist</em></h3>
             <span class="proj-card-go">→</span>
           </div>
-          <p class="proj-desc">Session-conditioned retrieval that puts the musician in control — proposing sounds, loops, and ideas based on what you've already built, not just what's popular.</p>
-          <div class="tag-row"><span class="tag">AI Agent</span><span class="tag">Product</span><span class="tag">Creativity Support</span></div>
+          <p class="proj-desc">A retrieval prototype that ranks library fragments against what's already in the musician's open session — using five interpretable signals and a selectable BPR fusion. Results are surfaced as inspectable, reversible proposals, not automated decisions.</p>
+          <div class="tag-row"><span class="tag">Retrieval</span><span class="tag">Session Context</span><span class="tag">Creativity Support</span></div>
+          <div class="proj-card-links"><span onclick="event.preventDefault();window.open('https://ismir2026program.ismir.net/lbd_609.html#details','_blank')">ISMIR 2026 ↗</span><span onclick="event.preventDefault();window.open('https://pocketproducer.vercel.app','_blank')">Live Demo ↗</span></div>
         </div>
       </a>
 
@@ -612,28 +612,26 @@ footer{
 </section>
 
 <!-- ============ MUSIC ============ -->
-<section id="music" class="music" aria-labelledby="music-heading">
+<section id="music" class="music-wrap" aria-labelledby="music-heading">
+  <div class="music-scroll">
+  <div class="music" role="presentation">
   <div class="shell">
     <div class="sec-head reveal"><h2 id="music-heading" class="sec-title">Sound <em>&amp; stage</em></h2><span class="sec-num">02 — MUSIC</span></div>
     <div class="music-grid">
       <div class="music-stack reveal">
-        <div class="music-panel" id="music-panel-piano-song" role="tabpanel" tabindex="0" aria-labelledby="music-tab-piano-song" data-layer="3" aria-hidden="true" inert><button class="music-cover music-placeholder" type="button" data-music="piano-song" data-title="Piano Song" disabled aria-label="Piano Song — video coming soon">
+        <div class="music-panel" id="music-panel-piano-song" role="tabpanel" tabindex="0" aria-labelledby="music-tab-piano-song" data-layer="3" aria-hidden="true" inert><button class="music-cover music-placeholder" type="button" data-music="piano-song" data-title="Piano Song" data-detail="music-piano-song.html" aria-label="Piano Song">
           <svg viewBox="0 0 360 100" fill="none" aria-hidden="true"><rect x="5" y="5" width="350" height="90" rx="3" stroke="currentColor"/><path d="M55 5v90M105 5v90M155 5v90M205 5v90M255 5v90M305 5v90" stroke="currentColor"/><path d="M45 5h20v55H45zM95 5h20v55H95zM195 5h20v55h-20zM245 5h20v55h-20zM295 5h20v55h-20z" fill="#D3CDD0"/></svg>
           <span class="music-placeholder-title">Piano Song</span>
-          <span class="music-status">Coming soon</span>
         </button></div>
-        <div class="music-panel is-active" id="music-panel-live-band-highlights" role="tabpanel" tabindex="0" aria-labelledby="music-tab-live-band-highlights" data-layer="0" aria-hidden="false"><button class="music-cover" type="button" data-music="live-band-highlights" data-title="Live Band Highlights" disabled aria-label="Live Band Highlights — video coming soon">
+        <div class="music-panel is-active" id="music-panel-live-band-highlights" role="tabpanel" tabindex="0" aria-labelledby="music-tab-live-band-highlights" data-layer="0" aria-hidden="false"><button class="music-cover" type="button" data-music="live-band-highlights" data-title="Live Band Highlights" data-detail="music-live-band.html" aria-label="Live Band Highlights">
           <img src="assets/music/live-band-highlights.jpg" alt="Chuling Li singing and playing keyboard on stage with her band; Live Band Highlights cover" width="2560" height="1440" loading="lazy" decoding="async">
-          <span class="music-status">Video coming soon</span>
         </button></div>
-        <div class="music-panel" id="music-panel-maxmsp" role="tabpanel" tabindex="0" aria-labelledby="music-tab-maxmsp" data-layer="1" aria-hidden="true" inert><button class="music-cover music-placeholder synthesis" type="button" data-music="maxmsp" data-title="Max/MSP Sound Study" disabled aria-label="Max/MSP Sound Study — work in progress">
+        <div class="music-panel" id="music-panel-maxmsp" role="tabpanel" tabindex="0" aria-labelledby="music-tab-maxmsp" data-layer="1" aria-hidden="true" inert><button class="music-cover music-placeholder synthesis" type="button" data-music="maxmsp" data-title="Max/MSP Sound Study" data-detail="music-maxmsp.html" aria-label="Max/MSP Sound Study">
           <svg viewBox="0 0 360 100" fill="none" aria-hidden="true"><path d="M0 50h360" stroke="currentColor" opacity=".25"/><path d="M0 50C15 50 15 15 30 15S45 85 60 85 75 15 90 15 105 85 120 85 135 15 150 15 165 85 180 85 195 15 210 15 225 85 240 85 255 15 270 15 285 85 300 85 315 15 330 15 345 50 360 50" stroke="currentColor" stroke-width="1.5"/><path d="M0 50Q90 0 180 50T360 50" stroke="currentColor" opacity=".5"/></svg>
           <span class="music-placeholder-title">Sound study / 01</span>
-          <span class="music-status">In progress</span>
         </button></div>
-        <div class="music-panel" id="music-panel-heartbreaker" role="tabpanel" tabindex="0" aria-labelledby="music-tab-heartbreaker" data-layer="2" aria-hidden="true" inert><button class="music-cover" type="button" data-music="heartbreaker" data-title="HEARTBREAKER" disabled aria-label="Heartbreaker — video coming soon">
+        <div class="music-panel" id="music-panel-heartbreaker" role="tabpanel" tabindex="0" aria-labelledby="music-tab-heartbreaker" data-layer="2" aria-hidden="true" inert><button class="music-cover" type="button" data-music="heartbreaker" data-title="HEARTBREAKER" data-detail="music-heartbreaker.html" aria-label="HEARTBREAKER">
           <img src="assets/music/heartbreaker.jpg" alt="HEARTBREAKER — Led Zeppelin cover; Chuling Li on lead vocals with Richard Bird" width="2560" height="1440" loading="lazy" decoding="async">
-          <span class="music-status">Video coming soon</span>
         </button></div>
         <div class="music-stack-note" aria-hidden="true"><span>Selected recordings</span><span class="music-stack-count">02 / 04</span></div>
       </div>
@@ -641,31 +639,25 @@ footer{
         <h3>Voice, keys &amp; experiments.</h3>
         <p class="music-intro">Vocal performances, moments with my band, and explorations in sound synthesis.</p>
         <div class="music-tracks" role="tablist" aria-label="Select a music work to preview" aria-orientation="vertical">
-        <button class="music-track" id="music-tab-piano-song" type="button" role="tab" aria-controls="music-panel-piano-song" aria-selected="false" tabindex="-1" data-preview="piano-song">
-          <span class="music-track-index">01</span><span class="music-track-body"><span class="music-track-title">Piano Song</span><span class="music-track-credit">Chuling Li · Vocals</span><span class="music-track-meta">Vocal performance · Coming soon</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        <button class="music-track" id="music-tab-piano-song" type="button" role="tab" aria-controls="music-panel-piano-song" aria-selected="false" tabindex="-1" data-preview="piano-song" data-detail="music-piano-song.html">
+          <span class="music-track-index">01</span><span class="music-track-body"><span class="music-track-title">Piano Song</span><span class="music-track-credit">Chuling Li · Vocals</span><span class="music-track-meta">Vocal performance</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
         </button>
-        <button class="music-track" id="music-tab-live-band-highlights" type="button" role="tab" aria-controls="music-panel-live-band-highlights" aria-selected="true" tabindex="0" data-preview="live-band-highlights">
-          <span class="music-track-index">02</span><span class="music-track-body"><span class="music-track-title">Live Band Highlights</span><span class="music-track-credit">Chuling Li · Keyboards &amp; lead vocals</span><span class="music-track-meta">Live band · Highlights · Video coming soon</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        <button class="music-track" id="music-tab-live-band-highlights" type="button" role="tab" aria-controls="music-panel-live-band-highlights" aria-selected="true" tabindex="0" data-preview="live-band-highlights" data-detail="music-live-band.html">
+          <span class="music-track-index">02</span><span class="music-track-body"><span class="music-track-title">Live Band Highlights</span><span class="music-track-credit">Chuling Li · Keyboards &amp; lead vocals</span><span class="music-track-meta">Live band · Highlights</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
         </button>
-        <button class="music-track" id="music-tab-maxmsp" type="button" role="tab" aria-controls="music-panel-maxmsp" aria-selected="false" tabindex="-1" data-preview="maxmsp">
-          <span class="music-track-index">03</span><span class="music-track-body"><span class="music-track-title">Max/MSP Sound Study</span><span class="music-track-credit">Chuling Li · Sound synthesis</span><span class="music-track-meta">Audio synthesis · In progress</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        <button class="music-track" id="music-tab-maxmsp" type="button" role="tab" aria-controls="music-panel-maxmsp" aria-selected="false" tabindex="-1" data-preview="maxmsp" data-detail="music-maxmsp.html">
+          <span class="music-track-index">03</span><span class="music-track-body"><span class="music-track-title">Max/MSP Sound Study</span><span class="music-track-credit">Chuling Li · Sound synthesis</span><span class="music-track-meta">Audio synthesis · Sound study</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
         </button>
-        <button class="music-track" id="music-tab-heartbreaker" type="button" role="tab" aria-controls="music-panel-heartbreaker" aria-selected="false" tabindex="-1" data-preview="heartbreaker">
-          <span class="music-track-index">04</span><span class="music-track-body"><span class="music-track-title">HEARTBREAKER</span><span class="music-track-credit">Led Zeppelin cover · Chuling Li, lead vocals</span><span class="music-track-meta">With Richard Bird · Full performance · Video coming soon</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+        <button class="music-track" id="music-tab-heartbreaker" type="button" role="tab" aria-controls="music-panel-heartbreaker" aria-selected="false" tabindex="-1" data-preview="heartbreaker" data-detail="music-heartbreaker.html">
+          <span class="music-track-index">04</span><span class="music-track-body"><span class="music-track-title">HEARTBREAKER</span><span class="music-track-credit">Led Zeppelin cover · Chuling Li, lead vocals</span><span class="music-track-meta">With Richard Bird · Full performance</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
         </button>
         </div>
       </div>
     </div>
   </div>
-</section>
-<dialog class="music-dialog" id="music-dialog" aria-labelledby="music-player-title">
-  <div class="music-dialog-head">
-    <h3 id="music-player-title"></h3>
-    <button class="music-close" type="button" autofocus>Close ✕</button>
   </div>
-  <div class="music-player" id="music-player"></div>
-  <a class="music-watch" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
-</dialog>
+  </div>
+</section>
 <script src="assets/music/music.js" defer></script>
 
 <!-- ============ STORY : pinned scrollytelling ============ -->
@@ -738,9 +730,7 @@ footer{
           <span>Open to collaborate</span>
         </div>
         <div class="me-social">
-          <a href="#" data-hover>[GitHub]</a>
-          <a href="#" data-hover>[YouTube]</a>
-          <a href="#" data-hover>[LinkedIn]</a>
+          <a href="https://github.com/imChuling" target="_blank" data-hover>[GitHub]</a>
         </div>
       </div>
   </div>

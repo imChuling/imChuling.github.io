@@ -56,6 +56,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weigh
 .proj-paper .venue{font-family:var(--display);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:1rem}
 .proj-paper .abstract{font-family:var(--mono);font-weight:300;font-size:.84rem;line-height:1.6;color:var(--muted)}
 .proj-foot{margin-top:6rem;padding:2rem 4vw;border-top:1px solid var(--line);text-align:center;font-family:var(--mono);font-weight:200;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.proj-hero .hero-links{max-width:none;margin:2rem 0 0;padding:0}
 @media(max-width:640px){.proj-links{flex-direction:column}.proj-links a{justify-content:center}.proj-meta{gap:.4rem}}
 </style>
 </head>
@@ -69,53 +70,61 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weigh
     <span class="tag">Independent Research · First Author</span>
     <span class="tag">Accepted at ISMIR 2026 LBD</span>
     <span class="tag">Audiotool Hackathon Shortlist</span>
-    <span class="tag">AI Agent</span>
-    <span class="tag">Product</span>
-    <span class="tag">Creativity Support</span>
+    <span class="tag">Music Representations</span>
+    <span class="tag">Embeddings</span>
+    <span class="tag">Similarity</span>
+    <span class="tag">Retrieval</span>
   </div>
   <p class="subtitle">Session-conditioned retrieval that puts the musician in control — proposing sounds, loops, and ideas based on what you've already built, not just what's popular.</p>
+  <div class="proj-links hero-links">
+    <a class="primary" href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">ISMIR Page ↗</a>
+    <a class="primary" href="https://pocketproducer.vercel.app" target="_blank">Live Demo ↗</a>
+    <a class="secondary" href="https://github.com/imChuling/pocket-producer" target="_blank">Source Code ↗</a>
+    <a class="secondary" href="https://drive.google.com/file/d/1UwArveyTTe_2Ua5waxX633TMUIl_eqwi/view" target="_blank">Paper PDF ↗</a>
+  </div>
 </div>
 
 <div class="proj-cover">
-  <div class="ph">[ project cover image ]</div>
+  <img src="images/pocketproducer_architecture.png" alt="Pocket Producer architecture — session fingerprinting, alternative rankers, and user-controlled proposals" style="width:100%;border-radius:16px">
 </div>
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>[占位符：项目背景介绍。为什么做这个项目、解决什么问题、面向谁。2-3段。]</p>
+  <p>Pocket Producer addresses session compatibility: whether a library fragment is promising material for the same piece of music as the fragments already in a musician's open project. This is not the same as audio similarity — two fragments can sound alike but not belong in the same session.</p>
+  <p>With no direct labels at cold start, and audio similarity being only one observable signal (not the target itself), the system treats this missing-label problem as a ranking and an interaction-design challenge. It surfaces retrieved fragments as inspectable, reversible proposals the musician can preview, accept, and undo — not as automated decisions.</p>
 
   <h2>How it works</h2>
-  <p>[占位符：技术方法概述。session-conditioned retrieval 的原理、架构设计。2-3段。]</p>
+  <p>Pocket Producer reads the open session — project tempo, fragments' tags, and up to eight unique region-referenced samples embedded with CLAP — to form a session fingerprint. Five interpretable signals then score each candidate: mean and max CLAP cosine similarity, tempo proximity, key match, and tag Jaccard overlap.</p>
+  <p>Two rankers are available. The default is a hand-tuned rules ranker using seven non-audio signals (tempo, key, role gap, tag novelty, tag overlap, stated intent, recency). The alternative is a learned fusion trained by BPR on pack co-membership as cold-start weak supervision, and the musician can switch between them.</p>
+  <p>Ranking evidence stays inspectable (per-signal chips) and creative authority stays with the musician: candidates can be previewed, inserted, and undone, restoring the exact prior project state. All interaction events are logged with rank position to support future supervision.</p>
 
   <h2>Key features</h2>
   <ul>
-    <li>[占位符：特性1 — 例如基于当前 session 的智能推荐]</li>
-    <li>[占位符：特性2 — 例如用户可控的 proposal 机制]</li>
-    <li>[占位符：特性3 — 例如实时交互界面]</li>
+    <li>Session-conditioned ranking — fragments scored against what's already in the open project, not just general similarity</li>
+    <li>User-controlled proposals — every suggestion is inspectable, reversible, and shows the evidence behind it</li>
+    <li>Two selectable rankers: a transparent rules default and a learned BPR fusion</li>
+    <li>Interaction logging as a path toward direct supervision — every preview, accept, reject, undo is recorded</li>
+    <li>Deployable: MS-CLAP embeddings run on CPU, adapts to the musician's library</li>
   </ul>
 </div>
 
 <div class="proj-video">
-  <div class="video-wrap">[ demo video embed — YouTube / Vimeo ]</div>
+  <div class="video-wrap">[ demo video — ISMIR 2026 LBD presentation ]</div>
   <p class="caption">Demo video</p>
 </div>
 
-<div class="proj-links">
-  <a class="primary" href="https://pocketproducer.vercel.app">Live Demo ↗</a>
-  <a class="secondary" href="#">Source Code ↗</a>
-  <a class="secondary" href="#">Paper PDF ↗</a>
-</div>
-
 <div class="proj-content">
-  <h2>Results</h2>
-  <p>[占位符：实验结果、用户反馈、或者比赛成绩。]</p>
+  <h2>Evaluation</h2>
+  <p>With no interaction data at launch, the fusion trains on pack co-membership from the Freesound Loop Dataset (1,797 items, 605 packs) as a weak-supervision proxy. But this proxy is a stand-in for the real target, not the target itself.</p>
+  <p>A three-axis sensitivity analysis shows that the fusion's apparent advantage over frozen cosine changes across label construction, negative regime, and representation/training configuration. Under LAION-CLAP with source-weighted BPR, fusion gains +9.9 pp on hard_similar negatives; under MS-CLAP the same setup shows +2.6 pp overall. Set these up differently, and you get different conclusions.</p>
+  <p>Rather than treating these proxy scores as answers, the system surfaces retrieval as inspectable, reversible proposals. Future work will replace the cold-start proxy with interaction-derived evidence and evaluate retrieval against musicians' creative choices.</p>
 </div>
 
 <div class="proj-paper">
-  <h3>Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal</h3>
-  <p class="authors">Chuling Li · Independent research · First author</p>
-  <p class="venue">ISMIR Late-Breaking Demo (LBD), 2026 · Accepted</p>
-  <p class="abstract">[占位符：论文摘要。]</p>
+  <h3><a href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank" style="text-decoration:none;color:inherit;border-bottom:1px solid var(--line);padding-bottom:2px;transition:border-color .3s">Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal</a></h3>
+  <p class="authors">Chuling Li</p>
+  <p class="venue">ISMIR 2026 — Late-Breaking Demo · Abu Dhabi, UAE</p>
+  <p class="abstract">Which fragments could grow into a piece of music with the ones already in a musician's open project? This target has no direct labels at cold start, and audio similarity is only one observable signal for it. Pocket Producer, a retrieval prototype evaluated offline, treats this missing-label problem as a ranking and an interaction-design challenge. It fingerprints the open session and ranks candidates with a rules default and a selectable fusion of five interpretable signals trained on pack co-membership as cold-start weak supervision. On the Freesound Loop Dataset, the learned fusion's apparent advantage varies with label construction, negative regime, and representation/training configuration. Pack co-membership is only a stand-in for the real target, and the conclusions shift with how the proxy is built and evaluated. We therefore surface retrieval as proposals the musician can inspect, preview, insert, and undo, not as automated decisions.</p>
 </div>
 
 <div class="proj-foot">

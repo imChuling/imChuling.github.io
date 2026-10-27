@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HEARTBREAKER — Chuling LI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Roman.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Compagnon';src:url('N2_复古油墨字体_可商用/compagnon/Compagnon-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'IMFellSC';src:url('N2_复古油墨字体_可商用/IM Fell English SC/IMFellEnglishSC-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'OldNewspaper';src:url('N2_复古油墨字体_可商用/OldNewspaperTypes.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'StampWriter';src:url('N2_复古油墨字体_可商用/STAMPWRITER-KIT.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+:root{
+  --paper:#F3F2EF;--paper-2:#ECEAE5;--ink:#26272C;--muted:#63646A;
+  --peach:#E3DAD0;--rose:#DCD1D6;--lavender:#D3D5E0;--sky:#D2DBE1;--butter:#E6E1D3;
+  --violet:#5A6880;--line:rgba(38,39,44,.12);
+  --serif:'Compagnon',serif;--display:'IMFellSC',serif;
+  --stamp:'OldNewspaper',serif;--stencil:'StampWriter',monospace;
+  --sans:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weight:300;overflow-x:hidden}
+::selection{background:var(--ink);color:var(--paper)}
+.back{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;color:var(--muted);font-family:var(--display);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;padding:2.4rem 4vw;transition:color .3s}
+.back:hover{color:var(--ink)}
+.proj-hero{padding:0 4vw 3rem;max-width:1100px;margin:0 auto}
+.proj-hero h1{font-family:var(--stamp);font-weight:400;font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.1;margin-bottom:1rem}
+.proj-meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2rem}
+.proj-meta .tag{font-family:var(--display);font-weight:400;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;padding:.35rem .7rem;border:1px solid var(--line);border-radius:99px;color:var(--muted);background:rgba(255,255,255,.4)}
+.proj-hero .subtitle{font-family:var(--mono);font-weight:300;font-size:.88rem;color:var(--muted);line-height:1.5;max-width:60ch}
+.proj-video{max-width:1100px;margin:2rem auto 3rem;padding:0 4vw}
+.proj-video .video-wrap{width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:var(--paper-2);display:grid;place-items:center;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.proj-video iframe{width:100%;height:100%;border:none;border-radius:16px}
+.proj-content{max-width:760px;margin:0 auto;padding:0 4vw}
+.proj-content h2{font-family:var(--stamp);font-weight:400;font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;margin:3.5rem 0 1.2rem}
+.proj-content p{font-family:var(--mono);font-weight:300;font-size:.92rem;line-height:1.7;color:var(--muted);margin-bottom:1.2rem}
+.proj-content ul{font-family:var(--mono);font-weight:300;font-size:.92rem;line-height:1.7;color:var(--muted);margin-bottom:1.2rem;padding-left:1.4rem}
+.proj-content li{margin-bottom:.4rem}
+.proj-links{max-width:760px;margin:3rem auto;padding:0 4vw;display:flex;flex-wrap:wrap;gap:1rem}
+.proj-links a{display:inline-flex;align-items:center;gap:.6rem;text-decoration:none;font-family:var(--display);font-weight:400;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;padding:.9rem 1.8rem;border-radius:99px;transition:transform .4s,box-shadow .4s}
+.proj-links .primary{background:var(--ink);color:var(--paper)}
+.proj-links .primary:hover{transform:translateY(-2px);box-shadow:0 16px 32px -12px rgba(38,39,44,.35)}
+.proj-hero .hero-links{max-width:none;margin:2rem 0 0;padding:0}
+.proj-foot{margin-top:6rem;padding:2rem 4vw;border-top:1px solid var(--line);text-align:center;font-family:var(--mono);font-weight:200;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+@media(max-width:640px){.proj-links{flex-direction:column}.proj-links a{justify-content:center}.proj-meta{gap:.4rem}}
+</style>
+</head>
+<body>
+
+<a class="back" href="portfolio_site.html#music">← Back to portfolio</a>
+
+<div class="proj-hero">
+  <h1>HEARTBREAKER</h1>
+  <div class="proj-meta">
+    <span class="tag">Led Zeppelin Cover</span>
+    <span class="tag">Lead Vocals</span>
+    <span class="tag">Live Performance</span>
+  </div>
+  <p class="subtitle">A full-band cover of Led Zeppelin's Heartbreaker — lead vocals by Chuling Li, with Richard Bird on guitar.</p>
+</div>
+
+<div class="proj-video">
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/wTGXfWQ1izU?si=TjVyLNDH1A77-1xb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+</div>
+
+<div class="proj-content">
+  <h2>About</h2>
+  <p>Heartbreaker is one of the hardest Led Zeppelin tracks to pull off live — the vocal line sits right at the top of the range and demands raw energy throughout. This performance with Richard Bird captures that intensity: no safety net, just a band locked in and pushing.</p>
+
+  <h2>Credits</h2>
+  <ul>
+    <li>Lead vocals — Chuling Li</li>
+    <li>Guitar — Richard Bird</li>
+  </ul>
+</div>
+
+<div class="proj-foot">
+  <span>Chuling LI © 2026</span>
+</div>
+
+</body>
+</html>

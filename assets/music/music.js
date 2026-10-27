@@ -1,59 +1,13 @@
-/* Paste the 11-character YouTube video ID here after upload.
-   Use Public or Unlisted visibility and enable embedding.
-   Keep empty until ready: no local video paths or placeholder URLs. */
-const MUSIC_VIDEOS = {
-  'piano-song': '',
-  'live-band-highlights': '',
-  'maxmsp': '',
-  'heartbreaker': ''
-};
-
 (() => {
-  const dialog = document.getElementById('music-dialog');
-  const player = document.getElementById('music-player');
-  const title = document.getElementById('music-player-title');
-  const watchLink = dialog.querySelector('.music-watch');
-  let previousOverflow = '';
-  let trigger = null;
-
   document.querySelectorAll('[data-music]').forEach(button => {
-    const id = MUSIC_VIDEOS[button.dataset.music];
-    if (!/^[\w-]{11}$/.test(id)) return;
-    const name = button.dataset.title;
-    button.disabled = false;
-    button.setAttribute('aria-label', `Play ${name}`);
-    const status = button.querySelector('.music-status');
-    status.textContent = 'Watch performance';
-    if (button.dataset.music === 'maxmsp') status.textContent = 'Watch sound study';
-    status.classList.add('ready');
-    const meta = document.querySelector(`[data-preview="${button.dataset.music}"] .music-track-meta`);
-    meta.textContent = meta.textContent.replace(' · Video coming soon', '').replace('Coming soon', 'Video').replace('In progress', 'Sound study');
-    button.addEventListener('click', () => {
-      trigger = button;
-      title.textContent = name;
-      watchLink.href = `https://www.youtube.com/watch?v=${id}`;
-      const frame = document.createElement('iframe');
-      frame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-      frame.title = `${name} — YouTube video player`;
-      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      frame.allowFullscreen = true;
-      frame.referrerPolicy = 'strict-origin-when-cross-origin';
-      player.replaceChildren(frame);
-      previousOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      dialog.showModal();
-    });
-  });
-
-  dialog.querySelector('.music-close').addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', event => {
-    const rect = dialog.getBoundingClientRect();
-    if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
-  });
-  dialog.addEventListener('close', () => {
-    player.replaceChildren(); // Stop playback when closed, including Escape.
-    document.body.style.overflow = previousOverflow;
-    trigger?.focus();
+    const detail = button.dataset.detail;
+    if (detail) {
+      button.disabled = false;
+      button.style.cursor = 'pointer';
+      button.addEventListener('click', () => {
+        window.location.href = detail;
+      });
+    }
   });
 })();
 
@@ -82,7 +36,12 @@ const MUSIC_VIDEOS = {
       pending = setTimeout(() => select(index), 90);
     });
     tab.addEventListener('pointerleave', () => clearTimeout(pending));
-    tab.addEventListener('click', () => { clearTimeout(pending); select(index); });
+    tab.addEventListener('click', (e) => {
+      clearTimeout(pending); select(index);
+      if (tab.dataset.detail) {
+        window.location.href = tab.dataset.detail;
+      }
+    });
     tab.addEventListener('focus', () => { clearTimeout(pending); select(index); });
     tab.addEventListener('keydown', event => {
       const step = {ArrowDown:1, ArrowUp:-1}[event.key];
