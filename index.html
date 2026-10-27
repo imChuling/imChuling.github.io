@@ -412,7 +412,10 @@ section{padding:9rem 4vw}
 /* ---------- about-me strip ---------- */
 .me{border-top:1px solid var(--line)}
 .me .shell{display:grid;grid-template-columns:.8fr 1.2fr;gap:2.5rem 5rem;align-items:center}
-.me-photo{aspect-ratio:3/4;border-radius:20px;overflow:hidden;position:relative;max-width:380px;box-shadow:0 40px 80px -40px rgba(24,21,31,.4)}
+.me-photo{aspect-ratio:3/4;border-radius:20px;overflow:hidden;position:relative;max-width:380px;box-shadow:0 40px 80px -40px rgba(24,21,31,.4);transition:box-shadow .6s cubic-bezier(.22,1,.36,1)}
+.me-photo img{transition:transform .8s cubic-bezier(.22,1,.36,1),filter .8s;filter:saturate(.85)}
+.me-photo:hover{box-shadow:0 50px 100px -40px rgba(24,21,31,.5)}
+.me-photo:hover img{transform:scale(1.03);filter:saturate(1)}
 .me-photo .ph{position:absolute;inset:0}
 .me-copy h3{font-family:var(--stamp);font-weight:400;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.2;margin-bottom:1.4rem}
 .me-copy h3 em{font-style:normal;color:inherit}
@@ -700,10 +703,8 @@ footer{
 <!-- ============ ABOUT ME ============ -->
 <section class="me" id="contact" aria-label="About and contact">
   <div class="shell">
-    <div class="me-photo reveal rain tilt" data-hover>
-      <div class="ph stage"><img src="images/profile.jpg" alt="Chuling Li" style="width:100%;height:100%;object-fit:cover;position:relative;z-index:1"></div>
-      <canvas class="rain-fog"></canvas>
-      <div class="rain-hint">wipe</div>
+    <div class="me-photo reveal tilt" data-hover>
+      <img src="images/profile.jpg" alt="Chuling Li" style="width:100%;height:100%;object-fit:cover">
     </div>
     <div class="me-copy reveal">
       <h3>Hi, I'm Chuling — nice to meet you.</h3>
