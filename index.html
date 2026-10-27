@@ -191,7 +191,7 @@ nav{
 @media(max-width:680px){.hero-research{margin-top:1.5rem}.hero-research-head{gap:.5rem}.hero-paper{grid-template-columns:2.5rem minmax(0,1fr);gap:.6rem}.hero-paper-citation{font-size:.83rem}.hero-paper-year{font-size:.65rem}.hero-paper-meta{font-size:.68rem}.hero-paper-credit{font-size:.65rem}}
 .about-skills{grid-column:1/-1;margin-top:0;padding-top:1.15rem;border-top:1px solid var(--line)}
 .about-skills-label{font:400 .65rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-.skills-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem 2rem;padding:1.8rem 0 .3rem}
+.skills-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.2rem 1.6rem;padding:1.8rem 0 .3rem}
 .skills-group{border-top:1px solid var(--line);padding-top:.8rem;min-width:0}
 .skills-group h3{font:400 1.05rem var(--stamp);letter-spacing:.02em;margin-bottom:.7rem}
 .skills-group ul{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:300 .73rem/1.65 var(--mono);color:var(--muted)}
@@ -217,7 +217,7 @@ nav{
  .h-line.perspective{margin-top:.7rem}.h-line.perspective .txt{font-size:clamp(1.35rem,5.9vw,2rem);line-height:1.4;letter-spacing:-.04em}
  .hero-sub{margin-top:1.3rem}.hero-sub p{font-size:.85rem;line-height:1.8}
  .hero-actions{gap:.6rem}.hero-action{font-size:.72rem;padding:.8rem 1rem;gap:.9rem}
- .about-skills{margin-top:0}.about-skills-label{font-size:.6rem}.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem;padding-top:1.3rem}.skills-group h3{font-size:.95rem}.skills-group ul{font-size:.68rem}
+ .about-skills{margin-top:0}.about-skills-label{font-size:.6rem}.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding-top:1.3rem}.skills-group h3{font-size:.95rem}.skills-group ul{font-size:.68rem}
  #projects,#story,#contact{scroll-margin-top:6rem}
 }
 @media(prefers-reduced-motion:reduce){.hero-identity,.hero-sub,.hero-research{opacity:1;transform:none}.hero-action:hover{transform:none}}
@@ -416,7 +416,7 @@ section{padding:9rem 4vw}
 .me-photo .ph{position:absolute;inset:0}
 .me-copy h3{font-family:var(--stamp);font-weight:400;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.2;margin-bottom:1.4rem}
 .me-copy h3 em{font-style:normal;color:inherit}
-.me-links{grid-column:1/-1;margin-top:0}
+.me-links{margin-top:2rem}
 .me-link{
   display:inline-flex;align-items:center;gap:.8rem;text-decoration:none;
   font-family:var(--display);font-weight:400;font-size:.82rem;letter-spacing:.16em;color:var(--paper);
@@ -709,20 +709,6 @@ footer{
     <div class="me-copy reveal">
       <h3>Hi, I'm Chuling — nice to meet you.</h3>
       <p>[占位符：第一人称介绍。诺丁汉CS在读、乐队主唱键盘手、做音乐科技工具；正在申请什么、在寻找什么合作。120-160词。语气真诚轻松，这一栏是"人"不是"作品"。]</p>
-    </div>
-  <div class="about-skills reveal" role="region" aria-labelledby="skills-heading">
-    <h2 id="skills-heading" class="about-skills-label">Skills &amp; tools</h2>
-    <div class="skills-grid">
-      <div class="skills-group"><h3>Programming</h3><ul><li>Python (advanced)</li><li>Java</li><li>C</li><li>MATLAB</li><li>JavaScript / TypeScript</li><li>HTML / CSS</li></ul></div>
-      <div class="skills-group"><h3>Data &amp; ML</h3><ul><li>NumPy</li><li>pandas</li><li>Matplotlib</li><li>scikit-learn</li><li>PyTorch</li><li>Hugging Face</li><li>Transformers</li></ul></div>
-      <div class="skills-group"><h3>Musicianship</h3><ul><li>Vocals</li><li>Keyboards</li><li>Piano</li><li>Acoustic guitar</li><li>Electric guitar</li></ul></div>
-      <div class="skills-group"><h3>Audio Tools</h3><ul><li>Logic Pro</li><li>Ableton Live</li><li>Melodyne</li></ul></div>
-      <div class="skills-group"><h3>Creative Tech</h3><ul><li>Max/MSP</li><li>Pure Data</li><li>TouchDesigner</li></ul></div>
-      <div class="skills-group"><h3>Audio &amp; DSP</h3><ul><li>Audio/MIDI Processing</li><li>MIDI</li><li>DSP</li></ul></div>
-      <div class="skills-group"><h3>Dev Tools</h3><ul><li>Git / GitHub</li><li>Linux</li><li>Jupyter Notebook</li><li>LaTeX</li><li>Flask</li><li>FastAPI</li><li>Firebase</li><li>Google Cloud Storage</li><li>MongoDB Atlas / Vector Search</li></ul></div>
-      <div class="skills-group"><h3>Hardware</h3><ul><li>Arduino</li><li>BCI</li></ul></div>
-    </div>
-  </div>
       <div class="me-links">
         <a class="me-link" href="mailto:chuling.li.cs@gmail.com" data-hover>chuling.li.cs@gmail.com ↗</a>
         <div class="me-meta">
@@ -733,6 +719,17 @@ footer{
           <a href="https://github.com/imChuling" target="_blank" data-hover>[GitHub]</a>
         </div>
       </div>
+    </div>
+  <div class="about-skills reveal" role="region" aria-labelledby="skills-heading">
+    <h2 id="skills-heading" class="about-skills-label">Skills &amp; tools</h2>
+    <div class="skills-grid">
+      <div class="skills-group"><h3>Programming</h3><ul><li>Python</li><li>Java</li><li>C</li><li>MATLAB</li><li>JavaScript / TypeScript</li></ul></div>
+      <div class="skills-group"><h3>ML &amp; Data</h3><ul><li>PyTorch</li><li>Hugging Face Transformers</li><li>scikit-learn</li><li>NumPy / pandas</li></ul></div>
+      <div class="skills-group"><h3>Audio &amp; Music</h3><ul><li>Ableton Live</li><li>Logic Pro</li><li>Max/MSP</li><li>Pure Data</li><li>DSP / MIDI</li></ul></div>
+      <div class="skills-group"><h3>Performance</h3><ul><li>Vocals</li><li>Keyboards / Piano</li><li>Acoustic guitar</li><li>Electric guitar</li></ul></div>
+      <div class="skills-group"><h3>Dev &amp; Infra</h3><ul><li>Git / GitHub</li><li>Linux</li><li>LaTeX</li><li>Firebase</li><li>MongoDB</li></ul></div>
+    </div>
+  </div>
   </div>
 </section>
 
