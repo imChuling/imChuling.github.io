@@ -13,13 +13,9 @@
 @font-face{font-family:'Compagnon';src:url('fonts/Compagnon-LightItalic.otf') format('opentype');font-weight:300;font-style:italic;font-display:swap}
 @font-face{font-family:'Compagnon';src:url('fonts/Compagnon-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:'Compagnon';src:url('fonts/Compagnon-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'InknutAntiqua';src:url('fonts/InknutAntiqua-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'InknutAntiqua';src:url('fonts/InknutAntiqua-Light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:swap}
-@font-face{font-family:'InknutAntiqua';src:url('fonts/InknutAntiqua-Medium.ttf') format('truetype');font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:'IMFellSC';src:url('fonts/IMFellEnglishSC-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'OldNewspaper';src:url('fonts/OldNewspaperTypes.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'StampWriter';src:url('fonts/STAMPWRITER-KIT.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Innurz';src:url('fonts/Ínnurz.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
 :root{
   /* misty rain palette — muted, composed */
   --paper:#F3F2EF;
@@ -35,10 +31,8 @@
   --line:rgba(38,39,44,.12);
   --serif:'Compagnon',serif;
   --display:'IMFellSC',serif;
-  --inknut:'InknutAntiqua',serif;
   --stamp:'OldNewspaper',serif;
   --stencil:'StampWriter',monospace;
-  --hand:'Innurz',cursive;
   --sans:'Space Grotesk',sans-serif;
   --mono:'JetBrains Mono',monospace;
 }
@@ -101,15 +95,13 @@ body::after{
 .l-num{
   position:absolute;right:4vw;bottom:3.4vw;
   font-family:var(--mono);font-weight:200;font-size:clamp(2.2rem,7vw,5rem);line-height:1;
-  transition:opacity .6s;
+  transition:opacity .55s ease;
 }
-.l-num{transition:opacity .55s ease}
 .l-bar{
   position:absolute;left:0;bottom:0;height:2px;width:0%;
   background:linear-gradient(90deg,var(--violet),var(--rose));
-  transition:width .35s ease;
+  transition:width .35s ease,opacity .55s ease;
 }
-.l-bar{transition:width .35s ease,opacity .55s ease}
 
 /* ---------- cursor ---------- */
 .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
@@ -337,16 +329,6 @@ section{padding:9rem 4vw}
   .proj-thumb{aspect-ratio:16/10}
 }
 
-/* ---------- stats ---------- */
-.stats{border-top:1px solid var(--line)}
-.stats .shell{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem}
-.stat{padding:2.4rem 0}
-.stat .n{
-  font-family:var(--serif);font-weight:400;font-size:clamp(3rem,7vw,5.6rem);line-height:1;letter-spacing:-.02em;
-}
-.stat .n em{font-style:italic;color:var(--violet)}
-.stat .d{margin-top:.9rem;font-family:var(--mono);font-weight:300;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);line-height:1.9}
-@media(max-width:880px){.stats .shell{grid-template-columns:repeat(2,1fr)}}
 
 /* ---------- music : the original cover stack & track list ---------- */
 .music-wrap{scroll-margin-top:5rem;position:relative;margin:4rem 6vw}
@@ -416,9 +398,7 @@ section{padding:9rem 4vw}
 .me-photo img{display:block;transition:transform 1.6s cubic-bezier(.22,1,.36,1)}
 .me-photo:hover{box-shadow:0 40px 80px -40px rgba(24,21,31,.38)}
 .me-photo:hover img{transform:scale(1.03)}
-.me-photo .ph{position:absolute;inset:0}
 .me-copy h3{font-family:var(--stamp);font-weight:400;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.2;margin-bottom:1.4rem}
-.me-copy h3 em{font-style:normal;color:inherit}
 .me-links{margin-top:2rem}
 .me-link{
   display:inline-flex;align-items:center;gap:.8rem;text-decoration:none;
@@ -438,9 +418,6 @@ footer{
   color:var(--ink);border-top:1px solid var(--line);
   padding:2.4rem 4vw;text-align:center;
 }
-/* magnetic elements drift toward the cursor */
-.magnet{transition:transform .35s cubic-bezier(.22,1,.36,1);will-change:transform}
-/* tilt frames respond in 3D */
 .tilt{transform-style:preserve-3d;transition:transform .3s ease-out;will-change:transform}
 .foot-meta{
   display:flex;justify-content:space-between;
@@ -465,7 +442,7 @@ footer{
   .reveal{opacity:1 !important;transform:none !important}
   .h-line .txt,.h-line .strip{transform:none !important}
   /* resting pulses sit at full opacity rather than blinking */
-  .l-sub,.scroll-pill i{animation:none !important;opacity:1 !important}
+  .l-sub{animation:none !important;opacity:1 !important}
 }
 
 .harp-thumb{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:clamp(1rem,3vw,2.8rem);background:linear-gradient(135deg,var(--butter),var(--sky));color:var(--ink)}
@@ -803,22 +780,10 @@ addEventListener('scroll',()=>{
   update();
 })();
 
-/* ============ stats count-up ============ */
-function countUp(el){
-  const target=+el.dataset.count,dur=1400,t0=performance.now();
-  (function tick(t){
-    const p=Math.min((t-t0)/dur,1);
-    el.textContent=Math.floor(target*(1-Math.pow(1-p,3)));
-    if(p<1)requestAnimationFrame(tick);
-  })(t0);
-}
-
 /* ============ reveal ============ */
 const io=new IntersectionObserver(es=>es.forEach(e=>{
   if(e.isIntersecting){
     e.target.classList.add('visible');
-    e.target.querySelectorAll('[data-count]').forEach(countUp);
-    if(e.target.dataset.count)countUp(e.target);
     io.unobserve(e.target);
   }
 }),{threshold:.12});
@@ -1041,16 +1006,6 @@ function rainify(container){
      wipe handler stays live — so it's a calm static glass you can still clear. */
 }
 document.querySelectorAll('.rain').forEach(rainify);
-
-/* ============ magnetic elements ============ */
-document.querySelectorAll('.magnet').forEach(el=>{
-  el.addEventListener('mousemove',e=>{
-    const r=el.getBoundingClientRect();
-    const dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
-    el.style.transform=`translate(${dx*.28}px,${dy*.34}px)`;
-  });
-  el.addEventListener('mouseleave',()=>{el.style.transform='';});
-});
 
 /* ============ 3D tilt frames ============ */
 document.querySelectorAll('.tilt').forEach(el=>{
