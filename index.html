@@ -60,21 +60,25 @@ body::after{
 .l-tl{top:2.7vw;left:4.6vw;transition-delay:.3s}
 .l-tr{top:2.7vw;right:4.6vw;transition-delay:.42s}
 #loader.l-in .l-corner{opacity:1;transform:none}
-/* name : glyph-by-glyph upward wipe. The poster name IS .hero-name — one element from the loader
-   to the page, kept on its own layer throughout, so there is never a hand-off between two renderings */
-.hero-name{font:400 clamp(2rem,3vw,2.8rem)/1 var(--stamp);letter-spacing:.01em;will-change:transform}
-.hero-name.flying{position:fixed;left:50%;top:50%;translate:-50% -50%;z-index:10001;margin:0;font-size:clamp(3rem,9vw,7.4rem)}
-.hero-name .glyphs{display:flex}
-.hero-name .g{display:inline-block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
-.hero-name .g span{display:inline-block;transform:translateY(114%);transition:transform 1.05s cubic-bezier(.22,1,.36,1) calc(.18s + var(--i)*.045s)}
-.hero-name.in .g span{transform:none}
+/* name : glyph-by-glyph upward wipe. The poster name and the page name are separate elements that
+   never meet — on exit each poster glyph sinks out of its mask while its twin rises into place on
+   the page, one letter behind, so there is no landing frame to misalign */
+.l-center{text-align:center}
+.l-title{font:400 clamp(3rem,9vw,7.4rem)/1 var(--stamp);letter-spacing:.01em}
+.hero-name{font:400 clamp(2rem,3vw,2.8rem)/1 var(--stamp);letter-spacing:.01em;position:relative}
+.l-title .glyphs,.hero-name .glyphs{display:flex}
+.l-title .g,.hero-name .g{display:inline-block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.l-title .g span,.hero-name .g span{display:inline-block;transform:translateY(114%);transition:transform 1.05s cubic-bezier(.22,1,.36,1) calc(.18s + var(--i)*.045s)}
+#loader.l-in .l-title .g span{transform:none}
+#loader.l-out .l-title .g span{transform:translateY(120%);transition:transform .75s cubic-bezier(.6,0,.3,1) calc(var(--i)*.04s)}
+.hero.hero-ready .hero-name .g span{transform:none;transition-delay:calc(.22s + var(--i)*.04s)}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 /* counter : 000 → 100 under a hairline */
 .l-num{position:absolute;left:50%;bottom:7vh;transform:translateX(-50%);font:300 .68rem var(--mono);letter-spacing:.34em;color:var(--ink);font-variant-numeric:tabular-nums;opacity:0;transition:opacity .8s ease .25s}
 #loader.l-in .l-num{opacity:1}
 .l-bar{position:absolute;left:50%;bottom:calc(7vh + 1.7rem);width:min(46vw,420px);height:1px;margin-left:calc(min(46vw,420px) / -2);background:var(--ink);opacity:.35;transform:scaleX(0);transform-origin:center}
 #loader.l-out .l-corner,#loader.l-out .l-num,#loader.l-out .l-bar,#loader.l-out .l-marks{opacity:0;transition:opacity .5s ease}
-@media(max-width:680px){.l-corner{font-size:.52rem;letter-spacing:.14em}.l-tl,.l-tr{top:5vw}.l-marks i{display:none}.hero-name.flying{font-size:clamp(2.6rem,13vw,4rem)}}
+@media(max-width:680px){.l-corner{font-size:.52rem;letter-spacing:.14em}.l-tl,.l-tr{top:5vw}.l-marks i{display:none}.l-title{font-size:clamp(2.6rem,13vw,4rem)}}
 
 /* ---------- cursor ---------- */
 .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
@@ -438,6 +442,9 @@ footer{
   <div class="l-marks"><i></i><i></i><i></i><i></i></div>
   <div class="l-corner l-tl">Chuling Li</div>
   <div class="l-corner l-tr">Portfolio</div>
+  <div class="l-center">
+    <div class="l-title" data-text="Chuling Li" aria-hidden="true"></div>
+  </div>
   <div class="l-bar"></div>
   <div class="l-num">000</div>
 </div>
@@ -459,7 +466,7 @@ footer{
 <!-- ============ HERO : musical practice informs the technology ============ -->
 <header class="hero" id="top" aria-labelledby="hero-heading">
   <div class="hero-identity">
-    <p class="hero-name flying"><span class="sr-only">Chuling Li</span><span class="glyphs" aria-hidden="true"><span class="g"><span style="--i:0">C</span></span><span class="g"><span style="--i:1">h</span></span><span class="g"><span style="--i:2">u</span></span><span class="g"><span style="--i:3">l</span></span><span class="g"><span style="--i:4">i</span></span><span class="g"><span style="--i:5">n</span></span><span class="g"><span style="--i:6">g</span></span><span class="g"><span style="--i:7">&nbsp;</span></span><span class="g"><span style="--i:8">L</span></span><span class="g"><span style="--i:9">i</span></span></span></p>
+    <p class="hero-name" data-text="Chuling Li"><span class="sr-only">Chuling Li</span></p>
     <p class="hero-kicker">COMPUTER SCIENCE · VOCALIST · KEYBOARDIST</p>
   </div>
   <h1 class="hero-title" id="hero-heading">
