@@ -40,7 +40,10 @@ const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: 
     heroIn();
     title.style.transform='translate('+(b.left-a.left)+'px,'+(b.top-a.top)+'px) scale('+(b.width/a.width)+')';
     loader.classList.add('l-fly');
-    setTimeout(()=>hero.classList.add('name-in'),1000);
+    /* hand off in the same frame the flight ends : a crossfade of identical glyphs reads as a flicker */
+    const swap=()=>{hero.classList.add('name-in');title.style.visibility='hidden';};
+    title.addEventListener('transitionend',e=>{if(e.target===title&&e.propertyName==='transform')swap();});
+    setTimeout(swap,1400);
     setTimeout(()=>loader.remove(),1900);
   }
 })();
