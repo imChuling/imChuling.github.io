@@ -3,12 +3,7 @@
 const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* ============ preloader : frosted glass melts clear ============ */
 (function(){
-  const loader=document.getElementById('loader'),num=loader.querySelector('.l-num'),bar=loader.querySelector('.l-bar'),title=loader.querySelector('.l-title');
-  [...title.dataset.text].forEach((ch,i)=>{
-    const g=document.createElement('span');g.className='g';
-    const s=document.createElement('span');s.textContent=ch===' '?' ':ch;s.style.setProperty('--i',i);
-    g.appendChild(s);title.appendChild(g);
-  });
+  const loader=document.getElementById('loader'),num=loader.querySelector('.l-num'),bar=loader.querySelector('.l-bar'),name=document.querySelector('.hero-name');
   const glass=(blur,alpha)=>{
     const f='blur('+blur.toFixed(2)+'px) saturate('+(1+.05*Math.min(blur/30,1)).toFixed(3)+')';
     loader.style.webkitBackdropFilter=f;loader.style.backdropFilter=f;
@@ -20,7 +15,7 @@ const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: 
     requestAnimationFrame(()=>requestAnimationFrame(start));
   });
   function start(){
-    loader.classList.add('l-in');
+    loader.classList.add('l-in');name.classList.add('in');
     let t=0,last=performance.now();
     (function tick(now){
       t+=Math.min(now-last,50);last=now;
@@ -34,16 +29,26 @@ const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: 
   }
   function land(){
     loader.classList.add('l-out');loader.classList.add('done');glass(0,0);
-    const hero=document.querySelector('.hero'),target=hero.querySelector('.hero-name');
-    /* FLIP : measure the landing pad, then the poster name shrinks and lands exactly on it */
-    const a=title.getBoundingClientRect(),b=target.getBoundingClientRect();
+    /* an invisible twin holds the name's slot in the hero, so the flight is measured against the
+       exact box the name will occupy once it drops back into flow */
+    const slot=name.cloneNode(true);slot.classList.remove('flying');slot.style.visibility='hidden';slot.setAttribute('aria-hidden','true');
+    name.after(slot);
+    const a=name.getBoundingClientRect(),b=slot.getBoundingClientRect();
+    const from=getComputedStyle(name).fontSize,to=getComputedStyle(slot).fontSize;
+    const x0=a.left+scrollX,y0=a.top+scrollY,x1=b.left+scrollX,y1=b.top+scrollY;
     heroIn();
-    title.style.transform='translate('+(b.left-a.left)+'px,'+(b.top-a.top)+'px) scale('+(b.width/a.width)+')';
-    loader.classList.add('l-fly');
-    /* hand off in the same frame the flight ends : a crossfade of identical glyphs reads as a flicker */
-    const swap=()=>{hero.classList.add('name-in');title.style.visibility='hidden';};
-    title.addEventListener('transitionend',e=>{if(e.target===title&&e.propertyName==='transform')swap();});
-    setTimeout(swap,1400);
+    /* fly by animating font-size and document position, never transform : the glyphs are laid out
+       and rasterised at true size every frame, so the last frame already is the resting page name */
+    Object.assign(name.style,{position:'absolute',left:x0+'px',top:y0+'px',translate:'none'});
+    const fly=name.animate(
+      [{left:x0+'px',top:y0+'px',fontSize:from},{left:x1+'px',top:y1+'px',fontSize:to}],
+      {duration:REDUCE?1:1200,easing:'cubic-bezier(.55,.05,.15,1)',fill:'forwards'});
+    const settle=()=>{
+      if(!slot.isConnected)return;
+      fly.cancel();name.style.cssText='';name.classList.remove('flying');slot.remove();
+    };
+    fly.onfinish=settle;
+    setTimeout(settle,1400);
     setTimeout(()=>loader.remove(),1900);
   }
 })();
