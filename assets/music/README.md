@@ -1,6 +1,6 @@
 # Music 发布说明
 
-首页：`portfolio_site.html#music`。采用原始的左侧叠放封面、右侧曲目列表布局。悬停或点按列表可切换封面；键盘上下方向键、Home、End 可选择作品。选中作品有视频 ID 时，点击前景封面打开播放器。四个作品顺序固定为 Piano Song、Live Band Highlights、Max/MSP Sound Study、HEARTBREAKER。
+首页：`index.html#music`。采用原始的左侧叠放封面、右侧曲目列表布局。悬停或点按列表可切换封面；键盘上下方向键、Home、End 可选择作品。选中作品有视频 ID 时，点击前景封面打开播放器。四个作品顺序固定为 Piano Song、Live Band Highlights、Max/MSP Sound Study、HEARTBREAKER。
 
 ## 接入 YouTube
 
