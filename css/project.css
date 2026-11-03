@@ -58,6 +58,8 @@
   background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:16px;
 }
 .proj-paper h3{font-family:var(--stamp);font-weight:400;font-size:1.1rem;line-height:1.3;margin-bottom:.6rem}
+.proj-paper h3 a{text-decoration:none;color:inherit;border-bottom:1px solid var(--line);padding-bottom:2px;transition:border-color .3s}
+.proj-paper h3 a:hover{border-color:var(--violet)}
 .proj-paper .authors{font-family:var(--mono);font-weight:300;font-size:.82rem;color:var(--muted);margin-bottom:.3rem}
 .proj-paper .venue{font-family:var(--display);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:1rem}
 .proj-paper .abstract{font-family:var(--mono);font-weight:300;font-size:.84rem;line-height:1.6;color:var(--muted)}

@@ -9,7 +9,6 @@
 @font-face{font-family:'Compagnon';src:url('../fonts/Compagnon-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
 @font-face{font-family:'IMFellSC';src:url('../fonts/IMFellEnglishSC-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'OldNewspaper';src:url('../fonts/OldNewspaperTypes.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'StampWriter';src:url('../fonts/STAMPWRITER-KIT.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 
 /* ---------- design tokens ---------- */
 :root{
@@ -29,7 +28,6 @@
   --serif:'Compagnon',serif;
   --display:'IMFellSC',serif;
   --stamp:'OldNewspaper',serif;
-  --stencil:'StampWriter',monospace;
   --sans:'Space Grotesk',sans-serif;
   --mono:'JetBrains Mono',monospace;
 }
