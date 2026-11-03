@@ -72,43 +72,57 @@ body::after{
   background:rgba(238,239,238,.62);
   -webkit-backdrop-filter:blur(30px) saturate(1.05);
   backdrop-filter:blur(30px) saturate(1.05);
-  transition:
-    -webkit-backdrop-filter 1.5s cubic-bezier(.4,0,.2,1),
-    backdrop-filter 1.5s cubic-bezier(.4,0,.2,1),
-    background 1.5s cubic-bezier(.4,0,.2,1);
 }
+/* the counter drives the demist inline; .done only hands the last haze to a transition */
 #loader.done{
-  -webkit-backdrop-filter:blur(0px) saturate(1);
-  backdrop-filter:blur(0px) saturate(1);
-  background:rgba(238,239,238,0);
+  transition:
+    -webkit-backdrop-filter 1.2s cubic-bezier(.4,0,.2,1),
+    backdrop-filter 1.2s cubic-bezier(.4,0,.2,1),
+    background 1.2s cubic-bezier(.4,0,.2,1);
 }
-#loader.done .l-center,#loader.done .l-num,#loader.done .l-bar{opacity:0}
-.l-center{text-align:center;transition:opacity .55s ease}
-.l-title{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,6.5vw,5rem);letter-spacing:.02em}
-.l-title em{font-style:normal;color:inherit}
-.l-sub{
-  margin-top:1.2rem;font-family:var(--mono);font-weight:300;font-size:.64rem;
-  letter-spacing:.42em;text-transform:uppercase;color:var(--muted);
-  animation:subPulse 2.2s ease-in-out infinite;
-}
-@keyframes subPulse{0%,100%{opacity:.45}50%{opacity:1}}
-.l-num{
-  position:absolute;right:4vw;bottom:3.4vw;
-  font-family:var(--mono);font-weight:200;font-size:clamp(2.2rem,7vw,5rem);line-height:1;
-  transition:opacity .55s ease;
-}
-.l-bar{
-  position:absolute;left:0;bottom:0;height:2px;width:0%;
-  background:linear-gradient(90deg,var(--violet),var(--rose));
-  transition:width .35s ease,opacity .55s ease;
-}
+/* proof-sheet furniture : crop marks + corner labels */
+.l-marks{position:absolute;inset:0;pointer-events:none}
+.l-marks i{position:absolute;width:22px;height:22px}
+.l-marks i:nth-child(1){top:2.4vw;left:2.4vw}
+.l-marks i:nth-child(2){top:2.4vw;right:2.4vw;transform:rotate(90deg)}
+.l-marks i:nth-child(3){bottom:2.4vw;right:2.4vw;transform:rotate(180deg)}
+.l-marks i:nth-child(4){bottom:2.4vw;left:2.4vw;transform:rotate(270deg)}
+.l-marks i::before,.l-marks i::after{content:'';position:absolute;top:0;left:0;background:var(--ink);opacity:.5;transition:transform 1s cubic-bezier(.22,1,.36,1) .1s}
+.l-marks i::before{width:100%;height:1px;transform:scaleX(0);transform-origin:left}
+.l-marks i::after{width:1px;height:100%;transform:scaleY(0);transform-origin:top}
+#loader.l-in .l-marks i::before{transform:scaleX(1)}
+#loader.l-in .l-marks i::after{transform:scaleY(1)}
+.l-corner{position:absolute;font:400 .6rem var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);white-space:nowrap;opacity:0;transform:translateY(6px);transition:opacity .9s ease,transform .9s cubic-bezier(.22,1,.36,1)}
+.l-tl{top:2.7vw;left:4.6vw;transition-delay:.3s}
+.l-tr{top:2.7vw;right:4.6vw;transition-delay:.42s}
+#loader.l-in .l-corner{opacity:1;transform:none}
+/* name : glyph-by-glyph upward wipe */
+.l-center{text-align:center}
+.l-title{font:400 clamp(3rem,9vw,7.4rem)/1 var(--stamp);letter-spacing:.01em;display:flex;justify-content:center;transform-origin:0 0;will-change:transform}
+#loader.l-fly .l-title{transition:transform 1.15s cubic-bezier(.7,0,.18,1),opacity .32s ease .9s;opacity:0}
+.l-title .g{display:inline-block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.l-title .g span{display:inline-block;transform:translateY(114%);transition:transform 1.05s cubic-bezier(.22,1,.36,1) calc(.18s + var(--i)*.045s)}
+#loader.l-in .l-title .g span{transform:none}
+/* counter : 000 → 100 under a hairline */
+.l-num{position:absolute;left:50%;bottom:7vh;transform:translateX(-50%);font:300 .68rem var(--mono);letter-spacing:.34em;color:var(--ink);font-variant-numeric:tabular-nums;opacity:0;transition:opacity .8s ease .25s}
+#loader.l-in .l-num{opacity:1}
+.l-bar{position:absolute;left:50%;bottom:calc(7vh + 1.7rem);width:min(46vw,420px);height:1px;margin-left:calc(min(46vw,420px) / -2);background:var(--ink);opacity:.35;transform:scaleX(0);transform-origin:center}
+#loader.l-out .l-corner,#loader.l-out .l-num,#loader.l-out .l-bar,#loader.l-out .l-marks{opacity:0;transition:opacity .5s ease}
+@media(max-width:680px){.l-corner{font-size:.52rem;letter-spacing:.14em}.l-tl,.l-tr{top:5vw}.l-marks i{display:none}.l-title{font-size:clamp(2.6rem,13vw,4rem)}}
 
 /* ---------- cursor ---------- */
 .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
 .cursor-dot{width:6px;height:6px;background:var(--ink)}
 .cursor-ring{width:34px;height:34px;border:1px solid rgba(24,21,31,.4);transition:width .3s,height .3s,background .3s,border-color .3s}
 body.hovering .cursor-ring{width:62px;height:62px;background:rgba(91,67,240,.08);border-color:var(--violet)}
-@media (hover:none){.cursor-dot,.cursor-ring{display:none}body{cursor:auto}}
+body.tagging .cursor-ring{opacity:0}
+.cursor-ring{transition:width .3s,height .3s,background .3s,border-color .3s,opacity .25s}
+.cursor-tag{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;display:flex;align-items:center;gap:.45rem;height:36px;padding:0 1.05rem;border-radius:99px;background:var(--ink);color:var(--paper);font:400 .64rem var(--display);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translate(-50%,-50%) scale(.2);transition:opacity .3s,transform .6s cubic-bezier(.22,1.4,.36,1);will-change:left,top}
+.cursor-tag.light{background:var(--paper);color:var(--ink)}
+.cursor-tag.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.cursor-tag.off{opacity:0;transform:translate(-50%,-50%) scale(.5,.08);transition:opacity .28s .08s,transform .36s cubic-bezier(.4,0,.2,1)}
+.cursor-tag-arrow{font:400 .95rem var(--sans);line-height:1;letter-spacing:0}
+@media (hover:none){.cursor-dot,.cursor-ring,.cursor-tag{display:none}body{cursor:auto}}
 
 /* ---------- nav ---------- */
 nav{
@@ -136,7 +150,8 @@ nav{
 /* ---------- HERO : identity, musical perspective, and a direct route to the work ---------- */
 .hero{padding:7.7rem 4vw 3rem;max-width:1500px;margin:0 auto;overflow:hidden;scroll-margin-top:5rem}
 .hero-identity{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;margin-bottom:1.8rem}
-.hero-name{font:400 clamp(2rem,3vw,2.8rem)/1.1 var(--display);letter-spacing:.02em}
+.hero-name{font:400 clamp(2rem,3vw,2.8rem)/1.1 var(--display);letter-spacing:.02em;opacity:0;transition:opacity .32s ease}
+.hero.name-in .hero-name{opacity:1}
 .hero-kicker{font:400 .66rem/1.8 var(--display);letter-spacing:.17em;color:var(--muted)}
 .hero-title{font-weight:400;margin:0}
 .h-line{display:flex;align-items:center;gap:1.4rem;overflow:hidden;margin-bottom:.6rem}
@@ -355,9 +370,7 @@ section{padding:9rem 4vw}
 .music-cover:disabled{opacity:1;cursor:default}
 .music-cover:not(:disabled){cursor:pointer}
 .music-cover::before{content:'';position:absolute;inset:0;background:rgba(18,20,26,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .5s cubic-bezier(.22,1,.36,1);z-index:1;border-radius:12px}
-.music-cover::after{content:'↗';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);width:3.6rem;height:3.6rem;display:grid;place-items:center;border:1.5px solid rgba(243,242,239,.5);border-radius:50%;font:400 1.1rem var(--sans);color:var(--paper);opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.22,1,.36,1);z-index:2;pointer-events:none}
 .is-active .music-cover:hover::before{opacity:1}
-.is-active .music-cover:hover::after{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .music-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:radial-gradient(ellipse at 30% 20%,#62616A,transparent 80%),#363842}
 .music-placeholder.synthesis{background:radial-gradient(ellipse at 70% 30%,#50636B,transparent 80%),#2D3540}
 .music-placeholder svg{width:48%;height:32%;opacity:.65}
@@ -392,8 +405,11 @@ section{padding:9rem 4vw}
 @media(prefers-reduced-motion:reduce){.music *,.music *::before{transition:none!important;animation:none!important}.music .reveal{transform:none}.music-stack:hover .is-active .music-cover,.music-track:hover .music-track-body{translate:none}}
 
 /* ---------- about-me strip ---------- */
-.me{border-top:1px solid var(--line)}
-.me .shell{display:grid;grid-template-columns:.8fr 1.2fr;gap:2.5rem 5rem;align-items:center}
+.me-wrap{position:relative;padding:0;border-top:1px solid var(--line)}
+.me-scroll{height:180vh}
+.me{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;padding:6rem 4vw}
+.me .shell{width:100%;display:grid;grid-template-columns:.8fr 1.2fr;gap:2.5rem 5rem;align-items:center}
+@media(max-width:880px){.me-scroll{height:auto}.me{position:static;min-height:0;padding:5rem 4vw}}
 .me-photo{aspect-ratio:3/4;border-radius:20px;overflow:hidden;position:relative;max-width:380px;box-shadow:0 30px 60px -40px rgba(24,21,31,.3);transition:box-shadow 1.4s cubic-bezier(.22,1,.36,1)}
 .me-photo img{display:block;transition:transform 1.6s cubic-bezier(.22,1,.36,1)}
 .me-photo:hover{box-shadow:0 40px 80px -40px rgba(24,21,31,.38)}
@@ -442,7 +458,6 @@ footer{
   .reveal{opacity:1 !important;transform:none !important}
   .h-line .txt,.h-line .strip{transform:none !important}
   /* resting pulses sit at full opacity rather than blinking */
-  .l-sub{animation:none !important;opacity:1 !important}
 }
 
 .harp-thumb{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:clamp(1rem,3vw,2.8rem);background:linear-gradient(135deg,var(--butter),var(--sky));color:var(--ink)}
@@ -455,17 +470,20 @@ footer{
 
 <div id="washes"></div>
 
-<div id="loader">
+<div id="loader" aria-hidden="true">
+  <div class="l-marks"><i></i><i></i><i></i><i></i></div>
+  <div class="l-corner l-tl">Chuling Li</div>
+  <div class="l-corner l-tr">Portfolio</div>
   <div class="l-center">
-    <div class="l-title">Chuling <em>LI</em></div>
-    <div class="l-sub">music · technology · portfolio</div>
+    <div class="l-title" data-text="Chuling Li"></div>
   </div>
-  <div class="l-num">0%</div>
   <div class="l-bar"></div>
+  <div class="l-num">000</div>
 </div>
 
 <div class="cursor-dot"></div>
 <div class="cursor-ring"></div>
+<div class="cursor-tag" aria-hidden="true"></div>
 
 <nav>
   <div class="logo">Chuling <em>LI</em></div>
@@ -598,18 +616,18 @@ footer{
     <div class="sec-head reveal"><h2 id="music-heading" class="sec-title">Sound <em>&amp; stage</em></h2><span class="sec-num">02 — MUSIC</span></div>
     <div class="music-grid">
       <div class="music-stack reveal">
-        <div class="music-panel" id="music-panel-piano-song" role="tabpanel" tabindex="0" aria-labelledby="music-tab-piano-song" data-layer="3" aria-hidden="true" inert><button class="music-cover music-placeholder" type="button" data-music="piano-song" data-title="Piano Song" data-detail="music-piano-song.html" aria-label="Piano Song">
+        <div class="music-panel" id="music-panel-piano-song" role="tabpanel" tabindex="0" aria-labelledby="music-tab-piano-song" data-layer="3" aria-hidden="true" inert><button class="music-cover music-placeholder" type="button" data-tag="Watch" data-tag-theme="light" data-music="piano-song" data-title="Piano Song" data-detail="music-piano-song.html" aria-label="Piano Song">
           <svg viewBox="0 0 360 100" fill="none" aria-hidden="true"><rect x="5" y="5" width="350" height="90" rx="3" stroke="currentColor"/><path d="M55 5v90M105 5v90M155 5v90M205 5v90M255 5v90M305 5v90" stroke="currentColor"/><path d="M45 5h20v55H45zM95 5h20v55H95zM195 5h20v55h-20zM245 5h20v55h-20zM295 5h20v55h-20z" fill="#D3CDD0"/></svg>
           <span class="music-placeholder-title">Piano Song</span>
         </button></div>
-        <div class="music-panel is-active" id="music-panel-live-band-highlights" role="tabpanel" tabindex="0" aria-labelledby="music-tab-live-band-highlights" data-layer="0" aria-hidden="false"><button class="music-cover" type="button" data-music="live-band-highlights" data-title="Live Band Highlights" data-detail="music-live-band.html" aria-label="Live Band Highlights">
+        <div class="music-panel is-active" id="music-panel-live-band-highlights" role="tabpanel" tabindex="0" aria-labelledby="music-tab-live-band-highlights" data-layer="0" aria-hidden="false"><button class="music-cover" type="button" data-tag="Watch" data-tag-theme="light" data-music="live-band-highlights" data-title="Live Band Highlights" data-detail="music-live-band.html" aria-label="Live Band Highlights">
           <img src="assets/music/live-band-highlights.jpg" alt="Chuling Li singing and playing keyboard on stage with her band; Live Band Highlights cover" width="2560" height="1440" loading="lazy" decoding="async">
         </button></div>
-        <div class="music-panel" id="music-panel-maxmsp" role="tabpanel" tabindex="0" aria-labelledby="music-tab-maxmsp" data-layer="1" aria-hidden="true" inert><button class="music-cover music-placeholder synthesis" type="button" data-music="maxmsp" data-title="Max/MSP Sound Study" data-detail="music-maxmsp.html" aria-label="Max/MSP Sound Study">
+        <div class="music-panel" id="music-panel-maxmsp" role="tabpanel" tabindex="0" aria-labelledby="music-tab-maxmsp" data-layer="1" aria-hidden="true" inert><button class="music-cover music-placeholder synthesis" type="button" data-tag="Watch" data-tag-theme="light" data-music="maxmsp" data-title="Max/MSP Sound Study" data-detail="music-maxmsp.html" aria-label="Max/MSP Sound Study">
           <svg viewBox="0 0 360 100" fill="none" aria-hidden="true"><path d="M0 50h360" stroke="currentColor" opacity=".25"/><path d="M0 50C15 50 15 15 30 15S45 85 60 85 75 15 90 15 105 85 120 85 135 15 150 15 165 85 180 85 195 15 210 15 225 85 240 85 255 15 270 15 285 85 300 85 315 15 330 15 345 50 360 50" stroke="currentColor" stroke-width="1.5"/><path d="M0 50Q90 0 180 50T360 50" stroke="currentColor" opacity=".5"/></svg>
           <span class="music-placeholder-title">Sound study / 01</span>
         </button></div>
-        <div class="music-panel" id="music-panel-heartbreaker" role="tabpanel" tabindex="0" aria-labelledby="music-tab-heartbreaker" data-layer="2" aria-hidden="true" inert><button class="music-cover" type="button" data-music="heartbreaker" data-title="HEARTBREAKER" data-detail="music-heartbreaker.html" aria-label="HEARTBREAKER">
+        <div class="music-panel" id="music-panel-heartbreaker" role="tabpanel" tabindex="0" aria-labelledby="music-tab-heartbreaker" data-layer="2" aria-hidden="true" inert><button class="music-cover" type="button" data-tag="Watch" data-tag-theme="light" data-music="heartbreaker" data-title="HEARTBREAKER" data-detail="music-heartbreaker.html" aria-label="HEARTBREAKER">
           <img src="assets/music/heartbreaker.jpg" alt="HEARTBREAKER — Led Zeppelin cover; Chuling Li on lead vocals with Richard Bird" width="2560" height="1440" loading="lazy" decoding="async">
         </button></div>
         <div class="music-stack-note" aria-hidden="true"><span>Selected recordings</span><span class="music-stack-count">02 / 04</span></div>
@@ -678,7 +696,9 @@ footer{
 </div>
 
 <!-- ============ ABOUT ME ============ -->
-<section class="me" id="contact" aria-label="About and contact">
+<section class="me-wrap" id="contact" aria-label="About and contact">
+  <div class="me-scroll">
+  <div class="me">
   <div class="shell">
     <div class="me-photo reveal tilt" data-hover>
       <img src="images/profile.jpg" alt="Chuling Li" style="width:100%;height:100%;object-fit:cover">
@@ -705,6 +725,8 @@ footer{
     </div>
   </div>
   </div>
+  </div>
+  </div>
 </section>
 
 <footer>
@@ -720,19 +742,46 @@ footer{
 const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* ============ preloader : frosted glass melts clear ============ */
 (function(){
-  const loader=document.getElementById('loader'),num=loader.querySelector('.l-num'),bar=loader.querySelector('.l-bar');
-  let p=0;
-  const iv=setInterval(()=>{
-    p+=Math.random()*22;
-    if(p>=100){p=100;clearInterval(iv);
-      num.textContent='100%';bar.style.width='100%';
-      setTimeout(()=>{
-        loader.classList.add('done');   /* the glass demists : blur 30 → 0 */
-        heroIn();
-        setTimeout(()=>loader.remove(),1600);
-      },380);
-    }else{num.textContent=Math.floor(p)+'%';bar.style.width=p+'%';}
-  },120);
+  const loader=document.getElementById('loader'),num=loader.querySelector('.l-num'),bar=loader.querySelector('.l-bar'),title=loader.querySelector('.l-title');
+  [...title.dataset.text].forEach((ch,i)=>{
+    const g=document.createElement('span');g.className='g';
+    const s=document.createElement('span');s.textContent=ch===' '?' ':ch;s.style.setProperty('--i',i);
+    g.appendChild(s);title.appendChild(g);
+  });
+  const glass=(blur,alpha)=>{
+    const f='blur('+blur.toFixed(2)+'px) saturate('+(1+.05*Math.min(blur/30,1)).toFixed(3)+')';
+    loader.style.webkitBackdropFilter=f;loader.style.backdropFilter=f;
+    loader.style.background='rgba(238,239,238,'+alpha.toFixed(3)+')';
+  };
+  const D=REDUCE?500:1900;
+  /* wait for the display face (or 1.2s), then run on a frame clock so a load stall can't skip the count */
+  Promise.race([document.fonts?document.fonts.ready:Promise.resolve(),new Promise(r=>setTimeout(r,1200))]).then(()=>{
+    requestAnimationFrame(()=>requestAnimationFrame(start));
+  });
+  function start(){
+    loader.classList.add('l-in');
+    let t=0,last=performance.now();
+    (function tick(now){
+      t+=Math.min(now-last,50);last=now;
+      const u=Math.min(t/D,1),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+      num.textContent=String(Math.round(e*100)).padStart(3,'0');
+      bar.style.transform='scaleX('+e+')';
+      glass(30-25*e,.62-.44*e);                  /* the page develops behind the name as the count climbs */
+      if(u<1){requestAnimationFrame(tick);return;}
+      setTimeout(land,300);
+    })(last);
+  }
+  function land(){
+    loader.classList.add('l-out');loader.classList.add('done');glass(0,0);
+    const hero=document.querySelector('.hero'),target=hero.querySelector('.hero-name');
+    heroIn();
+    /* FLIP : the poster name shrinks and lands exactly on the page name */
+    const a=title.getBoundingClientRect(),b=target.getBoundingClientRect();
+    title.style.transform='translate('+(b.left-a.left)+'px,'+(b.top-12-a.top)+'px) scale('+(b.width/a.width)+')';
+    loader.classList.add('l-fly');
+    setTimeout(()=>hero.classList.add('name-in'),980);
+    setTimeout(()=>loader.remove(),1900);
+  }
 })();
 
 /* ============ hero lines stagger in ============ */
@@ -754,6 +803,27 @@ document.querySelectorAll('[data-hover],a').forEach(el=>{
   el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
 });
 
+/* ============ cursor tag : a pill that trails the pointer on separate elastic axes ============ */
+(function(){
+  const tag=document.querySelector('.cursor-tag');
+  let tx=mx,ty=my,vx=0,vy=0;
+  (function loop(){
+    vx=(vx+(mx-tx)*.13)*.68;vy=(vy+(my-ty)*.10)*.72;
+    tx+=vx;ty+=vy;
+    tag.style.left=tx+'px';tag.style.top=ty+'px';
+    requestAnimationFrame(loop);
+  })();
+  const show=el=>{
+    tag.replaceChildren(el.dataset.tag,Object.assign(document.createElement('span'),{className:'cursor-tag-arrow',textContent:'↗'}));
+    tag.classList.toggle('light',el.dataset.tagTheme==='light');
+    tag.classList.remove('off');tag.classList.add('on');document.body.classList.add('tagging');
+  };
+  const hide=()=>{tag.classList.remove('on');tag.classList.add('off');document.body.classList.remove('tagging');};
+  document.querySelectorAll('[data-tag]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>show(el));
+    el.addEventListener('mouseleave',hide);
+  });
+})();
 /* ============ hero strips : parallax INSIDE the pill (never escapes its frame) ============ */
 addEventListener('scroll',()=>{
   if(REDUCE)return;
