@@ -35,12 +35,12 @@ const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: 
   function land(){
     loader.classList.add('l-out');loader.classList.add('done');glass(0,0);
     const hero=document.querySelector('.hero'),target=hero.querySelector('.hero-name');
-    heroIn();
-    /* FLIP : the poster name shrinks and lands exactly on the page name */
+    /* FLIP : measure the landing pad, then the poster name shrinks and lands exactly on it */
     const a=title.getBoundingClientRect(),b=target.getBoundingClientRect();
-    title.style.transform='translate('+(b.left-a.left)+'px,'+(b.top-12-a.top)+'px) scale('+(b.width/a.width)+')';
+    heroIn();
+    title.style.transform='translate('+(b.left-a.left)+'px,'+(b.top-a.top)+'px) scale('+(b.width/a.width)+')';
     loader.classList.add('l-fly');
-    setTimeout(()=>hero.classList.add('name-in'),980);
+    setTimeout(()=>hero.classList.add('name-in'),1000);
     setTimeout(()=>loader.remove(),1900);
   }
 })();

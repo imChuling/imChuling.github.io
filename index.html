@@ -62,7 +62,7 @@ body::after{
 /* name : glyph-by-glyph upward wipe */
 .l-center{text-align:center}
 .l-title{font:400 clamp(3rem,9vw,7.4rem)/1 var(--stamp);letter-spacing:.01em;display:flex;justify-content:center;transform-origin:0 0;will-change:transform}
-#loader.l-fly .l-title{transition:transform 1.15s cubic-bezier(.7,0,.18,1),opacity .32s ease .9s;opacity:0}
+#loader.l-fly .l-title{transition:transform 1.2s cubic-bezier(.55,.05,.15,1),opacity .25s ease 1s;opacity:0}
 .l-title .g{display:inline-block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
 .l-title .g span{display:inline-block;transform:translateY(114%);transition:transform 1.05s cubic-bezier(.22,1,.36,1) calc(.18s + var(--i)*.045s)}
 #loader.l-in .l-title .g span{transform:none}
@@ -112,7 +112,8 @@ nav{
 /* ---------- HERO : identity, musical perspective, and a direct route to the work ---------- */
 .hero{padding:7.7rem 4vw 3rem;max-width:1500px;margin:0 auto;overflow:hidden;scroll-margin-top:5rem}
 .hero-identity{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;margin-bottom:1.8rem}
-.hero-name{font:400 clamp(2rem,3vw,2.8rem)/1.1 var(--display);letter-spacing:.02em;opacity:0;transition:opacity .32s ease}
+/* same face, line-height and tracking as .l-title so the poster name lands as the same glyphs */
+.hero-name{font:400 clamp(2rem,3vw,2.8rem)/1 var(--stamp);letter-spacing:.01em;opacity:0;transition:opacity .25s ease}
 .hero.name-in .hero-name{opacity:1}
 .hero-kicker{font:400 .66rem/1.8 var(--display);letter-spacing:.17em;color:var(--muted)}
 .hero-title{font-weight:400;margin:0}
@@ -166,7 +167,9 @@ nav{
 .skills-group ul{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:300 .73rem/1.65 var(--mono);color:var(--muted)}
 .skills-group li{max-width:100%;overflow-wrap:anywhere}
 
-.hero-identity,.hero-sub,.hero-research{opacity:0;transform:translateY(12px);transition:opacity .8s,transform .8s cubic-bezier(.22,1,.36,1)}
+/* the identity row is the landing pad for the poster name, so it fades without moving */
+.hero-identity{opacity:0;transition:opacity .8s}
+.hero-sub,.hero-research{opacity:0;transform:translateY(12px);transition:opacity .8s,transform .8s cubic-bezier(.22,1,.36,1)}
 .hero.hero-ready .hero-identity,.hero.hero-ready .hero-sub,.hero.hero-ready .hero-research{opacity:1;transform:none}
 .hero-sub{transition-delay:.35s}.hero-research{transition-delay:.45s}
 #projects,#story,#contact{scroll-margin-top:5rem}
