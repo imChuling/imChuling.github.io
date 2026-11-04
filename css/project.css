@@ -64,25 +64,6 @@
 .proj-paper .venue{font-family:var(--display);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:1rem}
 .proj-paper .abstract{font-family:var(--mono);font-weight:300;font-size:.84rem;line-height:1.6;color:var(--muted)}
 
-/* performance list */
-.perf-list{list-style:none;margin:2.5rem 0 0;padding:0;border-top:1px solid var(--line)}
-.perf{display:grid;grid-template-columns:6rem minmax(0,1fr);gap:1rem 1.5rem;padding:1.4rem 0;border-bottom:1px solid var(--line)}
-.perf time{font-family:var(--mono);font-weight:300;font-size:.72rem;letter-spacing:.06em;color:var(--muted);padding-top:.35rem}
-.perf h3{font-family:var(--stamp);font-weight:400;font-size:1.05rem;line-height:1.35;margin-bottom:.45rem;color:var(--ink)}
-.perf-result{display:inline-block;vertical-align:middle;margin-left:.6rem;padding:.2rem .55rem;border:1px solid rgba(90,104,128,.3);border-radius:4px;background:rgba(211,213,224,.3);font:400 .6rem/1.5 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--violet)}
-.perf-piece,.perf-role{font-family:var(--mono);font-weight:300;font-size:.82rem;line-height:1.6;color:var(--muted);margin:0}
-.perf-piece+.perf-piece{margin-top:.15rem}
-.perf-role{margin-top:.4rem;font-family:var(--serif);font-size:.78rem}
-.perf.key{padding:1.8rem 0}
-.perf.key h3{font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.25}
-.perf.key time{color:var(--ink);font-weight:400}
-.perf.key .perf-piece{color:var(--ink)}
-@media(max-width:640px){
-  .perf{grid-template-columns:1fr;gap:.3rem}
-  .perf time{padding-top:0}
-  .perf-result{display:block;width:max-content;margin:.4rem 0 0}
-}
-
 /* next project */
 .proj-next{max-width:760px;margin:5rem auto 0;padding:0 4vw}
 .proj-next a{
