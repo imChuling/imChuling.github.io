@@ -98,15 +98,24 @@ addEventListener('scroll',()=>{
   const track=document.querySelector('.story-track');
   const steps=document.querySelectorAll('.story-step');
   const visuals=document.querySelectorAll('.story-visual .ph');
+  const last=steps.length-1;
+  /* chapter k owns the third of the track around k/last, so the settle points sit mid-range */
+  function range(){const r=track.getBoundingClientRect();return {top:r.top+scrollY,total:r.height-innerHeight};}
+  function progress(){const {top,total}=range();return Math.min(Math.max((scrollY-top)/total,0),1);}
   function update(){
-    const r=track.getBoundingClientRect();
-    const total=r.height-innerHeight;
-    const prog=Math.min(Math.max(-r.top/total,0),1);
-    const idx=Math.min(Math.floor(prog*steps.length),steps.length-1);
+    const idx=Math.round(progress()*last);
     steps.forEach((s,i)=>s.classList.toggle('active',i===idx));
     visuals.forEach((v,i)=>v.classList.toggle('active',i===idx));
   }
-  addEventListener('scroll',update,{passive:true});
+  /* once scrolling stops inside the track, settle on the nearest chapter so a flick can't skip one */
+  let settle;
+  function snap(){
+    const {top,total}=range();
+    if(scrollY<top||scrollY>top+total)return;
+    const target=top+Math.round(progress()*last)/last*total;
+    if(Math.abs(target-scrollY)>2)scrollTo({top:target,behavior:REDUCE?'auto':'smooth'});
+  }
+  addEventListener('scroll',()=>{update();clearTimeout(settle);settle=setTimeout(snap,140);},{passive:true});
   update();
 })();
 
@@ -203,8 +212,9 @@ function rainify(container){
   /* a photo that finishes loading after the first snapshot replaces the gradient frost on the next re-frost pass */
   const repaint=()=>{x.globalAlpha=1;x.drawImage(snap(),0,0);};
   container.querySelectorAll('img').forEach(img=>{if(!img.complete)img.addEventListener('load',()=>{snaps.clear();if(REDUCE)repaint();},{once:true});});
-  /* without the animation loop nothing re-frosts, so a chapter change must repaint the glass itself */
-  if(REDUCE)new MutationObserver(repaint).observe(container,{subtree:true,attributes:true,attributeFilter:['class']});
+  /* a chapter change is a new window : repaint the frost at once rather than letting the old photo's
+     haze linger under the new one for a second */
+  new MutationObserver(repaint).observe(container,{subtree:true,attributes:true,attributeFilter:['class']});
 
   /* --- droplet state machines --- */
   /* dew = static residue droplets on the glass (also left behind by runs) */
