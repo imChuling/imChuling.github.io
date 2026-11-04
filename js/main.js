@@ -201,7 +201,10 @@ function rainify(container){
   }
   size();addEventListener('resize',size);
   /* a photo that finishes loading after the first snapshot replaces the gradient frost on the next re-frost pass */
-  container.querySelectorAll('img').forEach(img=>{if(!img.complete)img.addEventListener('load',()=>snaps.clear(),{once:true});});
+  const repaint=()=>{x.globalAlpha=1;x.drawImage(snap(),0,0);};
+  container.querySelectorAll('img').forEach(img=>{if(!img.complete)img.addEventListener('load',()=>{snaps.clear();if(REDUCE)repaint();},{once:true});});
+  /* without the animation loop nothing re-frosts, so a chapter change must repaint the glass itself */
+  if(REDUCE)new MutationObserver(repaint).observe(container,{subtree:true,attributes:true,attributeFilter:['class']});
 
   /* --- droplet state machines --- */
   /* dew = static residue droplets on the glass (also left behind by runs) */
