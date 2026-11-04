@@ -212,9 +212,14 @@ function rainify(container){
   /* a photo that finishes loading after the first snapshot replaces the gradient frost on the next re-frost pass */
   const repaint=()=>{x.globalAlpha=1;x.drawImage(snap(),0,0);};
   container.querySelectorAll('img').forEach(img=>{if(!img.complete)img.addEventListener('load',()=>{snaps.clear();if(REDUCE)repaint();},{once:true});});
-  /* a chapter change is a new window : repaint the frost at once rather than letting the old photo's
-     haze linger under the new one for a second */
-  new MutationObserver(repaint).observe(container,{subtree:true,attributes:true,attributeFilter:['class']});
+  /* a chapter change re-frosts the glass from the new photo over ~half a second — quick enough that the
+     old photo's haze doesn't linger, slow enough to read as a transition. Only a real change counts:
+     class writes that leave the active pane alone (the wipe hint, for one) must not touch the glass */
+  let fade=0,current=activePh();
+  new MutationObserver(()=>{
+    const ph=activePh();if(ph===current)return;
+    current=ph;if(REDUCE)repaint();else fade=30;
+  }).observe(container,{subtree:true,attributes:true,attributeFilter:['class']});
 
   /* --- droplet state machines --- */
   /* dew = static residue droplets on the glass (also left behind by runs) */
@@ -269,7 +274,7 @@ function rainify(container){
   function step(){
     /* slow re-frosting with the blurred snapshot (not flat white) */
     x.globalCompositeOperation='source-over';
-    x.globalAlpha=.012;x.drawImage(snap(),0,0);x.globalAlpha=1;
+    x.globalAlpha=fade>0?(fade--,.1):.012;x.drawImage(snap(),0,0);x.globalAlpha=1;
 
     /* static condensation beads (dew) */
     beads.forEach(b=>{
