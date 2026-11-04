@@ -232,9 +232,9 @@ nav{
   position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1.1fr .9fr;
   align-items:center;gap:5vw;padding:0 4vw;max-width:1500px;margin:0 auto;
 }
-.story-steps{position:relative;height:520px}
+.story-steps{display:grid}
 .story-step{
-  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  grid-area:1/1;display:flex;flex-direction:column;justify-content:center;
   opacity:0;transform:translateY(36px);transition:opacity .7s,transform .7s cubic-bezier(.22,1,.36,1);
   pointer-events:none;
 }
@@ -245,14 +245,20 @@ nav{
 }
 .story-step h3 em{font-style:normal;color:inherit}
 .story-step p{margin-top:1.4rem;color:var(--muted);font-size:.98rem;line-height:1.9;max-width:46ch}
+.s-notes{list-style:none;margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--line);max-width:54ch;font:300 .64rem/1.65 var(--mono);color:var(--muted)}
+.s-notes li{padding-left:.9rem;text-indent:-.9rem}
+.s-notes li::before{content:'·';margin-right:.5rem}
+.s-notes li+li{margin-top:.4rem}
 .story-visual{position:relative;aspect-ratio:4/5;max-height:74vh;border-radius:24px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(24,21,31,.45)}
 .story-visual .ph{position:absolute;inset:0;opacity:0;transform:scale(1.06);transition:opacity .8s,transform 1.2s cubic-bezier(.22,1,.36,1)}
 .story-visual .ph.active{opacity:1;transform:none}
 .story-track{height:400vh}
 @media(max-width:880px){
-  .story .sticky{grid-template-columns:1fr;gap:1.5rem;padding-top:6rem}
-  .story-steps{height:300px}
-  .story-visual{max-height:38vh;aspect-ratio:16/10}
+  .story .sticky{grid-template-columns:1fr;gap:1.2rem;padding-top:5.5rem}
+  .story-visual{max-height:30vh;aspect-ratio:16/10}
+  .story-step h3{font-size:clamp(1.5rem,6vw,2rem)}
+  .story-step p{margin-top:.9rem;font-size:.84rem;line-height:1.65}
+  .s-notes{display:none}   /* small print is unreadable at phone size; the paragraph carries the story */
 }
 
 /* ---------- marquee band ---------- */
@@ -640,7 +646,13 @@ footer{
         <div class="story-step" data-step="0">
           <span class="s-num">CHAPTER 01 — 1/4</span>
           <h3>Trained in <em>bel canto.</em><br>Fluent in Python.</h3>
-          <p>[占位符：童年学钢琴美声、央音乐理；后来写代码。两个世界如何同时长大。40-60词。]</p>
+          <p>I grew up in a choir. With the Minnan Grand Theatre Children's Choir in Xiamen I sang at the Great Hall of the People and shared stages with the Wilten Boys' Choir, Les Petits Chanteurs de Saint-Marc and Les Petits Chanteurs à la Croix de Bois. At seventeen, Yi and Tujia folk songs won us gold in Hong Kong.</p>
+          <ul class="s-notes">
+            <li>China International Chorus Festival — opening ceremony at the Great Hall of the People; invited to the Beijing Tianqiao Performing Arts Center as one of four featured Chinese choirs</li>
+            <li>Artistic exchange with Les Petits Chanteurs à la Croix de Bois in Autun, France, received at the Town Hall by the Mayor of Autun</li>
+            <li>Joint concerts with the Wilten Boys' Choir (Austria), Les Petits Chanteurs de Saint-Marc (France) and a gospel choir from Harlem, New York</li>
+            <li>Xiamen No.1 High School Choir — Gold Award and first place, Folklore category, 2017 World Youth &amp; Children's Choir Festival – Hong Kong (WYCCF), with the Yi folk song "Spring Has Come", the Tujia folk song "Dong Dong Kui" and the Balinese "Janger"</li>
+          </ul>
         </div>
         <div class="story-step" data-step="1">
           <span class="s-num">CHAPTER 01 — 2/4</span>
