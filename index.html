@@ -199,7 +199,8 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;bac
  .skills-grid{gap:1.3rem}
 }
 @media(max-width:680px){
- nav{padding:calc(1rem + env(safe-area-inset-top,0px)) 5vw 1rem;align-items:flex-start;gap:.7rem;flex-wrap:wrap;background:rgba(243,242,239,.94)}
+ nav{padding:calc(1rem + env(safe-area-inset-top,0px)) 5vw 1rem;align-items:flex-start;gap:.7rem;flex-wrap:wrap;background:var(--paper)}
+ nav.nav-hidden{transform:none}
  .nav-links{display:flex;gap:.2rem 1rem;flex-wrap:wrap}.nav-links a{font-size:.7rem;letter-spacing:.08em}
  .hero{padding:calc(7rem + env(safe-area-inset-top,0px)) 5vw 2rem}.hero-identity{margin-bottom:1.4rem}.hero-name{font-size:2rem}.hero-kicker{font-size:.7rem;letter-spacing:.1em}
  .h-line{gap:.65rem;margin-bottom:.55rem}.h-line .txt{font-size:clamp(1.8rem,8.5vw,3.5rem)}
