@@ -249,6 +249,7 @@ nav{
 .s-notes li{padding-left:.9rem;text-indent:-.9rem}
 .s-notes li::before{content:'·';margin-right:.5rem}
 .s-notes strong{font-weight:400;color:var(--ink)}
+.story-step .s-quote{margin-top:1rem;font:300 italic .95rem/1.6 var(--serif);color:var(--violet);letter-spacing:-.01em}
 .story-visual{position:relative;aspect-ratio:3/4;max-height:74vh;border-radius:24px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(24,21,31,.45)}
 .story-visual .ph{position:absolute;inset:0;opacity:0;transform:scale(1.06);transition:opacity .6s,transform 1.2s cubic-bezier(.22,1,.36,1)}
 .story-visual .ph.active{opacity:1;transform:none}
@@ -643,7 +644,7 @@ footer{
           <span class="music-track-index">03</span><span class="music-track-body"><span class="music-track-title">Max/MSP Sound Study</span><span class="music-track-credit">Chuling Li · Sound synthesis</span><span class="music-track-meta">Audio synthesis · Sound study</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
         </button>
         <button class="music-track" id="music-tab-heartbreaker" type="button" role="tab" aria-controls="music-panel-heartbreaker" aria-selected="false" tabindex="-1" data-preview="heartbreaker" data-detail="music-heartbreaker.html">
-          <span class="music-track-index">04</span><span class="music-track-body"><span class="music-track-title">HEARTBREAKER</span><span class="music-track-credit">Led Zeppelin cover · Chuling Li, lead vocals</span><span class="music-track-meta">With Richard Bird · Full performance</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
+          <span class="music-track-index">04</span><span class="music-track-body"><span class="music-track-title">HEARTBREAKER</span><span class="music-track-credit">Led Zeppelin cover · Chuling Li, lead vocals</span><span class="music-track-meta">With my band, Richard Bird · Full performance</span></span><span class="music-track-arrow" aria-hidden="true">↗</span>
         </button>
         </div>
       </div>
@@ -692,8 +693,15 @@ footer{
         </div>
         <div class="story-step" data-step="2">
           <span class="s-num">CHAPTER 01 — 3/4</span>
-          <h3>building instruments<br>by <em>day.</em></h3>
-          <p>[占位符：PocketProducer、取色笔、3DGS——为什么开始造工具。40-60词。]</p>
+          <h3>Then came the band.</h3>
+          <p>In September 2023, four science and engineering students who loved music formed Richard Bird — a band built for the solo, loose and free, rooted in blues and hard rock and later reaching into funk and R&amp;B. I sing lead vocals and play keys. We have opened the evening stage of the CACA Music Festival, played the To Be Found and Cracking Seeds multi-band showcases, and more campus festivals than we can count.</p>
+          <p class="s-quote">"You know some birds are not meant to be caged, their feathers are just too bright."</p>
+          <ul class="s-notes">
+            <li>Lead vocal and keyboards, with occasional live programming — triggering backing tracks and layered parts from stage</li>
+            <li>Blues rock and hard rock at the core; tight improvisation and original songs across styles</li>
+            <li>Invited opening act for the evening stage of the CACA Music Festival</li>
+            <li>Featured in the To Be Found and Cracking Seeds multi-band showcases and multiple campus festivals</li>
+          </ul>
         </div>
         <div class="story-step" data-step="3">
           <span class="s-num">CHAPTER 01 — 4/4</span>
@@ -704,7 +712,7 @@ footer{
       <div class="story-visual rain tilt" data-hover>
         <div class="ph retro" data-step="0"><img src="images/story-01.jpg" alt="Choir years" width="1500" height="2000" decoding="async"></div>
         <div class="ph stage" data-step="1"><img src="images/story-02.jpg" alt="Solo performances" width="1500" height="2000" loading="lazy" decoding="async"></div>
-        <div class="ph gear" data-step="2"><span>[ 器材特写 · 代码屏+MIDI键盘 ]</span></div>
+        <div class="ph gear" data-step="2"><span>[ Richard Bird · live ]</span></div>
         <div class="ph abstract" data-step="3"><span>[ 抽象视觉图 · 可用项目渲染图/频谱艺术图 ]</span></div>
         <canvas class="rain-fog"></canvas>
         <div class="rain-hint">wipe the window</div>
