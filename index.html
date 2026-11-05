@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Chuling LI — I sing. I code. I build what's between.</title>
 <meta name="description" content="Chuling Li — Computer Science with AI student at the University of Nottingham, vocalist and keyboardist. Music AI research and creative tools, built from a musician's perspective.">
 <meta property="og:type" content="website">
@@ -104,7 +104,7 @@ body.tagging .cursor-ring{opacity:0}
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;justify-content:space-between;align-items:center;
-  padding:1.4rem 4vw;
+  padding:calc(1.4rem + env(safe-area-inset-top,0px)) 4vw 1.4rem;
   backdrop-filter:blur(10px);
   background:linear-gradient(to bottom,rgba(247,244,238,.85),rgba(247,244,238,0));
   transition:transform .4s cubic-bezier(.4,0,.2,1),backdrop-filter .4s,background .4s;
@@ -199,9 +199,9 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;bac
  .skills-grid{gap:1.3rem}
 }
 @media(max-width:680px){
- nav{padding:1rem 5vw;align-items:flex-start;gap:.7rem;flex-wrap:wrap;background:rgba(243,242,239,.94)}
+ nav{padding:calc(1rem + env(safe-area-inset-top,0px)) 5vw 1rem;align-items:flex-start;gap:.7rem;flex-wrap:wrap;background:rgba(243,242,239,.94)}
  .nav-links{display:flex;gap:.2rem 1rem;flex-wrap:wrap}.nav-links a{font-size:.7rem;letter-spacing:.08em}
- .hero{padding:7rem 5vw 2rem}.hero-identity{margin-bottom:1.4rem}.hero-name{font-size:2rem}.hero-kicker{font-size:.7rem;letter-spacing:.1em}
+ .hero{padding:calc(7rem + env(safe-area-inset-top,0px)) 5vw 2rem}.hero-identity{margin-bottom:1.4rem}.hero-name{font-size:2rem}.hero-kicker{font-size:.7rem;letter-spacing:.1em}
  .h-line{gap:.65rem;margin-bottom:.55rem}.h-line .txt{font-size:clamp(1.8rem,8.5vw,3.5rem)}
  .h-line .performance-strip{min-width:75px;height:70px}.h-line .sound-strip{flex:0 0 65px;min-width:0;height:48px}
  .h-line .strip .ph img{object-position:30% 30%}
@@ -284,7 +284,8 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;bac
   .s-piece{font-size:.55rem;padding-left:.9rem;margin-bottom:0}
 }
 @media(max-width:880px){
-  .story .sticky{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:1.2rem;padding:5.5rem 4vw 1rem}
+  .story .sticky{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:1.2rem;padding:calc(5.5rem + env(safe-area-inset-top,0px)) 4vw 1rem}
+  .story-steps{overflow:hidden}
   .story-visual{width:auto;height:100%;max-width:100%;border-radius:18px}
   .rain-hint{white-space:nowrap;padding:.45rem .9rem}
   .story-step h3{font-size:clamp(1.5rem,6vw,2rem)}
@@ -295,13 +296,13 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;bac
   .s-label{font-size:.62rem;margin-top:.8rem}
 }
 @media(max-width:880px) and (max-height:700px){
-  .story .sticky{padding-top:5.5rem;gap:.8rem}
+  .story .sticky{padding-top:calc(5.5rem + env(safe-area-inset-top,0px));gap:.8rem}
   .story-step h3{font-size:1.4rem}
   .story-step p{margin-top:.6rem;font-size:.76rem;line-height:1.5}
   .story-step .s-num{margin-bottom:.7rem}
 }
 @media(max-width:360px){
-  .story .sticky{padding-top:6.6rem}
+  .story .sticky{padding-top:calc(6.6rem + env(safe-area-inset-top,0px))}
   .story-visual{min-height:140px}   /* on the smallest phones a usable window beats a strictly pinned one */
   .story-step p{font-size:.72rem}
 }
