@@ -250,12 +250,15 @@ nav{
 }
 .story-step h3 em{font-style:normal;color:inherit}
 .story-step p{margin-top:1.4rem;color:var(--muted);font-size:.98rem;line-height:1.9;text-wrap:pretty}
+.story-step .s-label{margin-top:1.2rem}
+.story-step .s-notes{margin-top:.6rem}
+.story-step .s-label+.s-notes{margin-top:.5rem}
 .s-notes{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--line);font:300 .7rem/1.45 var(--mono);color:var(--muted)}
 .s-notes li{padding-left:.9rem;text-indent:-.9rem}
 .s-notes li::before{content:'·';margin-right:.5rem}
 .s-notes strong{font-weight:400;color:var(--ink)}.s-piece{display:block;padding-left:1.2rem;margin-bottom:.1rem}
 .s-piece::before{content:'♫ '}
-.s-label{font:400 .72rem var(--stamp);letter-spacing:.06em;color:var(--muted);margin-top:1.2rem;margin-bottom:-.4rem}
+.s-label{font:400 .72rem var(--stamp);letter-spacing:.06em;color:var(--muted)}
 .story-step .s-quote{margin:1.2rem auto 0;padding:0 2rem;text-align:center;font:400 1.05rem/1.55 var(--stamp);color:var(--violet);letter-spacing:.01em}
 /* the window keeps the photos' 3:4 and scales to whatever room there is, never crops to a band or stretches */
 .story-visual{position:relative;aspect-ratio:3/4;width:min(100%,calc(74vh * .75));justify-self:center;border-radius:24px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(24,21,31,.45)}
