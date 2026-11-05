@@ -249,12 +249,12 @@ nav{
 .s-notes li{padding-left:.9rem;text-indent:-.9rem}
 .s-notes li::before{content:'·';margin-right:.5rem}
 .s-notes strong{font-weight:400;color:var(--ink)}
-.story-step .s-quote{margin-top:1rem;font:400 1.05rem/1.55 var(--stamp);color:var(--violet);letter-spacing:.01em}
+.story-step .s-quote{margin:1.2rem auto 0;padding:0 2rem;text-align:center;font:400 1.05rem/1.55 var(--stamp);color:var(--violet);letter-spacing:.01em}
 .story-visual{position:relative;aspect-ratio:3/4;max-height:74vh;border-radius:24px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(24,21,31,.45)}
 .story-visual .ph{position:absolute;inset:0;opacity:0;transform:scale(1.06);transition:opacity .6s,transform 1.2s cubic-bezier(.22,1,.36,1)}
 .story-visual .ph.active{opacity:1;transform:none}
 .story-visual .ph img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
-.story-track{height:450vh}
+.story-track{height:550vh}
 @media(min-width:881px) and (max-height:820px){
   .story .sticky{padding-top:4.5rem;padding-bottom:1.5rem}
   .story-step h3{font-size:clamp(1.6rem,3.2vw,2.6rem)}
@@ -270,6 +270,7 @@ nav{
   .story-visual{max-height:30vh;aspect-ratio:16/10}
   .story-step h3{font-size:clamp(1.5rem,6vw,2rem)}
   .story-step p{margin-top:.9rem;font-size:.84rem;line-height:1.65}
+  .story-step .s-quote{padding:0;font-size:.84rem;letter-spacing:0}
   .s-notes{display:none}   /* small print is unreadable at phone size; the paragraph carries the story */
 }
 @media(max-width:880px) and (max-height:700px){
@@ -695,7 +696,7 @@ footer{
           <span class="s-num">CHAPTER 03</span>
           <h3>Then came the band.</h3>
           <p>In September 2023, four of us, all science and engineering students with a shared love of music, formed Richard Bird, a band rooted in blues and hard rock that later expanded into funk and R&amp;B. I take on lead vocals and keyboard/synthesizer. Since then, we have opened the evening stage at the CACA Music Festival, performed at multi-band showcases including To Be Found and Cracking Seeds, and played at countless other campus music festivals.</p>
-          <p class="s-quote">"You know some birds are not meant to be caged, their feathers are just too bright."</p>
+          <p class="s-quote">"You know some birds are not meant to be caged,<br>their feathers are just too bright."</p>
           <ul class="s-notes">
             <li>2023 · T!NY Vol.1 and Vol.2 "Peace in Pieces", our first shows, lead vocal<span class="s-piece"> · Whole Lotta Love (Led Zeppelin), Come as You Are (Nirvana), Moon on the Water (BECK); Heartbreaker (Led Zeppelin), Hammer to Fall (Queen), Amani (Beyond)</span></li>
             <li><strong>2024 · Cracking Seeds, UNNC Bands Club special performance</strong>, lead vocal and keys<span class="s-piece"> · For My Friends (Bill Withers, Beth Hart &amp; Joe Bonamassa version), Higher Ground (Stevie Wonder), and our originals Perfect Story and On Your Right</span></li>
@@ -707,6 +708,11 @@ footer{
         </div>
         <div class="story-step" data-step="3">
           <span class="s-num">CHAPTER 04</span>
+          <h3>Passing it on.</h3>
+          <p>Music has also been something to pass on. As a volunteer teacher I taught children to sing, and at UNNC Voice I came back as a mentor and judge for the next year's singers. Leading a band, a classroom or a rehearsal turned out to be the same job: listen first, then find what each voice needs.</p>
+        </div>
+        <div class="story-step" data-step="4">
+          <span class="s-num">CHAPTER 05</span>
           <h3>My work lives in<br>the room <em>between.</em></h3>
           <p>[占位符：为什么申请音乐科技——把两个房间打通。40-60词。]</p>
         </div>
@@ -715,7 +721,8 @@ footer{
         <div class="ph retro" data-step="0"><img src="images/story-01.jpg" alt="Choir years" width="1500" height="2000" decoding="async"></div>
         <div class="ph stage" data-step="1"><img src="images/story-02.jpg" alt="Solo performances" width="1500" height="2000" loading="lazy" decoding="async"></div>
         <div class="ph gear" data-step="2"><img src="images/story-03.jpg" alt="Richard Bird" width="1500" height="2000" loading="lazy" decoding="async"></div>
-        <div class="ph abstract" data-step="3"><span>[ 抽象视觉图 · 可用项目渲染图/频谱艺术图 ]</span></div>
+        <div class="ph stage" data-step="3"><span>[ teaching · photo to come ]</span></div>
+        <div class="ph abstract" data-step="4"><span>[ 抽象视觉图 · 可用项目渲染图/频谱艺术图 ]</span></div>
         <canvas class="rain-fog"></canvas>
         <div class="rain-hint">wipe the window</div>
       </div>
