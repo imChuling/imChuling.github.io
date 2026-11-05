@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Chuling LI — I sing. I code. I build what's between.</title>
-<meta name="description" content="Chuling Li — Computer Science with AI student at the University of Nottingham, vocalist and keyboardist. Music AI research and creative tools, built from a musician's perspective.">
+<meta name="description" content="Chuling Li — Computer Science with AI student at the University of Nottingham, vocalist and keyboardist. Building tools that genuinely help musicians and exploring new ways to create and experience music.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
 <meta property="og:title" content="Chuling LI — I sing. I code. I build what's between.">
-<meta property="og:description" content="Chuling Li — Computer Science with AI student at the University of Nottingham, vocalist and keyboardist. Music AI research and creative tools, built from a musician's perspective.">
+<meta property="og:description" content="Chuling Li — Computer Science with AI student at the University of Nottingham, vocalist and keyboardist. Building tools that genuinely help musicians and exploring new ways to create and experience music.">
 <meta property="og:url" content="https://imchuling.github.io/">
 <meta property="og:image" content="https://imchuling.github.io/assets/hero/chuling-live.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -111,7 +111,6 @@ nav{
   transition:transform .4s cubic-bezier(.4,0,.2,1),backdrop-filter .4s,background .4s;
 }
 nav.scrolled{-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);background:rgba(243,242,239,.88);border-bottom:1px solid rgba(38,39,44,.06)}
-nav.nav-hidden{transform:none}
 .nav-links a.active{color:var(--ink)}
 .nav-links a.active::after{transform:scaleX(1);transform-origin:left}
 nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--rose));transform-origin:left;transform:scaleX(var(--sp,0));opacity:.35;pointer-events:none;transition:opacity .3s}
@@ -201,7 +200,6 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;backg
 }
 @media(max-width:680px){
  nav{padding:calc(1rem + env(safe-area-inset-top,0px)) 5vw 1rem;align-items:flex-start;gap:.7rem;flex-wrap:wrap;background:var(--paper)}
- nav.nav-hidden{transform:none}
  .nav-links{display:flex;gap:.2rem 1rem;flex-wrap:wrap}.nav-links a{font-size:.7rem;letter-spacing:.08em}
  .hero{padding:calc(7rem + env(safe-area-inset-top,0px)) 5vw 2rem}.hero-identity{margin-bottom:1.4rem}.hero-name{font-size:2rem}.hero-kicker{font-size:.7rem;letter-spacing:.1em}
  .h-line{gap:.65rem;margin-bottom:.55rem}.h-line .txt{font-size:clamp(1.8rem,8.5vw,3.5rem)}
@@ -599,11 +597,11 @@ footer{
         </div>
         <div class="proj-card-body">
           <div class="proj-card-head">
-            <h3>Second Self<em>Individual Project · [subtitle placeholder]</em></h3>
+            <h3>Second Self<em>Independent project · Live performance system</em></h3>
             <span class="proj-card-go">→</span>
           </div>
-          <p class="proj-desc">[占位符：项目简介，2-3句话描述这个项目做什么、解决什么问题。]</p>
-          <div class="tag-row"><span class="tag">[Tag]</span></div>
+          <p class="proj-desc">A Max for Live system that lets a singer duet with themselves from a few minutes earlier. It slices and stores vocals in real time, retrieves fragments by live chord input, and locks them to the beat. Four acts gradually shift the system from follower to active vocal partner.</p>
+          <div class="tag-row"><span class="tag">Max/MSP</span><span class="tag">Live Performance</span><span class="tag">Real-Time Audio</span><span class="tag">Ableton Live</span></div>
         </div>
       </a>
 
