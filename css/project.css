@@ -2,10 +2,10 @@
 
 /* layout */
 .proj-hero{padding:0 4vw 5rem;max-width:1100px;margin:0 auto}
-.proj-hero h1{font-family:var(--stamp);font-weight:400;font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.1;margin-bottom:1rem}
+.proj-hero h1{font-family:var(--stamp);font-weight:400;font-size:clamp(2rem,7.5vw,4.8rem);line-height:1.1;margin-bottom:1rem;overflow-wrap:anywhere}
 .proj-meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2rem}
 .proj-meta .tag{
-  font-family:var(--display);font-weight:400;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;
+  font-family:var(--display);font-weight:400;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
   padding:.35rem .7rem;border:1px solid var(--line);border-radius:99px;color:var(--muted);background:rgba(255,255,255,.4);
 }
 .proj-hero .subtitle{font-family:var(--mono);font-weight:300;font-size:.88rem;color:var(--muted);line-height:1.5;max-width:60ch}
@@ -34,7 +34,7 @@
   font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
 }
 .proj-video iframe{width:100%;height:100%;border:none;border-radius:16px}
-.proj-video .caption{font-family:var(--display);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.8rem}
+.proj-video .caption{font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.8rem}
 
 /* links row */
 .proj-links{
@@ -61,24 +61,24 @@
 .proj-paper h3 a{text-decoration:none;color:inherit;border-bottom:1px solid var(--line);padding-bottom:2px;transition:border-color .3s}
 .proj-paper h3 a:hover{border-color:var(--violet)}
 .proj-paper .authors{font-family:var(--mono);font-weight:300;font-size:.82rem;color:var(--muted);margin-bottom:.3rem}
-.proj-paper .venue{font-family:var(--display);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:1rem}
+.proj-paper .venue{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:1rem}
 .proj-paper .abstract{font-family:var(--mono);font-weight:300;font-size:.84rem;line-height:1.6;color:var(--muted)}
 
 /* next project */
 .proj-next{max-width:760px;margin:5rem auto 0;padding:0 4vw}
 .proj-next a{
-  display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+  display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
   padding:1.6rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   text-decoration:none;color:var(--ink);transition:color .3s;
 }
 .proj-next a:hover{color:var(--violet)}
-.proj-next-label{font-family:var(--display);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.proj-next-label{font-family:var(--display);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .proj-next-title{font-family:var(--stamp);font-size:clamp(1.2rem,2.4vw,1.7rem);line-height:1.2}
 
 /* footer */
 .proj-foot{
   margin-top:4rem;padding:2rem 4vw;border-top:1px solid var(--line);text-align:center;
-  font-family:var(--mono);font-weight:200;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  font-family:var(--mono);font-weight:300;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
 }
 
 /* music detail pages with shorter hero padding */
