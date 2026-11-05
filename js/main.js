@@ -366,8 +366,6 @@ document.querySelectorAll('.rain').forEach(rainify);
   let py=scrollY;
   addEventListener('scroll',()=>{
     const y=scrollY;
-    if(y>py&&y>80)nav.classList.add('nav-hidden');
-    else if(y<py)nav.classList.remove('nav-hidden');
     nav.classList.toggle('scrolled',y>40);
     py=y;
     nav.style.setProperty('--sp',y/(document.documentElement.scrollHeight-innerHeight));

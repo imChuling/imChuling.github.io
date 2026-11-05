@@ -111,7 +111,7 @@ nav{
   transition:transform .4s cubic-bezier(.4,0,.2,1),backdrop-filter .4s,background .4s;
 }
 nav.scrolled{-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);background:rgba(243,242,239,.88);border-bottom:1px solid rgba(38,39,44,.06)}
-nav.nav-hidden{transform:translateY(-100%)}
+nav.nav-hidden{transform:none}
 .nav-links a.active{color:var(--ink)}
 .nav-links a.active::after{transform:scaleX(1);transform-origin:left}
 nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--rose));transform-origin:left;transform:scaleX(var(--sp,0));opacity:.35;pointer-events:none;transition:opacity .3s}
