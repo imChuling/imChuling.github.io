@@ -286,7 +286,7 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;bac
 }
 @media(max-width:880px){
   .story .sticky{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:1.2rem;padding:calc(5.5rem + env(safe-area-inset-top,0px)) 4vw 1rem}
-  .story-steps{overflow:hidden}
+  .story-steps{overflow-y:auto;-webkit-overflow-scrolling:touch}
   .story-visual{width:auto;height:100%;max-width:100%;border-radius:18px}
   .rain-hint{white-space:nowrap;padding:.45rem .9rem}
   .story-step h3{font-size:clamp(1.5rem,6vw,2rem)}

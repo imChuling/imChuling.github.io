@@ -110,6 +110,7 @@ addEventListener('scroll',()=>{
   /* once scrolling stops inside the track, settle on the nearest chapter so a flick can't skip one */
   let settle;
   function snap(){
+    if(innerWidth<=880)return;
     const {top,total}=range();
     if(scrollY<top||scrollY>top+total)return;
     const target=top+Math.round(progress()*last)/last*total;
