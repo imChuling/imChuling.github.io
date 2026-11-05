@@ -359,6 +359,38 @@ function rainify(container){
 }
 document.querySelectorAll('.rain').forEach(rainify);
 
+/* ============ nav : hide on scroll-down, show on scroll-up (Apple-style deference) ============ */
+(function(){
+  const nav=document.querySelector('nav');
+  let py=scrollY;
+  addEventListener('scroll',()=>{
+    const y=scrollY;
+    if(y>py&&y>80)nav.classList.add('nav-hidden');
+    else if(y<py)nav.classList.remove('nav-hidden');
+    nav.classList.toggle('scrolled',y>40);
+    py=y;
+    nav.style.setProperty('--sp',y/(document.documentElement.scrollHeight-innerHeight));
+  },{passive:true});
+})();
+
+/* ============ active nav section ============ */
+(function(){
+  const links=[...document.querySelectorAll('.nav-links a[href^="#"]')];
+  const sections=links.map(l=>({link:l,el:document.querySelector(l.getAttribute('href'))})).filter(s=>s.el);
+  let ticking=false;
+  function update(){
+    let active=null;
+    for(const s of sections){
+      if(s.el.getBoundingClientRect().top<=innerHeight*.35)active=s;
+    }
+    links.forEach(l=>l.classList.remove('active'));
+    if(active)active.link.classList.add('active');
+    ticking=false;
+  }
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update);}},{passive:true});
+  update();
+})();
+
 /* ============ 3D tilt frames ============ */
 document.querySelectorAll('.tilt').forEach(el=>{
   el.addEventListener('mousemove',e=>{
