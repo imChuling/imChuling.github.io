@@ -360,14 +360,12 @@ function rainify(container){
 }
 document.querySelectorAll('.rain').forEach(rainify);
 
-/* ============ nav : hide on scroll-down, show on scroll-up (Apple-style deference) ============ */
+/* ============ nav : frosted glass on scroll, progress bar ============ */
 (function(){
   const nav=document.querySelector('nav');
-  let py=scrollY;
   addEventListener('scroll',()=>{
     const y=scrollY;
     nav.classList.toggle('scrolled',y>40);
-    py=y;
     nav.style.setProperty('--sp',y/(document.documentElement.scrollHeight-innerHeight));
   },{passive:true});
 })();
