@@ -179,8 +179,10 @@ function phSnapshot(ph,w,h){
   const g=c.getContext('2d');
   const img=ph.querySelector('img');
   g.filter='blur(8px)';
-  if(img&&img.complete){
-    g.drawImage(img,-20,-20,w+40,h+40);
+  if(img&&img.complete&&img.naturalWidth){
+    /* cover, centred, with a 20px bleed so the blur has no transparent fringe — same framing as the photo beneath */
+    const s=Math.max((w+40)/img.naturalWidth,(h+40)/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;
+    g.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh);
   }else{
     let type='abstract';for(const k in PH_GRADS)if(ph.classList.contains(k))type=k;
     const lg=g.createLinearGradient(0,0,w,h);
