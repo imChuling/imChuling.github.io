@@ -35,7 +35,7 @@ if(button){
   let scene='top',visits={top:1},since=performance.now(),lastInput=performance.now();
   let motion=0,focus=0,focusTarget=0,swell=0,turn=0,drift=0,hoverPitch=0;
   let hx=0,vy=0,pan=.5,tilt=.5,wipe=0,wipeVel=0;   /* pointer: signed velocities, position, glass wiping */
-  let panner=null,whoosh=null,synth=false;   /* synth: the loaded export generates its own sound (score-synth) */
+  let panner=null,whoosh=null,rain=null,synth=false;
   let melody=null,melodyClock=1800,degree=2,octave=0,scale='top',prevFocus=0,bloom=false,wipeCool=0;
   let stutter=0,strumAcc=0,strumDir=1,strumCool=0,strums=0,arpClock=9000;   /* click stutter, scroll strum, dwell arpeggio */
   let prevIdle=0,travelled=0,settleTimer=0,cadenced=false,away=false,tickCool=0,idleClock=0,idlePhrase=0;
@@ -113,17 +113,20 @@ if(button){
     car.onended=()=>{env.disconnect();mg.disconnect();};
   }
   const pitchOf=(deg,oct=octave)=>{const s=SCALES[scale];return s[((deg%s.length)+s.length)%s.length]*Math.pow(2,oct+Math.floor(deg/s.length));};
-  /* the random walk: drifts toward where the pointer is (left low, right high) */
+  /* melodic phrases: short motifs that follow chord tones with passing notes */
+  const PHRASES=[[0,2,4],[4,2,0],[0,4,6],[6,4,2],[2,4,6,4],[0,2,4,6],[6,4,2,0],[0,3,5],[4,6,4,2]];
+  let phraseIdx=0,phrasePos=0;
   function drip(){
-    const target=Math.round(pan*6),step=Math.random()<.2?2:1;
-    degree+=Math.random()<.6?(Math.sign(target-degree)||(Math.random()<.5?-1:1))*step:(Math.random()<.5?-step:step);
-    degree=Math.max(0,Math.min(6,degree));octave=Math.random()<.15+.25*motion?1:0;
-    const ratio=RATIOS[Math.random()<.5?0:Math.random()<.45?2:Math.random()<.7?1:3];
-    const dur=scene==='story'?5.5:3.2+Math.random()*2.2,vel=.2+.18*Math.random();
-    note(pitchOf(degree),{vel,dur,bright:.7+.5*motion,ratio});
-    const r=Math.random();                                      /* overlapping voices build the wash */
-    if(r<.35)note(pitchOf(degree+(Math.random()<.5?2:-2)),{vel:vel*.75,dur:dur*.9,when:.22,ratio});
-    else if(r<.52)[1,2].forEach(i=>note(pitchOf(degree+i),{vel:vel*.65,dur:dur*.7,when:.16*i,ratio}));
+    const phrase=PHRASES[phraseIdx%PHRASES.length];
+    degree=phrase[phrasePos%phrase.length];
+    phrasePos++;
+    if(phrasePos>=phrase.length){phrasePos=0;phraseIdx++;if(Math.random()<.3)phraseIdx+=Math.floor(Math.random()*3);}
+    octave=Math.random()<.12+.2*motion?1:0;
+    const ratio=RATIOS[Math.random()<.55?0:Math.random()<.5?2:1];
+    const dur=scene==='story'?5.5:3.6+Math.random()*2,vel=.16+.14*Math.random();
+    note(pitchOf(degree),{vel,dur,bright:.6+.4*motion,ratio});
+    if(Math.random()<.4)note(pitchOf(degree+2),{vel:vel*.65,dur:dur*.85,when:.25,ratio});
+    else if(Math.random()<.25)[1,2].forEach(i=>note(pitchOf(degree+i),{vel:vel*.55,dur:dur*.7,when:.18*i,ratio}));
   }
   function motif(up){const rh=[0,.16,.36,.54];for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:.26,dur:4,when:rh[i],ratio:RATIOS[i%2]});}
   function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.24,dur:2.4,when:i*.11,bright:1.1});}
@@ -247,6 +250,12 @@ if(button){
       });
       const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
     }
+    if(rain){
+      const t=engine.context.currentTime;
+      const rainVol={top:.06,projects:.04,music:.02,story:.08,contact:.05,detail:.03}[scene]||.04;
+      const rv=rainVol*(1-.6*ducked)*(1+.3*idle)*(1-.3*motion);
+      rain.body.gain.setTargetAtTime(rv,t,.4);rain.sheen.gain.setTargetAtTime(rv*.28,t,.3);
+    }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
     if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.1,wipeVel*.15),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(1200+1200*(1-tilt),t,.05);whoosh.last=wipeVel;}
     if(b.bed&&b.bed!==bedId)crossfadeBed(b.bed);
@@ -327,6 +336,22 @@ if(button){
         mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.18;
         mIn.connect(mLp);mLp.connect(engine.device.node);mLp.connect(mDry);mDry.connect(engine.master);
         melody={in:mIn,dry:mDry};
+        /* rain: synthesised pink-noise body + white-noise sparkle (ambiently, MIT) */
+        const sr=context.sampleRate,rl=sr*2;
+        const pinkBuf=context.createBuffer(1,rl,sr),pd=pinkBuf.getChannelData(0);
+        let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+        for(let i=0;i<rl;i++){const w=Math.random()*2-1;b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;pd[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*0.11;b6=w*.115926;}
+        const whiteBuf=context.createBuffer(1,rl,sr),wd=whiteBuf.getChannelData(0);
+        for(let i=0;i<rl;i++)wd[i]=Math.random()*2-1;
+        const rBody=context.createBufferSource(),rHp=context.createBiquadFilter(),rGain=context.createGain();
+        rBody.buffer=pinkBuf;rBody.loop=true;rHp.type='highpass';rHp.frequency.value=500;rHp.Q.value=.7;rGain.gain.value=0;
+        rBody.connect(rHp);rHp.connect(rGain);rGain.connect(engine.master);rBody.start();
+        const rSheen=context.createBufferSource(),rBp=context.createBiquadFilter(),rSheenG=context.createGain();
+        rSheen.buffer=whiteBuf;rSheen.loop=true;rBp.type='bandpass';rBp.frequency.value=3200;rBp.Q.value=.5;rSheenG.gain.value=0;
+        rSheen.connect(rBp);rBp.connect(rSheenG);rSheenG.connect(engine.master);rSheen.start();
+        const rLfo=context.createOscillator(),rLfoG=context.createGain();
+        rLfo.type='sine';rLfo.frequency.value=.13;rLfoG.gain.value=.015;rLfo.connect(rLfoG);rLfoG.connect(rGain.gain);rLfo.start();
+        rain={body:rGain,sheen:rSheenG};
       }
       await engine.context.resume();
       scene=detail?'detail':currentScene();visits[scene]=visits[scene]||1;since=performance.now();
