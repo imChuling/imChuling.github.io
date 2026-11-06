@@ -10,12 +10,12 @@ const LABEL={top:'Arrival',projects:'Projects',music:'Stage',story:'Story',conta
 
 /* bed = which pad plays underneath; the rest is the treatment on top */
 const SCENES={
-  top:     {bed:'top',     mix:18,grainSize:280,grainPos:95, interval:140,pitch:0, width:82,drive:6, bass:0,  mid:0,  treble:0,  wet:58,decay:72,size:82,damp:48,jitter:10},
-  projects:{bed:'projects',mix:24,grainSize:200,grainPos:130,interval:110,pitch:0, width:72,drive:10,bass:-6, mid:4,  treble:6,  wet:60,decay:66,size:74,damp:42,jitter:8},
-  music:   {bed:'music',   mix:45,grainSize:450,grainPos:280,interval:65, pitch:-3,width:100,drive:22,bass:6,  mid:2,  treble:-2, wet:88,decay:94,size:96,damp:52,jitter:16},
-  story:   {bed:'story',   mix:35,grainSize:560,grainPos:340,interval:110,pitch:-5,width:100,drive:8, bass:-2, mid:-4, treble:-8, wet:96,decay:97,size:100,damp:60,jitter:22},
-  contact: {bed:'contact', mix:20,grainSize:300,grainPos:165,interval:145,pitch:0, width:76,drive:5, bass:2,  mid:0,  treble:0,  wet:64,decay:74,size:72,damp:44,jitter:8},
-  detail:  {bed:null,      mix:14,grainSize:280,grainPos:120,interval:160,pitch:0, width:58,drive:4, bass:0,  mid:0,  treble:4,  wet:48,decay:60,size:62,damp:50,jitter:6},
+  top:     {bed:'top',     mix:14,grainSize:300,grainPos:95, interval:160,pitch:0, width:82,drive:4, bass:-12,mid:0,  treble:4,  wet:58,decay:72,size:82,damp:48,jitter:10},
+  projects:{bed:'projects',mix:18,grainSize:220,grainPos:130,interval:130,pitch:0, width:72,drive:6, bass:-14,mid:4,  treble:8,  wet:60,decay:66,size:74,damp:42,jitter:8},
+  music:   {bed:'music',   mix:32,grainSize:480,grainPos:280,interval:80, pitch:-2,width:100,drive:14,bass:-8, mid:2,  treble:0,  wet:88,decay:94,size:96,damp:52,jitter:16},
+  story:   {bed:'story',   mix:25,grainSize:580,grainPos:340,interval:130,pitch:-4,width:100,drive:5, bass:-10,mid:-4, treble:-4, wet:96,decay:97,size:100,damp:60,jitter:22},
+  contact: {bed:'contact', mix:15,grainSize:320,grainPos:165,interval:160,pitch:0, width:76,drive:3, bass:-10,mid:0,  treble:2,  wet:64,decay:74,size:72,damp:44,jitter:8},
+  detail:  {bed:null,      mix:10,grainSize:300,grainPos:120,interval:180,pitch:0, width:58,drive:2, bass:-8, mid:0,  treble:6,  wet:48,decay:60,size:62,damp:50,jitter:6},
 };
 /* melody: one high scale per section (Hz), played by the page itself above the bed */
 const SCALES={
@@ -229,12 +229,12 @@ if(button){
     wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6,ch:4});}
     engine.setParams({
       mix:Math.max(5,Math.min(60,b.mix+8*residue+4*dwell-10*idle+5*motion+6*turn-12*wipe+3*lfo)),
-      width:Math.min(100,b.width+20*motion),gain:-8,
+      width:Math.min(100,b.width+20*motion),gain:-14,
       grainSize:b.grainSize*(1-.3*focus)*(1+.15*idle)*(1+.25*vy)*(1-.5*stutter)*(1+.15*lfo2+.08*lfo3),grainPos:b.grainPos*(1+.3*lfo2+.15*lfo4),
       interval:Math.max(20,b.interval*(1-.2*focus)*(1+.2*idle)*(1-.65*stutter)*(1+.1*lfo3)-15*motion-25*turn),
       pitch:b.pitch+2*focus+hoverPitch*focus-1.5*drift+1.2*hx+3*stutter+.3*lfo4*idle,
       'drive/drive':Math.max(0,b.drive+4*focus+3*turn-2*wipe),'drive/lowcut':34,'drive/highcut':40,'drive/mix':60,'drive/volume':0,
-      'drive/bass':b.bass-6-4*height+3*lfo3,'drive/mid':b.mid+2*lfo4,'drive/treble':b.treble+4*focus+8*height+6*moveSpeed+6*wipe,'drive/midfreq':0,
+      'drive/bass':b.bass-4*height+2*lfo3,'drive/mid':b.mid+2*lfo4,'drive/treble':b.treble+4*focus+8*height+6*moveSpeed+6*wipe,'drive/midfreq':0,
       'reverb/mix':Math.min(100,b.wet+12*residue+6*dwell+25*swell+8*wipe+4*lfo),'reverb/decay':Math.min(100,b.decay+8*residue+6*dwell+3*lfo3),
       'reverb/size':Math.min(100,b.size+6*lfo+4*lfo3),'reverb/damp':Math.max(0,b.damp-25*wipe-8*moveSpeed),'reverb/diff':80,'reverb/jitter':b.jitter+4*moveSpeed,
     });
@@ -270,7 +270,7 @@ if(button){
     const add=(id,buffer)=>{
       const source=engine.context.createBufferSource(),gain=engine.context.createGain(),hp=engine.context.createBiquadFilter();
       source.buffer=buffer;source.loop=true;gain.gain.value=0;
-      hp.type='highpass';hp.frequency.value=130;hp.Q.value=.6;     /* keep the beds out of the rumble zone */
+      hp.type='highpass';hp.frequency.value=280;hp.Q.value=.7;
       source.connect(gain);gain.connect(hp);hp.connect(engine.device.node);source.start();
       beds[id]={source,gain};
     };
@@ -303,7 +303,7 @@ if(button){
     if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C();}
     ctx.resume();return ctx;
   }
-  const level=()=>ducked?0:away?.24:.38;
+  const level=()=>ducked?0:away?.16:.26;
   async function start(){
     if(busy)return;busy=true;setState('loading');
     try{
