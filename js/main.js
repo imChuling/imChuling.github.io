@@ -1,6 +1,8 @@
 /* respect the OS "reduce motion" setting — used to calm autoplay motion (rain, parallax)
    for visitors who asked for it. Has no effect on the default experience. */
 const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+scrollTo(0,0);
 /* ============ preloader : frosted glass melts clear ============ */
 (function(){
   const loader=document.getElementById('loader'),num=loader.querySelector('.l-num'),bar=loader.querySelector('.l-bar');
