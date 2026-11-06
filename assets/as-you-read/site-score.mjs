@@ -138,21 +138,21 @@ if(button){
     for(let i=0;i<steps;i++){const u=i/(steps-1);note(from*Math.pow(toHz/from,u),{vel:vel*(1-.4*u),dur:.6+u*1.6,when:u*span,ratio,bright:1.2});}
   }
 
-  /* ---------- raindrop : a noise-burst with fast decay, bandpass-filtered ---------- */
+  /* ---------- raindrop : a light tap on glass ---------- */
   function droplet(){
     if(!rain||!engine||ducked)return;
     const c=engine.context,t=c.currentTime;
     const vol=rain.vol;
-    const dur=.04+Math.random()*.1;
+    const dur=.008+Math.random()*.025;                            /* very short: 8-33ms */
     const len=Math.floor(c.sampleRate*dur);
     const buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
-    const decay=len*(.25+Math.random()*.35);
+    const decay=len*(.12+Math.random()*.18);                      /* fast decay */
     for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/decay);
     const src=c.createBufferSource();src.buffer=buf;
     const bp=c.createBiquadFilter();
-    bp.type='bandpass';bp.frequency.value=600+Math.random()*4500;bp.Q.value=1+Math.random()*3;
-    const g=c.createGain();g.gain.value=vol*(.4+Math.random()*.8);
-    const pan=c.createStereoPanner();pan.pan.value=(Math.random()*2-1)*.85;
+    bp.type='bandpass';bp.frequency.value=2200+Math.random()*4000;bp.Q.value=3+Math.random()*5; /* high, narrow = delicate plink */
+    const g=c.createGain();g.gain.value=vol*(.2+Math.random()*.4);
+    const pan=c.createStereoPanner();pan.pan.value=(Math.random()*2-1)*.8;
     src.connect(bp);bp.connect(g);g.connect(pan);pan.connect(rain.bus);
     src.start(t);
     src.onended=()=>{g.disconnect();bp.disconnect();pan.disconnect();};
@@ -272,7 +272,7 @@ if(button){
     }
     if(rain){
       const dps={top:2,projects:1.5,music:.8,story:3,contact:2,detail:1}[scene]||2;
-      rain.vol=.35*(1-.6*ducked);
+      rain.vol=.2*(1-.6*ducked);
       rain.clock-=50;
       if(rain.clock<=0){rain.clock=(1000/dps)*(.4+Math.random()*1.2);droplet();}
     }
