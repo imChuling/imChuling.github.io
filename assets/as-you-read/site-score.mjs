@@ -138,6 +138,36 @@ if(button){
     for(let i=0;i<steps;i++){const u=i/(steps-1);note(from*Math.pow(toHz/from,u),{vel:vel*(1-.4*u),dur:.6+u*1.6,when:u*span,ratio,bright:1.2});}
   }
 
+  /* ---------- raindrop : a single water-drop plop ---------- */
+  function droplet(){
+    if(!rain||!engine||ducked)return;
+    const c=engine.context,t=c.currentTime;
+    const v=rain.vol*(.04+.06*Math.random());
+    const size=Math.random();                                     /* 0 = tiny, 1 = big */
+    const freq=2800-1800*size+Math.random()*400;                  /* small drops: higher pitch */
+    const dur=.04+.12*size;
+    const osc=c.createOscillator(),env=c.createGain(),bp=c.createBiquadFilter();
+    osc.type='sine';
+    osc.frequency.setValueAtTime(freq,t);
+    osc.frequency.exponentialRampToValueAtTime(freq*.35,t+dur);   /* pitch drops fast, like water */
+    bp.type='bandpass';bp.frequency.value=freq*.7;bp.Q.value=1.5+2*size;
+    env.gain.setValueAtTime(0,t);
+    env.gain.linearRampToValueAtTime(v,t+.002);                   /* near-instant attack */
+    env.gain.exponentialRampToValueAtTime(.0001,t+dur+.08);
+    osc.connect(bp);bp.connect(env);env.connect(rain.bus);
+    osc.start(t);osc.stop(t+dur+.1);
+    osc.onended=()=>{env.disconnect();bp.disconnect();};
+    if(Math.random()<.35){                                        /* some drops have a second smaller bounce */
+      const d2=dur*.5,f2=freq*1.3,v2=v*.4,t2=t+dur+.03+.04*Math.random();
+      const o2=c.createOscillator(),e2=c.createGain(),b2=c.createBiquadFilter();
+      o2.type='sine';o2.frequency.setValueAtTime(f2,t2);o2.frequency.exponentialRampToValueAtTime(f2*.4,t2+d2);
+      b2.type='bandpass';b2.frequency.value=f2*.7;b2.Q.value=2;
+      e2.gain.setValueAtTime(0,t2);e2.gain.linearRampToValueAtTime(v2,t2+.002);e2.gain.exponentialRampToValueAtTime(.0001,t2+d2+.06);
+      o2.connect(b2);b2.connect(e2);e2.connect(rain.bus);o2.start(t2);o2.stop(t2+d2+.08);
+      o2.onended=()=>{e2.disconnect();b2.disconnect();};
+    }
+  }
+
   /* ---------- selecting text : the highlight hums, and each dozen characters is read as a note ---------- */
   let selLen=0,drone=null;
   function hum(len){
@@ -251,10 +281,11 @@ if(button){
       const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
     }
     if(rain){
-      const t=engine.context.currentTime;
-      const rainVol={top:.06,projects:.04,music:.02,story:.08,contact:.05,detail:.03}[scene]||.04;
-      const rv=rainVol*(1-.6*ducked)*(1+.3*idle)*(1-.3*motion);
-      rain.body.gain.setTargetAtTime(rv,t,.4);rain.sheen.gain.setTargetAtTime(rv*.28,t,.3);
+      const rainRate={top:550,projects:700,music:1200,story:400,contact:650,detail:900}[scene]||600;
+      rain.rate=rainRate*(1+.5*motion)*(1-.3*idle);
+      rain.vol=(.7+.3*idle)*(1-.6*ducked)*(1-.2*motion);
+      rain.clock-=50;
+      if(rain.clock<=0){rain.clock=rain.rate*(.6+.8*Math.random());droplet();}
     }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
     if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.1,wipeVel*.15),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(1200+1200*(1-tilt),t,.05);whoosh.last=wipeVel;}
@@ -336,22 +367,17 @@ if(button){
         mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.18;
         mIn.connect(mLp);mLp.connect(engine.device.node);mLp.connect(mDry);mDry.connect(engine.master);
         melody={in:mIn,dry:mDry};
-        /* rain: synthesised pink-noise body + white-noise sparkle (ambiently, MIT) */
-        const sr=context.sampleRate,rl=sr*2;
-        const pinkBuf=context.createBuffer(1,rl,sr),pd=pinkBuf.getChannelData(0);
-        let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-        for(let i=0;i<rl;i++){const w=Math.random()*2-1;b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;pd[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*0.11;b6=w*.115926;}
-        const whiteBuf=context.createBuffer(1,rl,sr),wd=whiteBuf.getChannelData(0);
-        for(let i=0;i<rl;i++)wd[i]=Math.random()*2-1;
-        const rBody=context.createBufferSource(),rHp=context.createBiquadFilter(),rGain=context.createGain();
-        rBody.buffer=pinkBuf;rBody.loop=true;rHp.type='highpass';rHp.frequency.value=500;rHp.Q.value=.7;rGain.gain.value=0;
-        rBody.connect(rHp);rHp.connect(rGain);rGain.connect(engine.master);rBody.start();
-        const rSheen=context.createBufferSource(),rBp=context.createBiquadFilter(),rSheenG=context.createGain();
-        rSheen.buffer=whiteBuf;rSheen.loop=true;rBp.type='bandpass';rBp.frequency.value=3200;rBp.Q.value=.5;rSheenG.gain.value=0;
-        rSheen.connect(rBp);rBp.connect(rSheenG);rSheenG.connect(engine.master);rSheen.start();
-        const rLfo=context.createOscillator(),rLfoG=context.createGain();
-        rLfo.type='sine';rLfo.frequency.value=.13;rLfoG.gain.value=.015;rLfo.connect(rLfoG);rLfoG.connect(rGain.gain);rLfo.start();
-        rain={body:rGain,sheen:rSheenG};
+        /* rain: discrete raindrop synthesis — each drop is a short pitched impulse */
+        const rainBus=context.createGain();
+        const rainVerb=context.createConvolver();
+        const rvLen=context.sampleRate*1.8,rvBuf=context.createBuffer(2,rvLen,context.sampleRate);
+        for(let ch=0;ch<2;ch++){const d=rvBuf.getChannelData(ch);for(let i=0;i<rvLen;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/rvLen*4.5)*.35;}
+        rainVerb.buffer=rvBuf;
+        const rainDry=context.createGain(),rainWet=context.createGain();
+        rainDry.gain.value=.55;rainWet.gain.value=.45;
+        rainBus.connect(rainDry);rainBus.connect(rainVerb);rainVerb.connect(rainWet);
+        rainDry.connect(engine.master);rainWet.connect(engine.master);
+        rain={bus:rainBus,vol:0,clock:0,rate:600};
       }
       await engine.context.resume();
       scene=detail?'detail':currentScene();visits[scene]=visits[scene]||1;since=performance.now();
