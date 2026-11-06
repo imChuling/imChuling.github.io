@@ -107,7 +107,7 @@ if(button){
     car.frequency.value=freq;car2.frequency.value=freq*1.004;mod.frequency.value=freq*ratio;
     mg.gain.setValueAtTime(freq*.8*bright,t);mg.gain.exponentialRampToValueAtTime(freq*.015,t+dur*.7);
     mod.connect(mg);mg.connect(car.frequency);mg.connect(car2.frequency);
-    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.07,t+.05);env.gain.exponentialRampToValueAtTime(.0003,t+dur*1.1);
+    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.14,t+.05);env.gain.exponentialRampToValueAtTime(.0003,t+dur*1.1);
     car.connect(env);car2.connect(env);env.connect(melody.in);
     [car,car2,mod].forEach(o=>{o.start(t);o.stop(t+dur*1.1+.1);});
     car.onended=()=>{env.disconnect();mg.disconnect();};
@@ -123,49 +123,39 @@ if(button){
     if(phrasePos>=phrase.length){phrasePos=0;phraseIdx++;if(Math.random()<.3)phraseIdx+=Math.floor(Math.random()*3);}
     octave=Math.random()<.12+.2*motion?1:0;
     const ratio=RATIOS[Math.random()<.55?0:Math.random()<.5?2:1];
-    const dur=scene==='story'?5.5:3.6+Math.random()*2,vel=.16+.14*Math.random();
+    const dur=scene==='story'?5.5:3.6+Math.random()*2,vel=.28+.2*Math.random();
     note(pitchOf(degree),{vel,dur,bright:.6+.4*motion,ratio});
-    if(Math.random()<.4)note(pitchOf(degree+2),{vel:vel*.65,dur:dur*.85,when:.25,ratio});
-    else if(Math.random()<.25)[1,2].forEach(i=>note(pitchOf(degree+i),{vel:vel*.55,dur:dur*.7,when:.18*i,ratio}));
+    if(Math.random()<.4)note(pitchOf(degree+2),{vel:vel*.7,dur:dur*.85,when:.25,ratio});
+    else if(Math.random()<.25)[1,2].forEach(i=>note(pitchOf(degree+i),{vel:vel*.6,dur:dur*.7,when:.18*i,ratio}));
   }
-  function motif(up){const rh=[0,.16,.36,.54];for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:.26,dur:4,when:rh[i],ratio:RATIOS[i%2]});}
-  function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.24,dur:2.4,when:i*.11,bright:1.1});}
-  function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.22,dur:5.5+i*.5,when:i*.03,ratio:i===3?3.0:2.01,ch:3}));}
-  function arpeggio(){const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:.18,dur:3,when:i*.48,ratio:1.5});}
+  function motif(up){const rh=[0,.16,.36,.54];for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:.4,dur:4,when:rh[i],ratio:RATIOS[i%2]});}
+  function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.38,dur:2.4,when:i*.11,bright:1.1});}
+  function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.35,dur:5.5+i*.5,when:i*.03,ratio:i===3?3.0:2.01,ch:3}));}
+  function arpeggio(){const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:.28,dur:3,when:i*.48,ratio:1.5});}
   /* a run from where the melody is to a new root: used when the page travels (nav links, sheets) */
   function glide(toHz,{steps=6,span=.42,vel=.18,ratio=3.0}={}){
     const from=pitchOf(degree);
     for(let i=0;i<steps;i++){const u=i/(steps-1);note(from*Math.pow(toHz/from,u),{vel:vel*(1-.4*u),dur:.6+u*1.6,when:u*span,ratio,bright:1.2});}
   }
 
-  /* ---------- raindrop : a single water-drop plop ---------- */
+  /* ---------- raindrop : a noise-burst with fast decay, bandpass-filtered ---------- */
   function droplet(){
     if(!rain||!engine||ducked)return;
     const c=engine.context,t=c.currentTime;
-    const v=rain.vol*(.04+.06*Math.random());
-    const size=Math.random();                                     /* 0 = tiny, 1 = big */
-    const freq=2800-1800*size+Math.random()*400;                  /* small drops: higher pitch */
-    const dur=.04+.12*size;
-    const osc=c.createOscillator(),env=c.createGain(),bp=c.createBiquadFilter();
-    osc.type='sine';
-    osc.frequency.setValueAtTime(freq,t);
-    osc.frequency.exponentialRampToValueAtTime(freq*.35,t+dur);   /* pitch drops fast, like water */
-    bp.type='bandpass';bp.frequency.value=freq*.7;bp.Q.value=1.5+2*size;
-    env.gain.setValueAtTime(0,t);
-    env.gain.linearRampToValueAtTime(v,t+.002);                   /* near-instant attack */
-    env.gain.exponentialRampToValueAtTime(.0001,t+dur+.08);
-    osc.connect(bp);bp.connect(env);env.connect(rain.bus);
-    osc.start(t);osc.stop(t+dur+.1);
-    osc.onended=()=>{env.disconnect();bp.disconnect();};
-    if(Math.random()<.35){                                        /* some drops have a second smaller bounce */
-      const d2=dur*.5,f2=freq*1.3,v2=v*.4,t2=t+dur+.03+.04*Math.random();
-      const o2=c.createOscillator(),e2=c.createGain(),b2=c.createBiquadFilter();
-      o2.type='sine';o2.frequency.setValueAtTime(f2,t2);o2.frequency.exponentialRampToValueAtTime(f2*.4,t2+d2);
-      b2.type='bandpass';b2.frequency.value=f2*.7;b2.Q.value=2;
-      e2.gain.setValueAtTime(0,t2);e2.gain.linearRampToValueAtTime(v2,t2+.002);e2.gain.exponentialRampToValueAtTime(.0001,t2+d2+.06);
-      o2.connect(b2);b2.connect(e2);e2.connect(rain.bus);o2.start(t2);o2.stop(t2+d2+.08);
-      o2.onended=()=>{e2.disconnect();b2.disconnect();};
-    }
+    const vol=rain.vol;
+    const dur=.04+Math.random()*.1;
+    const len=Math.floor(c.sampleRate*dur);
+    const buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
+    const decay=len*(.25+Math.random()*.35);
+    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/decay);
+    const src=c.createBufferSource();src.buffer=buf;
+    const bp=c.createBiquadFilter();
+    bp.type='bandpass';bp.frequency.value=600+Math.random()*4500;bp.Q.value=1+Math.random()*3;
+    const g=c.createGain();g.gain.value=vol*(.4+Math.random()*.8);
+    const pan=c.createStereoPanner();pan.pan.value=(Math.random()*2-1)*.85;
+    src.connect(bp);bp.connect(g);g.connect(pan);pan.connect(rain.bus);
+    src.start(t);
+    src.onended=()=>{g.disconnect();bp.disconnect();pan.disconnect();};
   }
 
   /* ---------- selecting text : the highlight hums, and each dozen characters is read as a note ---------- */
@@ -229,7 +219,7 @@ if(button){
     if(bloom){bloom=false;chord();stutter=1;}
     /* scroll strum: each ~140px plucks the next scale step, down = rising, up = falling */
     strumCool-=50;
-    if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:.2+.15*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1],ch:2});}
+    if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:.35+.2*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1],ch:2});}
     else if(strumAcc<140)strumAcc*=.9;
     /* staying somewhere, the page occasionally plays an arpeggio by itself */
     arpClock-=50;if(arpClock<=0){arpClock=9000+Math.random()*9000;if(dwell>.25&&scene!=='detail')arpeggio();}
@@ -238,17 +228,17 @@ if(button){
     idleClock-=50;
     if(idle>.3&&idleClock<=0){
       idlePhrase=(idlePhrase+1)%5;
-      if(idlePhrase===0){const d=Math.floor(Math.random()*7);note(pitchOf(d),{vel:.12+.06*idle,dur:4.5+Math.random()*3,ratio:1.5,bright:.6});}
-      else if(idlePhrase===1){const d=Math.floor(Math.random()*5);[0,2].forEach((s,i)=>note(pitchOf(d+s),{vel:.1,dur:5,when:i*.3,ratio:2.01,bright:.5}));}
-      else if(idlePhrase===2){for(let i=0;i<3;i++)note(pitchOf(i*2),{vel:.08+.04*i,dur:3.5,when:i*.55,ratio:1.5,bright:.7});}
-      else if(idlePhrase===3){note(pitchOf(degree,-1),{vel:.14,dur:6,ratio:2.01,bright:.4});}
-      else{const up=Math.random()<.5;for(let i=0;i<4;i++)note(pitchOf(up?i:6-i),{vel:.09,dur:2.8,when:i*.6,ratio:RATIOS[i%2],bright:.6});}
+      if(idlePhrase===0){const d=Math.floor(Math.random()*7);note(pitchOf(d),{vel:.22+.1*idle,dur:4.5+Math.random()*3,ratio:1.5,bright:.7});}
+      else if(idlePhrase===1){const d=Math.floor(Math.random()*5);[0,2].forEach((s,i)=>note(pitchOf(d+s),{vel:.18,dur:5,when:i*.3,ratio:2.01,bright:.6}));}
+      else if(idlePhrase===2){for(let i=0;i<3;i++)note(pitchOf(i*2),{vel:.16+.06*i,dur:3.5,when:i*.55,ratio:1.5,bright:.8});}
+      else if(idlePhrase===3){note(pitchOf(degree,-1),{vel:.24,dur:6,ratio:2.01,bright:.5});}
+      else{const up=Math.random()<.5;for(let i=0;i<4;i++)note(pitchOf(up?i:6-i),{vel:.16,dur:2.8,when:i*.6,ratio:RATIOS[i%2],bright:.7});}
       idleClock=(3800+Math.random()*5000)*(1.4-idle*.4);
     }
     /* mouse movement: direction changes trigger a micro-ornament, speed shapes timbre */
     if(moveFigCool<=0&&motion>.15){
       const dirDelta=Math.abs(moveDir-prevMoveDir);
-      if(dirDelta>1.2&&dirDelta<5){moveFigCool=400;note(pitchOf(degree+Math.round(hx*2)),{vel:.12+.08*moveSpeed,dur:1.2+moveSpeed*1.5,ratio:moveSpeed>.5?3.0:2.01,bright:.8+.6*moveSpeed});}
+      if(dirDelta>1.2&&dirDelta<5){moveFigCool=400;note(pitchOf(degree+Math.round(hx*2)),{vel:.24+.15*moveSpeed,dur:1.2+moveSpeed*1.5,ratio:moveSpeed>.5?3.0:2.01,bright:.9+.6*moveSpeed});}
     }
     prevMoveDir=moveDir;moveSpeed*=.92;
     /* coming back after being still: a small waking figure */
@@ -281,11 +271,13 @@ if(button){
       const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
     }
     if(rain){
-      const rainRate={top:550,projects:700,music:1200,story:400,contact:650,detail:900}[scene]||600;
-      rain.rate=rainRate*(1+.5*motion)*(1-.3*idle);
-      rain.vol=(.7+.3*idle)*(1-.6*ducked)*(1-.2*motion);
+      const baseRate={top:80,projects:100,music:180,story:55,contact:90,detail:140}[scene]||80;
+      const dropInterval=1000/baseRate;
+      rain.vol=.18*(1-.5*ducked)*(1+.2*idle)*(1-.15*motion);
       rain.clock-=50;
-      if(rain.clock<=0){rain.clock=rain.rate*(.6+.8*Math.random());droplet();}
+      if(rain.clock<=0){rain.clock=dropInterval*(.3+Math.random()*1.7);droplet();}
+      const bedVol={top:.04,projects:.03,music:.015,story:.05,contact:.035,detail:.02}[scene]||.03;
+      rain.bed.gain.setTargetAtTime(bedVol*(1-.6*ducked)*(1+.3*idle),engine.context.currentTime,.4);
     }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
     if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.1,wipeVel*.15),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(1200+1200*(1-tilt),t,.05);whoosh.last=wipeVel;}
@@ -341,7 +333,7 @@ if(button){
     if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C();}
     ctx.resume();return ctx;
   }
-  const level=()=>ducked?0:away?.16:.26;
+  const level=()=>ducked?0:away?.2:.34;
   async function start(){
     if(busy)return;busy=true;setState('loading');
     try{
@@ -364,20 +356,32 @@ if(button){
         whoosh={src,filter,gain,last:0};
         /* melody bus: wet into the granular chain, a little dry for definition */
         const mIn=context.createGain(),mDry=context.createGain(),mLp=context.createBiquadFilter();
-        mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.18;
+        mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.32;
         mIn.connect(mLp);mLp.connect(engine.device.node);mLp.connect(mDry);mDry.connect(engine.master);
         melody={in:mIn,dry:mDry};
-        /* rain: discrete raindrop synthesis — each drop is a short pitched impulse */
-        const rainBus=context.createGain();
+        /* rain: noise-burst drops + subtle pink-noise bed (ref: slee1005/rain, noised) */
+        const sr=context.sampleRate;
+        const rainBus=context.createGain();rainBus.gain.value=1;
         const rainVerb=context.createConvolver();
-        const rvLen=context.sampleRate*1.8,rvBuf=context.createBuffer(2,rvLen,context.sampleRate);
-        for(let ch=0;ch<2;ch++){const d=rvBuf.getChannelData(ch);for(let i=0;i<rvLen;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/rvLen*4.5)*.35;}
+        const rvLen=sr*2,rvBuf=context.createBuffer(2,rvLen,sr);
+        const refs=[{t:.018,g:.6},{t:.032,g:.45},{t:.048,g:.35},{t:.065,g:.28},{t:.084,g:.2},{t:.106,g:.14}];
+        for(let ch=0;ch<2;ch++){const d=rvBuf.getChannelData(ch);
+          refs.forEach(r=>{const p=Math.floor(r.t*sr),w=Math.floor(.003*sr);for(let k=0;k<w&&p+k<rvLen;k++)d[p+k]+=(Math.random()*2-1)*r.g*Math.exp(-k/(sr*.001));});
+          for(let i=Math.floor(.06*sr);i<rvLen;i++)d[i]+=(Math.random()*2-1)*Math.exp(-(i/sr)*3.2)*.4;
+        }
         rainVerb.buffer=rvBuf;
         const rainDry=context.createGain(),rainWet=context.createGain();
-        rainDry.gain.value=.55;rainWet.gain.value=.45;
+        rainDry.gain.value=.6;rainWet.gain.value=.4;
         rainBus.connect(rainDry);rainBus.connect(rainVerb);rainVerb.connect(rainWet);
         rainDry.connect(engine.master);rainWet.connect(engine.master);
-        rain={bus:rainBus,vol:0,clock:0,rate:600};
+        /* subtle pink-noise bed underneath the drops */
+        const pnLen=sr*4,pnBuf=context.createBuffer(2,pnLen,sr);
+        for(let ch=0;ch<2;ch++){const d=pnBuf.getChannelData(ch);let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+          for(let i=0;i<pnLen;i++){const w=Math.random()*2-1;b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926;}}
+        const pnSrc=context.createBufferSource(),pnHp=context.createBiquadFilter(),pnG=context.createGain();
+        pnSrc.buffer=pnBuf;pnSrc.loop=true;pnHp.type='highpass';pnHp.frequency.value=600;pnHp.Q.value=.5;pnG.gain.value=0;
+        pnSrc.connect(pnHp);pnHp.connect(pnG);pnG.connect(engine.master);pnSrc.start();
+        rain={bus:rainBus,bed:pnG,vol:0,clock:0,rate:500};
       }
       await engine.context.resume();
       scene=detail?'detail':currentScene();visits[scene]=visits[scene]||1;since=performance.now();
