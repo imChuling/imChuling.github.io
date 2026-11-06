@@ -5,7 +5,8 @@
       button.disabled = false;
       button.style.cursor = 'pointer';
       button.addEventListener('click', () => {
-        window.location.href = detail;
+        if (window.openDetail) window.openDetail(detail);
+        else window.location.href = detail;
       });
     }
   });
@@ -39,7 +40,8 @@
     tab.addEventListener('click', (e) => {
       clearTimeout(pending); select(index);
       if (tab.dataset.detail) {
-        window.location.href = tab.dataset.detail;
+        if (window.openDetail) window.openDetail(tab.dataset.detail);
+        else window.location.href = tab.dataset.detail;
       }
     });
     tab.addEventListener('focus', () => { clearTimeout(pending); select(index); });
