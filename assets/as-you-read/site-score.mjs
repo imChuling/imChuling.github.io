@@ -313,10 +313,11 @@ if(button){
       compose();engine.volume(level(),.6);
     }
   });
+  /* the score keeps playing while this tab is open, even in the background: following a link out
+     to GitHub or a demo should not cut it. Only a playing video (ducking) or leaving the page stops it. */
   document.addEventListener('visibilitychange',()=>{
-    if(!engine)return;
-    if(document.hidden){if(enabled){engine.volume(0,.1);engine.context.suspend();}}
-    else if(enabled){engine.context.resume();engine.volume(level(),.6);}
+    if(!engine||!enabled||document.hidden)return;
+    engine.context.resume();engine.volume(level(),.6);          /* a browser may have suspended it on its own */
   });
   addEventListener('pagehide',()=>{if(enabled)stop();});
 }

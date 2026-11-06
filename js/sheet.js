@@ -63,6 +63,8 @@
     title.textContent=(doc.querySelector('.proj-hero h1')||doc.querySelector('h1'))?.textContent||'';
     body.replaceChildren(...[...doc.body.children].filter(el=>!el.matches('.back,.proj-foot,script')));
     body.querySelectorAll('a[href^="index.html"],a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();close();}));
+    /* outbound links open beside the portfolio so the score keeps playing here */
+    body.querySelectorAll('a[href^="http"]').forEach(a=>{if(new URL(a.href).origin!==location.origin){a.target='_blank';a.rel='noopener';}});
     /* next-project links stay inside the sheet */
     body.querySelectorAll('a[href$=".html"]:not([href^="index.html"]):not([target])').forEach(a=>a.addEventListener('click',e=>{
       if(e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
