@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Max/MSP Sound Study — Chuling LI</title>
-<meta name="description" content="Sound studies in Max/MSP by Chuling Li — granular synthesis, spectral processing and real-time gestural control, built with RNBO and gen~.">
+<title>As You Read — Chuling LI</title>
+<meta name="description" content="As You Read — a generative score that lives inside the portfolio itself. Every scroll, hover, click, and pause shapes a real-time soundscape built with Max/RNBO, turning browsing into performance.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
-<meta property="og:title" content="Max/MSP Sound Study — Chuling LI">
-<meta property="og:description" content="Sound studies in Max/MSP by Chuling Li — granular synthesis, spectral processing and real-time gestural control, built with RNBO and gen~.">
+<meta property="og:title" content="As You Read — Chuling LI">
+<meta property="og:description" content="As You Read — a generative score that lives inside the portfolio itself. Every scroll, hover, click, and pause shapes a real-time soundscape built with Max/RNBO, turning browsing into performance.">
 <meta property="og:url" content="https://imchuling.github.io/music-maxmsp.html">
-<meta property="og:image" content="https://imchuling.github.io/assets/hero/chuling-live.jpg">
+<meta property="og:image" content="https://imchuling.github.io/images/hero-music.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,38 +23,43 @@
 <a class="back" href="index.html#music">← Back to portfolio</a>
 
 <div class="proj-hero compact">
-  <h1>Max/MSP Sound Study</h1>
+  <h1>As You Read</h1>
   <div class="proj-meta">
-    <span class="tag">Sound Synthesis</span>
-    <span class="tag">Max/MSP</span>
-    <span class="tag">Granular Processing</span>
-    <span class="tag">Audio DSP</span>
+    <span class="tag">Max/RNBO</span>
+    <span class="tag">Web Audio</span>
+    <span class="tag">Interaction Design</span>
+    <span class="tag">Generative Score</span>
   </div>
-  <p class="subtitle">Explorations in real-time sound synthesis and audio processing using Max/MSP — granular engines, spectral effects, and interactive patches.</p>
-</div>
-
-<div class="proj-video">
-  <div class="video-wrap">[ demo coming soon ]</div>
+  <p class="subtitle">A generative sound layer that lives inside this portfolio. The site itself is the instrument — every scroll, hover, click, and pause shapes a real-time soundscape processed through a Max/RNBO engine running in the browser.</p>
 </div>
 
 <div class="proj-content">
-  <h2>About</h2>
-  <p>This is an ongoing series of sound studies built in Max/MSP, exploring granular synthesis, spectral processing, and real-time audio manipulation. Each patch is a small experiment — a way to understand how sound behaves when you break it apart and reassemble it.</p>
-  <p>The work sits at the intersection of music technology and creative practice: building tools that respond to gesture and intention, not just parameters.</p>
+  <h2>The idea</h2>
+  <p>Most portfolio sites are silent. This one listens back. Rather than embedding a separate audio player, the entire browsing experience is scored in real time: where you go, how you move, how long you stay, and whether you come back all leave traces in the sound. The visitor is not an audience — they are a performer who may not realise they are playing.</p>
 
-  <h2>Techniques</h2>
+  <h2>Five sections, five soundscapes</h2>
+  <p>Each section of the portfolio has its own harmonic world — a looping pad, a set of processing parameters, and a melodic scale. Crossing into a new section triggers a crossfade between sound beds, and the granular engine, overdrive, and reverb all shift to match.</p>
   <ul>
-    <li>Granular synthesis — fragmenting audio into micro-grains and recombining with variable density, pitch, and scatter</li>
-    <li>Spectral processing — FFT-based effects including spectral freeze, bin shifting, and cross-synthesis</li>
-    <li>Real-time control — mapping MIDI controllers and gesture to synthesis parameters</li>
-    <li>Signal flow design — building modular patches that can be chained and reconfigured live</li>
+    <li>Hero — D dorian, warm and open, moderate granular processing</li>
+    <li>Projects — A major, bright and light, short dense grains with lifted highs</li>
+    <li>Music — E dorian, the thickest and widest, heavy granular and overdrive</li>
+    <li>Story — Bb lydian, high and distant, long grains with deep reverb</li>
+    <li>About — Cmaj9, warm and close, processing pulled back</li>
   </ul>
+
+  <h2>Browsing as performance</h2>
+  <p>Over thirty interactions are mapped to sound. Scrolling steps through scale tones. Mouse position shifts pitch and stereo image. Hovering a card triggers a triplet figure. Clicking anything opens a four-note chord with a granular stutter. Selecting text makes the selection hum — a triangle wave at the root, brightening with every twelve characters. Wiping the frosted glass in the Story section adds a bandpass noise layer that follows your hand. Even stillness has a voice: after ten seconds of no movement, the melody begins arpeggating on its own.</p>
+  <p>Returning to a section you have already visited thickens the sound — more granular residue, longer reverb tails. The place remembers that you were there.</p>
+
+  <h2>Signal chain</h2>
+  <p>All audio — five looping sound beds, an FM bell melody generated in real time, and interaction-driven noise — is routed through a single processing chain exported from Max 9 via RNBO: a granular engine (JR-Granular), into overdrive, into plate reverb. The chain runs entirely in the browser. Every sound passes through the same room, so the result feels cohesive rather than layered.</p>
+  <p>The melody uses FM synthesis with four timbral ratios that rotate between bell, glass, hollow, and metallic characters. Notes follow a random walk along each section's seven-tone scale, with occasional octave leaps and response figures.</p>
 
   <h2>Tools</h2>
   <ul>
-    <li>Max/MSP — primary patching environment</li>
-    <li>RNBO — for web-exportable audio engines</li>
-    <li>Gen~ — for sample-level DSP</li>
+    <li>Max 9 / RNBO 1.3.5 — granular processing chain, exported to WebAssembly</li>
+    <li>Web Audio API — sound beds, FM melody synthesis, interaction sonification</li>
+    <li>JavaScript — all interaction-to-sound mapping and score logic</li>
   </ul>
 </div>
 
