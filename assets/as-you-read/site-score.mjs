@@ -138,23 +138,24 @@ if(button){
     for(let i=0;i<steps;i++){const u=i/(steps-1);note(from*Math.pow(toHz/from,u),{vel:vel*(1-.4*u),dur:.6+u*1.6,when:u*span,ratio,bright:1.2});}
   }
 
-  /* ---------- raindrop : a pitched plink, like a drop hitting glass ---------- */
+  /* ---------- raindrop : a tuned plink on a scale tone ---------- */
   function droplet(){
     if(!rain||!engine||ducked)return;
     const c=engine.context,t=c.currentTime;
     const vol=rain.vol;
-    const freq=3000+Math.random()*3500;                           /* 3000-6500 Hz */
-    const dur=.02+Math.random()*.03;                              /* 20-50ms ring */
-    const osc=c.createOscillator(),env=c.createGain();
+    const s=SCALES[scale];
+    const freq=s[Math.floor(Math.random()*s.length)]*(Math.random()<.3?2:1); /* scale tone, sometimes octave up */
+    const dur=.6+Math.random()*1.2;
+    const osc=c.createOscillator(),osc2=c.createOscillator(),env=c.createGain();
     const pan=c.createStereoPanner();
-    osc.type='sine';
-    osc.frequency.setValueAtTime(freq,t);
-    osc.frequency.exponentialRampToValueAtTime(freq*.55,t+dur);   /* pitch drops ~octave */
-    env.gain.setValueAtTime(vol*(.15+Math.random()*.2),t);        /* instant attack */
-    env.gain.exponentialRampToValueAtTime(.0001,t+dur+.01);       /* fast ring-out */
-    pan.pan.value=(Math.random()*2-1)*.8;
-    osc.connect(env);env.connect(pan);pan.connect(rain.bus);
-    osc.start(t);osc.stop(t+dur+.02);
+    osc.type='sine';osc2.type='sine';
+    osc.frequency.value=freq;osc2.frequency.value=freq*1.003;     /* gentle detuning */
+    env.gain.setValueAtTime(0,t);
+    env.gain.linearRampToValueAtTime(vol*(.08+Math.random()*.08),t+.003);
+    env.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    pan.pan.value=(Math.random()*2-1)*.7;
+    osc.connect(env);osc2.connect(env);env.connect(pan);pan.connect(rain.bus);
+    osc.start(t);osc2.start(t);osc.stop(t+dur+.05);osc2.stop(t+dur+.05);
     osc.onended=()=>{env.disconnect();pan.disconnect();};
   }
 
@@ -214,7 +215,7 @@ if(button){
     const height=.5-tilt;                                       /* pointer high on the page: brighter; low: darker */
     /* melodic events: a slow drip of notes, plus figures for hover, click, wipe */
     melodyClock-=50;
-    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?4000:scene==='story'?3500:2000)*(1-.4*motion)*(1+.8*idle)*(.7+.6*Math.random());}
+    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?3000:scene==='story'?2500:1400)*(1-.4*motion)*(1+.5*idle)*(.7+.6*Math.random());}
     if(focusTarget&&!prevFocus)figure();prevFocus=focusTarget;
     if(bloom){bloom=false;chord();stutter=1;}
     /* scroll strum: each ~140px plucks the next scale step, down = rising, up = falling */
@@ -222,7 +223,7 @@ if(button){
     if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:.35+.2*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1],ch:2});}
     else if(strumAcc<140)strumAcc*=.9;
     /* staying somewhere, the page occasionally plays an arpeggio by itself */
-    arpClock-=50;if(arpClock<=0){arpClock=9000+Math.random()*9000;if(dwell>.25&&scene!=='detail')arpeggio();}
+    arpClock-=50;if(arpClock<=0){arpClock=6000+Math.random()*6000;if(dwell>.15&&scene!=='detail')arpeggio();}
     tickCool-=50;moveFigCool-=50;
     /* idle generative layer: when nobody interacts, the score breathes on its own */
     idleClock-=50;
@@ -233,7 +234,7 @@ if(button){
       else if(idlePhrase===2){for(let i=0;i<3;i++)note(pitchOf(i*2),{vel:.16+.06*i,dur:3.5,when:i*.55,ratio:1.5,bright:.8});}
       else if(idlePhrase===3){note(pitchOf(degree,-1),{vel:.24,dur:6,ratio:2.01,bright:.5});}
       else{const up=Math.random()<.5;for(let i=0;i<4;i++)note(pitchOf(up?i:6-i),{vel:.16,dur:2.8,when:i*.6,ratio:RATIOS[i%2],bright:.7});}
-      idleClock=(3800+Math.random()*5000)*(1.4-idle*.4);
+      idleClock=(2200+Math.random()*3000)*(1.3-idle*.4);
     }
     /* mouse movement: direction changes trigger a micro-ornament, speed shapes timbre */
     if(moveFigCool<=0&&motion>.15){
@@ -271,7 +272,7 @@ if(button){
       const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
     }
     if(rain){
-      const dps={top:2,projects:1.5,music:.8,story:3,contact:2,detail:1}[scene]||2;
+      const dps={top:3,projects:2.5,music:1.5,story:4,contact:3,detail:1.5}[scene]||3;
       rain.vol=.2*(1-.6*ducked);
       rain.clock-=50;
       if(rain.clock<=0){rain.clock=(1000/dps)*(.4+Math.random()*1.2);droplet();}
