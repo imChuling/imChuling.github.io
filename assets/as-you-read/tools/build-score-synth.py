@@ -141,7 +141,7 @@ def score():
 
 # ---- the full RNBO patcher : [p score] → verified chain ----------------------------------
 def rnbo_patcher():
-    chain = json.loads((ROOT / 'max/shoegaze-modular-engine.rnbopat').read_text())['patcher']
+    chain = json.loads((ROOT.parents[1] / 'docs/as-you-read/archive/max/shoegaze-modular-engine.rnbopat').read_text())['patcher']
     chain = copy.deepcopy(chain)
     chain['boxes'] = [x for x in chain['boxes'] if x['box']['id'] not in ('in1', 'in2')]
     chain['lines'] = [l for l in chain['lines'] if l['patchline']['source'][0] not in ('in1', 'in2')]
