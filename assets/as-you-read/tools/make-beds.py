@@ -10,6 +10,8 @@ import math, os, random, struct, subprocess, sys, tempfile, wave
 SR = 44100
 DUR = 24
 TW = 2 * math.pi
+TRANSPOSE = 2.0      # an octave up: lighter, more coloured
+SHIMMER = .07        # 5th partial, slowly glinting
 OUT = os.path.join(os.path.dirname(__file__), '..', 'beds')
 
 # name: (notes Hz, amps, lfo range, harmonic colour (h2,h3), air level, breathe period)
@@ -36,15 +38,18 @@ def render(name, notes, amps, lfo, colour, air, breathe):
     n = SR * DUR
     out = [0.0] * n
     for f, a in zip(notes, amps):
-        for d in (-.35, 0, .35):
+        f *= TRANSPOSE
+        for d in (-.55, -.18, .18, .55):
             fr = f * (1 + d / 100 * .6)
             w = TW * fr / SR; ph = random.random() * TW
             lw = TW * random.uniform(*lfo) / SR; lph = random.random() * TW
             h2 = colour[0] + random.random() * .1; h3 = colour[1] + random.random() * .05
-            amp = a / 3
+            h5 = SHIMMER * (.4 + random.random() * .6); sw = TW * random.uniform(.05, .11) / SR; sph = random.random() * TW
+            amp = a / 4
             for i in range(n):
                 env = .6 + .4 * math.sin(i * lw + lph)
-                out[i] += (math.sin(ph) + h2 * math.sin(2 * ph + .3) + h3 * math.sin(3 * ph + .9)) * amp * env
+                glint = .5 + .5 * math.sin(i * sw + sph)          # slow sparkle on the high partial
+                out[i] += (math.sin(ph) + h2 * math.sin(2 * ph + .3) + h3 * math.sin(3 * ph + .9) + h5 * glint * math.sin(5 * ph + 1.7)) * amp * env
                 ph += w
     lp = 0.0; k = .004
     for i in range(n):

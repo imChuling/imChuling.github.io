@@ -17,6 +17,14 @@ const SCENES={
   contact: {bed:'contact', mix:38,grainSize:240,grainPos:150,interval:125,pitch:0, width:60,drive:8, bass:6,  mid:0,  treble:4,  wet:42,decay:58,size:55,damp:60,jitter:10},
   detail:  {bed:null,      mix:22,grainSize:220,grainPos:110,interval:140,pitch:0, width:45,drive:6, bass:0,  mid:2,  treble:8,  wet:28,decay:42,size:45,damp:70,jitter:8},
 };
+/* melody: one high scale per section (Hz), played by the page itself above the bed */
+const SCALES={
+  top:     [587.33,698.46,880.00,1046.5,1318.5],   /* D5 F5 A5 C6 E6  — Dm9 */
+  projects:[880.00,987.77,1318.5,1480.0,1760.0],   /* A5 B5 E6 F#6 A6 — sus, open */
+  music:   [659.26,783.99,987.77,1174.7,1480.0],   /* E5 G5 B5 D6 F#6 — E dorian */
+  story:   [932.33,1174.7,1318.5,1396.9,1760.0],   /* Bb5 D6 E6 F6 A6 — lydian */
+  contact: [523.25,659.26,783.99,987.77,1174.7],   /* C5 E5 G5 B5 D6  — Cmaj9 */
+};
 const FOCUS='.proj-card,.music-cover,.music-track,.me-photo,.story-visual,.hero-action,.me-link';
 
 const button=document.querySelector('.nav-sound');
@@ -27,6 +35,7 @@ if(button){
   let motion=0,focus=0,focusTarget=0,swell=0,turn=0,drift=0,hoverPitch=0;
   let hx=0,vy=0,pan=.5,tilt=.5,wipe=0,wipeVel=0;   /* pointer: signed velocities, position, glass wiping */
   let panner=null,whoosh=null;
+  let melody=null,melodyClock=1800,degree=2,octave=0,scale='top',prevFocus=0,bloom=false,wipeCool=0;
   let lastY=scrollY,lastScroll=performance.now(),px=0,py=0,lastMove=0;
   const beds={};                       /* id → {source,gain} once loaded */
   let bedId=null,bedsReady=false;
@@ -69,8 +78,33 @@ if(button){
     const el=e.target.closest(FOCUS);focusTarget=el?1:0;
     hoverPitch=el&&el.dataset.pitch?Number(el.dataset.pitch):0;
   });
-  document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-hover],a,button'))swell=1;touch();});
+  document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-hover],a,button')){swell=1;bloom=true;}touch();});
   addEventListener('keydown',touch,{passive:true});
+
+  /* ---------- melody : a high FM bell the page plays, sent into the same chain ---------- */
+  function note(freq,{vel=.4,dur=2.6,bright=1,when=0}={}){
+    if(!melody||ducked)return;
+    const c=engine.context,t=c.currentTime+when;
+    const car=c.createOscillator(),car2=c.createOscillator(),mod=c.createOscillator(),mg=c.createGain(),env=c.createGain();
+    car.frequency.value=freq;car2.frequency.value=freq*1.004;mod.frequency.value=freq*2.01;
+    mg.gain.setValueAtTime(freq*1.4*bright,t);mg.gain.exponentialRampToValueAtTime(freq*.04,t+dur*.55);
+    mod.connect(mg);mg.connect(car.frequency);mg.connect(car2.frequency);
+    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.11,t+.014);env.gain.exponentialRampToValueAtTime(.0004,t+dur);
+    car.connect(env);car2.connect(env);env.connect(melody.in);
+    [car,car2,mod].forEach(o=>{o.start(t);o.stop(t+dur+.05);});
+    car.onended=()=>{env.disconnect();mg.disconnect();};
+  }
+  const pitchOf=(deg,oct=octave)=>{const s=SCALES[scale];return s[((deg%s.length)+s.length)%s.length]*Math.pow(2,oct+Math.floor(deg/s.length));};
+  /* the random walk: drifts toward where the pointer is (left low, right high) */
+  function drip(){
+    const target=Math.round(pan*4);
+    degree+=Math.random()<.6?Math.sign(target-degree)||(Math.random()<.5?-1:1):(Math.random()<.5?-1:1);
+    degree=Math.max(0,Math.min(4,degree));octave=Math.random()<.18?1:0;
+    note(pitchOf(degree),{vel:.3+.2*Math.random(),dur:scene==='story'?4.5:2.6+Math.random()*1.2,bright:.8+.6*motion});
+  }
+  function motif(up){for(let i=0;i<3;i++)note(pitchOf(up?i*2:4-i*2),{vel:.34,dur:3,when:i*.15});}
+  function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.3,dur:1.8,when:i*.09,bright:1.2});}
+  function chord(){[0,2,4].forEach((d,i)=>note(pitchOf(d,i===2?1:0),{vel:.3,dur:4.5,when:i*.02}));}
 
   /* ---------- turning the state into sound ---------- */
   function compose(){
@@ -78,7 +112,7 @@ if(button){
     const next=detail?'detail':currentScene();
     if(next!==scene){
       scene=next;since=now;turn=1;
-      if(scene!=='detail')visits[scene]=(visits[scene]||0)+1;
+      if(scene!=='detail'){visits[scene]=(visits[scene]||0)+1;scale=scene;motif(visits[scene]%2===1);}
       setLabel(LABEL[scene]);
     }
     motion*=.9;swell*=.9;turn*=.93;drift*=.97;focus+=(focusTarget-focus)*.12;
@@ -88,6 +122,12 @@ if(button){
     const dwell=Math.min(1,(now-since)/45000);                  /* staying somewhere slowly thickens it */
     const idle=Math.max(0,Math.min(1,(now-lastInput-8000)/20000)); /* left alone, it settles toward the raw bed */
     const height=.5-tilt;                                       /* pointer high on the page: brighter; low: darker */
+    /* melodic events: a slow drip of notes, plus figures for hover, click, wipe */
+    melodyClock-=50;
+    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?5200:scene==='story'?4800:2600)*(1-.45*motion)*(1+1.2*idle)*(.7+.6*Math.random());}
+    if(focusTarget&&!prevFocus)figure();prevFocus=focusTarget;
+    if(bloom){bloom=false;chord();}
+    wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6});}
     engine.setParams({
       mix:Math.max(8,Math.min(95,b.mix+14*residue+8*dwell-14*idle+8*motion+12*turn-18*wipe)),
       width:Math.min(100,b.width+20*motion),gain:-8,
@@ -105,7 +145,7 @@ if(button){
     const a=new Float32Array(engine.analyser.fftSize);engine.analyser.getFloatTimeDomainData(a);
     let peak=0;for(let i=0;i<a.length;i+=4)peak=Math.max(peak,Math.abs(a[i]));
     button.style.setProperty('--lvl',Math.min(1,peak*6).toFixed(2));
-    button.score={scene,bed:bedId,visits:{...visits},residue,dwell:+dwell.toFixed(2),idle:+idle.toFixed(2),motion:+motion.toFixed(2),focus:+focus.toFixed(2),swell:+swell.toFixed(2),turn:+turn.toFixed(2),drift:+drift.toFixed(2),hx:+hx.toFixed(2),vy:+vy.toFixed(2),pan:+pan.toFixed(2),tilt:+tilt.toFixed(2),wipe:+wipe.toFixed(2),peak:+peak.toFixed(3),ducked,targets:{...engine.targets}};
+    button.score={scene,bed:bedId,visits:{...visits},residue,dwell:+dwell.toFixed(2),idle:+idle.toFixed(2),motion:+motion.toFixed(2),focus:+focus.toFixed(2),swell:+swell.toFixed(2),turn:+turn.toFixed(2),drift:+drift.toFixed(2),hx:+hx.toFixed(2),vy:+vy.toFixed(2),pan:+pan.toFixed(2),tilt:+tilt.toFixed(2),wipe:+wipe.toFixed(2),peak:+peak.toFixed(3),ducked,melody:!!melody,scale,degree,targets:{...engine.targets}};
   }
 
   /* ---------- beds : one looping source per section, cross-faded ---------- */
@@ -170,6 +210,11 @@ if(button){
         src.buffer=buf;src.loop=true;filter.type='bandpass';filter.frequency.value=1800;filter.Q.value=1.1;gain.gain.value=0;
         src.connect(filter);filter.connect(gain);gain.connect(engine.device.node);src.start();
         whoosh={src,filter,gain,last:0};
+        /* melody bus: mostly into the chain (granulated, reverberated), a little dry for definition */
+        const mIn=context.createGain(),mDry=context.createGain(),mLp=context.createBiquadFilter();
+        mLp.type='lowpass';mLp.frequency.value=5200;mDry.gain.value=.22;
+        mIn.connect(mLp);mLp.connect(engine.device.node);mLp.connect(mDry);mDry.connect(engine.master);
+        melody={in:mIn,dry:mDry};
       }
       await engine.context.resume();
       scene=detail?'detail':currentScene();visits[scene]=visits[scene]||1;since=performance.now();
