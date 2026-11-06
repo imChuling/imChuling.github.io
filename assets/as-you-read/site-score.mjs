@@ -138,24 +138,24 @@ if(button){
     for(let i=0;i<steps;i++){const u=i/(steps-1);note(from*Math.pow(toHz/from,u),{vel:vel*(1-.4*u),dur:.6+u*1.6,when:u*span,ratio,bright:1.2});}
   }
 
-  /* ---------- raindrop : a light tap on glass ---------- */
+  /* ---------- raindrop : a pitched plink, like a drop hitting glass ---------- */
   function droplet(){
     if(!rain||!engine||ducked)return;
     const c=engine.context,t=c.currentTime;
     const vol=rain.vol;
-    const dur=.008+Math.random()*.025;                            /* very short: 8-33ms */
-    const len=Math.floor(c.sampleRate*dur);
-    const buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
-    const decay=len*(.12+Math.random()*.18);                      /* fast decay */
-    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/decay);
-    const src=c.createBufferSource();src.buffer=buf;
-    const bp=c.createBiquadFilter();
-    bp.type='bandpass';bp.frequency.value=2200+Math.random()*4000;bp.Q.value=3+Math.random()*5; /* high, narrow = delicate plink */
-    const g=c.createGain();g.gain.value=vol*(.2+Math.random()*.4);
-    const pan=c.createStereoPanner();pan.pan.value=(Math.random()*2-1)*.8;
-    src.connect(bp);bp.connect(g);g.connect(pan);pan.connect(rain.bus);
-    src.start(t);
-    src.onended=()=>{g.disconnect();bp.disconnect();pan.disconnect();};
+    const freq=3000+Math.random()*3500;                           /* 3000-6500 Hz */
+    const dur=.02+Math.random()*.03;                              /* 20-50ms ring */
+    const osc=c.createOscillator(),env=c.createGain();
+    const pan=c.createStereoPanner();
+    osc.type='sine';
+    osc.frequency.setValueAtTime(freq,t);
+    osc.frequency.exponentialRampToValueAtTime(freq*.55,t+dur);   /* pitch drops ~octave */
+    env.gain.setValueAtTime(vol*(.15+Math.random()*.2),t);        /* instant attack */
+    env.gain.exponentialRampToValueAtTime(.0001,t+dur+.01);       /* fast ring-out */
+    pan.pan.value=(Math.random()*2-1)*.8;
+    osc.connect(env);env.connect(pan);pan.connect(rain.bus);
+    osc.start(t);osc.stop(t+dur+.02);
+    osc.onended=()=>{env.disconnect();pan.disconnect();};
   }
 
   /* ---------- selecting text : the highlight hums, and each dozen characters is read as a note ---------- */
