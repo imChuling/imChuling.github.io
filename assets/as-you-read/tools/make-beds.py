@@ -51,10 +51,13 @@ def render(name, notes, amps, lfo, colour, air, breathe):
                 glint = .5 + .5 * math.sin(i * sw + sph)          # slow sparkle on the high partial
                 out[i] += (math.sin(ph) + h2 * math.sin(2 * ph + .3) + h3 * math.sin(3 * ph + .9) + h5 * glint * math.sin(5 * ph + 1.7)) * amp * env
                 ph += w
-    lp = 0.0; k = .004
+    # air: band-limited hiss (not sub-bass rumble), kept well under the partials
+    lp = 0.0; hp = 0.0; k = .12
     for i in range(n):
-        lp += (random.uniform(-1, 1) - lp) * k
-        out[i] += lp * air
+        x = random.uniform(-1, 1)
+        lp += (x - lp) * k
+        hp += (lp - hp) * .02
+        out[i] += (lp - hp) * air * .35
     for i in range(n):
         out[i] *= .85 + .15 * math.sin(TW * i / SR / breathe)
     x = int(4 * SR); head = out[:x]; tail = out[n - x:]
