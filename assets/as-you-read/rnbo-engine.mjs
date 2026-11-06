@@ -25,7 +25,12 @@ export class RNBOSound {
     this.stop();this.source=this.context.createBufferSource();this.source.buffer=this.buffer;this.source.loop=true;this.source.connect(this.device.node);this.source.start();
   }
   stop() {if(this.source){this.source.stop();this.source.disconnect();this.source=null;}}
-  volume(value){if(this.master)this.master.gain.setTargetAtTime(Math.max(0,Math.min(.5,value)),this.context.currentTime,.12);}
+  volume(value,tc=.12){if(this.master)this.master.gain.setTargetAtTime(Math.max(0,Math.min(.5,value)),this.context.currentTime,tc);}
+  /* direct targets: bare grain keys are prefixed to match the export; pedal keys are passed through */
+  setParams(params){
+    const grain=new Set(['mix','width','grainSize','grainPos','interval','pitch','gain']);
+    this.targets=Object.fromEntries(Object.entries(params).map(([k,v])=>[grain.has(k)?this.prefix+k:k,v]));
+  }
   setState(state,motion=0) {
     const presets={first:[35,65,180,90,100,0,18,42,58],passing:[85,100,360,260,45,-5,48,80,82],returning:[65,85,300,180,65,0,28,65,74],original:[0,65,180,90,100,0,0,0,58]};
     const [mix,width,grainSize,grainPos,interval,pitch,drive,wet,decay]=presets[state];

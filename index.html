@@ -129,6 +129,13 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;backg
 .nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
 @media(max-width:680px){.nav-links{display:none}}
 .nav-links a{padding:.75rem 0;margin:-.75rem 0}
+.nav-sound{display:inline-flex;align-items:center;gap:.55rem;margin-left:.6rem;padding:.75rem 0;background:none;border:0;cursor:pointer;color:var(--muted);font:400 .78rem var(--display);letter-spacing:.18em;text-transform:uppercase;transition:color .3s}
+.nav-sound:hover,.nav-sound[data-state="on"]{color:var(--ink)}
+.nav-sound i{width:7px;height:7px;border-radius:50%;border:1px solid currentColor;transition:background .3s,border-color .3s,transform .06s linear}
+.nav-sound[data-state="on"] i{background:var(--violet);border-color:var(--violet);transform:scale(calc(1 + var(--lvl,0)*1.8))}
+.nav-sound[data-state="loading"] i{animation:soundLoad 1s ease-in-out infinite}
+.nav-sound[data-state="error"]{text-decoration:line-through;cursor:default}
+@keyframes soundLoad{0%,100%{opacity:.25}50%{opacity:1}}
 
 /* ---------- HERO : identity, musical perspective, and a direct route to the work ---------- */
 .hero{padding:7.7rem 4vw 3rem;max-width:1500px;margin:0 auto;overflow:hidden;scroll-margin-top:5rem}
@@ -522,6 +529,7 @@ footer{
     <a href="#music" data-hover>Music</a>
     <a href="#story" data-hover>Story</a>
     <a href="#contact" data-hover>About &amp; Contact</a>
+    <button class="nav-sound" type="button" data-state="off" aria-pressed="false" title="Listen while you read — the page plays a piece that changes with where you are and how you move" data-hover>Sound <i aria-hidden="true"></i></button>
   </div>
 </nav>
 
@@ -826,5 +834,6 @@ footer{
 </footer>
 
 <script src="js/main.js?v=8"></script>
+<script type="module" src="assets/as-you-read/site-score.mjs?v=1"></script>
 </body>
 </html>
