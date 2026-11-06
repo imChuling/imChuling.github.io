@@ -10,12 +10,12 @@ const LABEL={top:'Arrival',projects:'Projects',music:'Stage',story:'Story',conta
 
 /* bed = which pad plays underneath; the rest is the treatment on top */
 const SCENES={
-  top:     {bed:'top',     mix:36,grainSize:220,grainPos:95, interval:95, pitch:0, width:82,drive:18,bass:0,  mid:0,  treble:0,  wet:54,decay:68,size:78,damp:50,jitter:18},
-  projects:{bed:'projects',mix:54,grainSize:150,grainPos:130,interval:58, pitch:0, width:72,drive:28,bass:-8, mid:6,  treble:10, wet:56,decay:62,size:72,damp:44,jitter:14},
-  music:   {bed:'music',   mix:86,grainSize:400,grainPos:280,interval:34, pitch:-5,width:100,drive:54,bass:10, mid:4,  treble:-4, wet:86,decay:92,size:94,damp:56,jitter:28},
-  story:   {bed:'story',   mix:76,grainSize:520,grainPos:340,interval:75, pitch:-7,width:100,drive:20,bass:-4, mid:-6, treble:-12,wet:96,decay:97,size:100,damp:64,jitter:48},
-  contact: {bed:'contact', mix:44,grainSize:260,grainPos:165,interval:105,pitch:0, width:76,drive:14,bass:4,  mid:0,  treble:2,  wet:60,decay:72,size:68,damp:46,jitter:14},
-  detail:  {bed:null,      mix:28,grainSize:240,grainPos:120,interval:120,pitch:0, width:58,drive:10,bass:0,  mid:2,  treble:6,  wet:44,decay:56,size:58,damp:54,jitter:12},
+  top:     {bed:'top',     mix:18,grainSize:280,grainPos:95, interval:140,pitch:0, width:82,drive:6, bass:0,  mid:0,  treble:0,  wet:58,decay:72,size:82,damp:48,jitter:10},
+  projects:{bed:'projects',mix:24,grainSize:200,grainPos:130,interval:110,pitch:0, width:72,drive:10,bass:-6, mid:4,  treble:6,  wet:60,decay:66,size:74,damp:42,jitter:8},
+  music:   {bed:'music',   mix:45,grainSize:450,grainPos:280,interval:65, pitch:-3,width:100,drive:22,bass:6,  mid:2,  treble:-2, wet:88,decay:94,size:96,damp:52,jitter:16},
+  story:   {bed:'story',   mix:35,grainSize:560,grainPos:340,interval:110,pitch:-5,width:100,drive:8, bass:-2, mid:-4, treble:-8, wet:96,decay:97,size:100,damp:60,jitter:22},
+  contact: {bed:'contact', mix:20,grainSize:300,grainPos:165,interval:145,pitch:0, width:76,drive:5, bass:2,  mid:0,  treble:0,  wet:64,decay:74,size:72,damp:44,jitter:8},
+  detail:  {bed:null,      mix:14,grainSize:280,grainPos:120,interval:160,pitch:0, width:58,drive:4, bass:0,  mid:0,  treble:4,  wet:48,decay:60,size:62,damp:50,jitter:6},
 };
 /* melody: one high scale per section (Hz), played by the page itself above the bed */
 const SCALES={
@@ -207,12 +207,12 @@ if(button){
     else if(!bottom&&cadenced&&scrollY<document.documentElement.scrollHeight*.5)cadenced=false;
     wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6,ch:4});}
     engine.setParams({
-      mix:Math.max(8,Math.min(95,b.mix+14*residue+8*dwell-14*idle+8*motion+12*turn-18*wipe+6*lfo)),
+      mix:Math.max(5,Math.min(60,b.mix+8*residue+4*dwell-10*idle+5*motion+6*turn-12*wipe+3*lfo)),
       width:Math.min(100,b.width+20*motion),gain:-8,
       grainSize:b.grainSize*(1-.3*focus)*(1+.15*idle)*(1+.25*vy)*(1-.5*stutter)*(1+.12*lfo2),grainPos:b.grainPos*(1+.3*lfo2),
       interval:Math.max(20,b.interval*(1-.2*focus)*(1+.2*idle)*(1-.65*stutter)-15*motion-25*turn),
       pitch:b.pitch+2*focus+hoverPitch*focus-1.5*drift+1.2*hx+3*stutter,
-      'drive/drive':Math.max(0,b.drive+10*focus+6*turn-4*wipe),'drive/lowcut':34,'drive/highcut':40,'drive/mix':90,'drive/volume':0,
+      'drive/drive':Math.max(0,b.drive+4*focus+3*turn-2*wipe),'drive/lowcut':34,'drive/highcut':40,'drive/mix':60,'drive/volume':0,
       'drive/bass':b.bass-8-6*height,'drive/mid':b.mid,'drive/treble':b.treble+6*focus+10*height+8*motion+8*wipe,'drive/midfreq':0,
       'reverb/mix':Math.min(100,b.wet+12*residue+6*dwell+25*swell+8*wipe),'reverb/decay':Math.min(100,b.decay+8*residue+6*dwell),
       'reverb/size':Math.min(100,b.size+6*lfo),'reverb/damp':Math.max(0,b.damp-25*wipe),'reverb/diff':80,'reverb/jitter':b.jitter,
@@ -229,7 +229,7 @@ if(button){
       const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
     }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
-    if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.22,wipeVel*.3),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(900+1800*(1-tilt),t,.05);whoosh.last=wipeVel;}
+    if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.1,wipeVel*.15),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(1200+1200*(1-tilt),t,.05);whoosh.last=wipeVel;}
     if(b.bed&&b.bed!==bedId)crossfadeBed(b.bed);
     const a=new Float32Array(engine.analyser.fftSize);engine.analyser.getFloatTimeDomainData(a);
     let peak=0;for(let i=0;i<a.length;i+=4)peak=Math.max(peak,Math.abs(a[i]));
