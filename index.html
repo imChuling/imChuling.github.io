@@ -85,6 +85,17 @@ body::after{
 #loader.l-in .l-num{opacity:1}
 .l-bar{position:absolute;left:50%;bottom:calc(7vh + 1.7rem);width:min(46vw,420px);height:1px;margin-left:calc(min(46vw,420px) / -2);background:var(--ink);opacity:.35;transform:scaleX(0);transform-origin:center}
 #loader.l-out .l-corner,#loader.l-out .l-num,#loader.l-out .l-bar,#loader.l-out .l-marks{opacity:0;transition:opacity .5s ease}
+/* the gate : once the count lands, the visitor chooses how to enter — that click is also the audio permission */
+#loader.l-gate{pointer-events:auto}
+#loader.l-gate .l-num,#loader.l-gate .l-bar{opacity:0;transition:opacity .5s ease}
+.l-enter{display:flex;flex-direction:column;align-items:center;gap:1.1rem;margin-top:2.6rem;opacity:0;transform:translateY(8px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,1,.36,1);pointer-events:none}
+#loader.l-gate .l-enter{opacity:1;transform:none;pointer-events:auto}
+#loader.l-out .l-enter{opacity:0;pointer-events:none;transition:opacity .3s ease}
+.l-go{display:inline-flex;align-items:center;gap:.7rem;padding:.95rem 1.9rem;border:1px solid var(--ink);border-radius:99px;background:var(--ink);color:var(--paper);font:400 .74rem var(--display);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:transform .4s,box-shadow .4s,background .3s,border-color .3s}
+.l-go:hover{transform:translateY(-2px);box-shadow:0 16px 32px -12px rgba(38,39,44,.35);background:var(--violet);border-color:var(--violet)}
+.l-quiet{background:none;border:0;padding:.5rem;color:var(--muted);font:400 .64rem var(--display);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;text-decoration-color:transparent;transition:color .3s,text-decoration-color .3s}
+.l-quiet:hover{color:var(--ink);text-decoration-color:currentColor}
+.l-go:focus-visible,.l-quiet:focus-visible{outline:2px solid var(--violet);outline-offset:4px}
 @media(max-width:680px){.l-corner{font-size:.52rem;letter-spacing:.14em}.l-tl,.l-tr{top:5vw}.l-marks i{display:none}.l-title{font-size:clamp(2.6rem,13vw,4rem)}}
 
 /* ---------- cursor ---------- */
@@ -507,12 +518,16 @@ footer{
 
 <div id="washes"></div>
 
-<div id="loader" aria-hidden="true">
+<div id="loader">
   <div class="l-marks"><i></i><i></i><i></i><i></i></div>
   <div class="l-corner l-tl">Chuling Li</div>
   <div class="l-corner l-tr">Portfolio</div>
   <div class="l-center">
     <div class="l-title" data-text="Chuling Li" aria-hidden="true"></div>
+    <div class="l-enter">
+      <button class="l-go" type="button" data-sound="1" data-hover>Enter with sound <span aria-hidden="true">↗</span></button>
+      <button class="l-quiet" type="button" data-sound="0" data-hover>Enter quietly</button>
+    </div>
   </div>
   <div class="l-bar"></div>
   <div class="l-num">000</div>
@@ -833,7 +848,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=8"></script>
-<script type="module" src="assets/as-you-read/site-score.mjs?v=1"></script>
+<script src="js/main.js?v=9"></script>
+<script type="module" src="assets/as-you-read/site-score.mjs?v=2"></script>
 </body>
 </html>

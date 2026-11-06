@@ -75,14 +75,20 @@ if(button){
     if(r&&r.ok){const res=await fetch(SOURCE);engine.buffer=await engine.context.decodeAudioData(await res.arrayBuffer());return;}
     await engine.load(await pickFile());
   }
+  /* the context must be created and resumed synchronously inside a user gesture; the engine can load afterwards */
+  let ctx=null;
+  function ensureContext(){
+    if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C();}
+    ctx.resume();return ctx;
+  }
   async function start(){
     if(busy)return;busy=true;setState('loading');
     try{
       if(!engine){
+        const context=ensureContext();
         await loadLib();
-        const C=window.AudioContext||window.webkitAudioContext;
-        const candidate=new RNBOSound(new C());
-        try{engine=await candidate.init();}catch(e){candidate.dispose();throw e;}
+        const candidate=new RNBOSound(context);
+        try{engine=await candidate.init();}catch(e){candidate.dispose();ctx=null;throw e;}
       }
       await engine.context.resume();
       if(!engine.buffer)await source();
@@ -99,7 +105,8 @@ if(button){
     if(!engine)return;
     engine.volume(0,.25);setTimeout(()=>{if(!enabled){engine.stop();engine.context.suspend();}},700);
   }
-  button.addEventListener('click',()=>enabled?stop():start());
+  button.addEventListener('click',()=>{if(enabled)stop();else{ensureContext();start();}});
+  document.addEventListener('score:enter',e=>{if(e.detail.sound){ensureContext();start();}});
   document.addEventListener('visibilitychange',()=>{
     if(!engine)return;
     if(document.hidden){if(enabled){engine.volume(0,.1);engine.context.suspend();}}

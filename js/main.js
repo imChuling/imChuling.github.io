@@ -34,8 +34,16 @@ const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: 
       bar.style.transform='scaleX('+e+')';
       glass(30-25*e,.62-.44*e);                  /* the page develops behind the name as the count climbs */
       if(u<1){requestAnimationFrame(tick);return;}
-      setTimeout(land,300);
+      setTimeout(gate,250);
     })(last);
+  }
+  function gate(){
+    loader.classList.add('l-gate');
+    loader.querySelectorAll('.l-enter button').forEach(b=>b.addEventListener('click',()=>{
+      /* dispatched synchronously inside the click so the audio context inherits the user gesture */
+      document.dispatchEvent(new CustomEvent('score:enter',{detail:{sound:b.dataset.sound==='1'}}));
+      land();
+    },{once:true}));
   }
   function land(){
     loader.classList.add('l-out');loader.classList.add('done');glass(0,0);
