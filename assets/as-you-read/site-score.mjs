@@ -327,7 +327,8 @@ if(button){
   /* ---------- lifecycle ---------- */
   const loadLib=()=>window.RNBO?Promise.resolve():new Promise((ok,fail)=>{const s=document.createElement('script');s.src=LIB;s.onload=ok;s.onerror=()=>fail(new Error('RNBO runtime failed to load'));document.head.appendChild(s);});
   /* the context must be created and resumed synchronously inside a user gesture; the engine can load afterwards */
-  function ensureContext(){
+  function ensureContext(existing){
+    if(existing&&existing.state!=='closed'){ctx=existing;ctx.resume();return ctx;}
     if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C();}
     ctx.resume();return ctx;
   }
@@ -393,7 +394,7 @@ if(button){
     engine.volume(0,.45);setTimeout(()=>{if(!enabled){stopBeds();engine.context.suspend();}},1600);
   }
   button.addEventListener('click',()=>{if(enabled)stop();else{ensureContext();start();}});
-  document.addEventListener('score:enter',e=>{if(e.detail.sound){ensureContext();start();}});
+  document.addEventListener('score:enter',e=>{if(e.detail.sound){ensureContext(e.detail.audioCtx);start();}});
   /* a playing video asks the score to step aside; it returns when the video pauses or ends */
   document.addEventListener('score:duck',e=>{ducked=!!e.detail.on;if(enabled&&engine)engine.volume(level(),ducked?.3:.9);});
   /* a detail sheet draws the sound in close, then hands back to the section */

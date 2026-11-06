@@ -40,8 +40,10 @@ const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: 
   function gate(){
     loader.classList.add('l-gate');
     loader.querySelectorAll('.l-enter button').forEach(b=>b.addEventListener('click',()=>{
-      /* dispatched synchronously inside the click so the audio context inherits the user gesture */
-      document.dispatchEvent(new CustomEvent('score:enter',{detail:{sound:b.dataset.sound==='1'}}));
+      const wantSound=b.dataset.sound==='1';
+      let audioCtx=null;
+      if(wantSound){const C=window.AudioContext||window.webkitAudioContext;audioCtx=new C();audioCtx.resume();}
+      document.dispatchEvent(new CustomEvent('score:enter',{detail:{sound:wantSound,audioCtx}}));
       land();
     },{once:true}));
   }
