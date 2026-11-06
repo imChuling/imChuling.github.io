@@ -38,6 +38,7 @@ if(button){
   let panner=null,whoosh=null;
   let melody=null,melodyClock=1800,degree=2,octave=0,scale='top',prevFocus=0,bloom=false,wipeCool=0;
   let stutter=0,strumAcc=0,strumDir=1,strumCool=0,strums=0,arpClock=9000;   /* click stutter, scroll strum, dwell arpeggio */
+  let prevIdle=0,travelled=0,settleTimer=0,cadenced=false,away=false,tickCool=0;
   let lastY=scrollY,lastScroll=performance.now(),px=0,py=0,lastMove=0;
   const beds={};                       /* id → {source,gain} once loaded */
   let bedId=null,bedsReady=false;
@@ -59,6 +60,8 @@ if(button){
     motion=Math.max(motion,Math.min(1,delta/Math.max(16,now-lastScroll)*.25));
     drift+=(dy<0?-1:1)*Math.min(.4,delta/400);drift=Math.max(-1,Math.min(1,drift));
     strumAcc+=delta;strumDir=dy<0?-1:1;                         /* scrolling strums the scale, one note per ~140px */
+    travelled+=delta;clearTimeout(settleTimer);                 /* a long scroll that comes to rest lands on the root */
+    settleTimer=setTimeout(()=>{if(travelled>500&&enabled)note(pitchOf(0),{vel:.2,dur:3.2,ratio:1.5});travelled=0;},260);
     lastY=scrollY;lastScroll=now;touch();
   },{passive:true});
   addEventListener('pointermove',e=>{
@@ -114,6 +117,48 @@ if(button){
   function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.3,dur:1.8,when:i*.09,bright:1.2});}
   function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.28,dur:4.5+i*.4,when:i*.025,ratio:i===3?3.0:2.01}));}
   function arpeggio(){const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:.22,dur:2.2,when:i*.42,ratio:1.5});}
+  /* a run from where the melody is to a new root: used when the page travels (nav links, sheets) */
+  function glide(toHz,{steps=6,span=.42,vel=.18,ratio=3.0}={}){
+    const from=pitchOf(degree);
+    for(let i=0;i<steps;i++){const u=i/(steps-1);note(from*Math.pow(toHz/from,u),{vel:vel*(1-.4*u),dur:.6+u*1.6,when:u*span,ratio,bright:1.2});}
+  }
+
+  /* ---------- selecting text : the highlight hums, and each dozen characters is read as a note ---------- */
+  let selLen=0,drone=null;
+  function hum(len){
+    if(!melody)return;const c=engine.context,t=c.currentTime;
+    if(!drone){const osc=c.createOscillator(),osc2=c.createOscillator(),lp=c.createBiquadFilter(),g=c.createGain();
+      osc.type='triangle';osc2.type='sine';lp.type='lowpass';lp.frequency.value=400;g.gain.value=0;
+      osc.connect(lp);osc2.connect(lp);lp.connect(g);g.connect(melody.in);osc.start();osc2.start();drone={osc,osc2,lp,g};}
+    const root=SCALES[scale][0]/2;
+    drone.osc.frequency.setTargetAtTime(root,t,.15);drone.osc2.frequency.setTargetAtTime(root*1.5,t,.15);
+    drone.g.gain.setTargetAtTime(Math.min(.07,len/500*.07),t,len?.25:.6);
+    drone.lp.frequency.setTargetAtTime(380+Math.min(3000,len*7),t,.3);
+  }
+  document.addEventListener('selectionchange',()=>{
+    const s=document.getSelection(),len=s&&!s.isCollapsed?String(s).length:0;
+    if(len>selLen){const steps=Math.min(2,Math.floor(len/12)-Math.floor(selLen/12));
+      for(let i=0;i<steps;i++){degree=Math.min(6,degree+1);note(pitchOf(degree),{vel:.15,dur:.9,bright:1.3,ratio:3.0,when:i*.06});}}
+    selLen=len;hum(len);touch();
+  });
+  document.addEventListener('mouseup',()=>{if(selLen>24)[0,2,4].forEach((d,i)=>note(pitchOf(d),{vel:.14,dur:3.5,when:i*.04,ratio:1.5}));});
+
+  /* ---------- the rest of the page's gestures ---------- */
+  /* nav links: a run toward the destination's root while the page travels there */
+  document.querySelectorAll('nav a[href^="#"],.hero-action[href^="#"]').forEach(a=>a.addEventListener('click',()=>{
+    const to=SCALES[a.getAttribute('href').slice(1)];if(to)glide(to[0]);
+  }));
+  /* nav hover: the faintest tick */
+  document.querySelectorAll('nav a,.nav-sound').forEach(a=>a.addEventListener('pointerenter',()=>{
+    if(tickCool>0)return;tickCool=140;note(pitchOf(4,1),{vel:.07,dur:.3,ratio:3.52,bright:1.4});
+  }));
+  /* pointer leaving the window: the room gets bigger and quieter until you come back */
+  document.documentElement.addEventListener('mouseleave',()=>{away=true;if(enabled&&engine)engine.volume(level(),.5);});
+  document.documentElement.addEventListener('mouseenter',()=>{away=false;if(enabled&&engine)engine.volume(level(),.4);});
+  /* story chapters: each one that lights up gets its own note */
+  const steps=[...document.querySelectorAll('.story-step')];
+  if(steps.length)new MutationObserver(ms=>{for(const m of ms)if(m.target.classList.contains('active')){const i=steps.indexOf(m.target);note(pitchOf(i*2),{vel:.22,dur:2.6,ratio:1.5});note(pitchOf(i*2+4),{vel:.12,dur:2.6,when:.12,ratio:1.5});}})
+    .observe(document.querySelector('.story-steps')||document.body,{attributes:true,attributeFilter:['class'],subtree:true});
 
   /* ---------- turning the state into sound ---------- */
   function compose(){
@@ -143,6 +188,13 @@ if(button){
     else if(strumAcc<140)strumAcc*=.9;
     /* staying somewhere, the page occasionally plays an arpeggio by itself */
     arpClock-=50;if(arpClock<=0){arpClock=9000+Math.random()*9000;if(dwell>.25&&idle<.5&&scene!=='detail')arpeggio();}
+    tickCool-=50;
+    /* coming back after being still: a small waking figure */
+    if(prevIdle>.5&&idle===0)figure();prevIdle=idle;
+    /* reaching the end of the page resolves once; scrolling back up re-arms it */
+    const bottom=scrollY+innerHeight>=document.documentElement.scrollHeight-40;
+    if(bottom&&!cadenced){cadenced=true;[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.24,dur:6,when:i*.12,ratio:1.5}));}
+    else if(!bottom&&cadenced&&scrollY<document.documentElement.scrollHeight*.5)cadenced=false;
     wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6});}
     engine.setParams({
       mix:Math.max(8,Math.min(95,b.mix+14*residue+8*dwell-14*idle+8*motion+12*turn-18*wipe+6*lfo)),
@@ -209,7 +261,7 @@ if(button){
     if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C();}
     ctx.resume();return ctx;
   }
-  const level=()=>ducked?0:.38;
+  const level=()=>ducked?0:away?.24:.38;
   async function start(){
     if(busy)return;busy=true;setState('loading');
     try{
@@ -243,16 +295,24 @@ if(button){
     finally{busy=false;}
   }
   function stop(){
+    if(enabled&&melody)[0,2,4].forEach((d,i)=>note(pitchOf(d),{vel:.2,dur:2.5,when:i*.05,ratio:1.5}));   /* a soft release before the fade */
     enabled=false;clearInterval(ticker);setState('off');button.style.setProperty('--lvl',0);
     if(!engine)return;
-    engine.volume(0,.25);setTimeout(()=>{if(!enabled){stopBeds();engine.context.suspend();}},800);
+    engine.volume(0,.45);setTimeout(()=>{if(!enabled){stopBeds();engine.context.suspend();}},1600);
   }
   button.addEventListener('click',()=>{if(enabled)stop();else{ensureContext();start();}});
   document.addEventListener('score:enter',e=>{if(e.detail.sound){ensureContext();start();}});
   /* a playing video asks the score to step aside; it returns when the video pauses or ends */
   document.addEventListener('score:duck',e=>{ducked=!!e.detail.on;if(enabled&&engine)engine.volume(level(),ducked?.3:.9);});
   /* a detail sheet draws the sound in close, then hands back to the section */
-  document.addEventListener('score:detail',e=>{detail=!!e.detail.open;if(!detail)ducked=false;if(enabled&&engine){compose();engine.volume(level(),.6);}});
+  document.addEventListener('score:detail',e=>{
+    detail=!!e.detail.open;if(!detail)ducked=false;
+    if(enabled&&engine){
+      /* opening a sheet runs down into the close scene; closing runs back up to the section's root */
+      glide(detail?SCALES[scale][0]/2:SCALES[scale][4],{steps:5,span:.5,vel:.16,ratio:1.5});
+      compose();engine.volume(level(),.6);
+    }
+  });
   document.addEventListener('visibilitychange',()=>{
     if(!engine)return;
     if(document.hidden){if(enabled){engine.volume(0,.1);engine.context.suspend();}}
