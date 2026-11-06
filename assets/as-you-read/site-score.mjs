@@ -10,12 +10,12 @@ const LABEL={top:'Arrival',projects:'Projects',music:'Stage',story:'Story',conta
 
 /* bed = which pad plays underneath; the rest is the treatment on top */
 const SCENES={
-  top:     {bed:'top',     mix:14,grainSize:300,grainPos:95, interval:160,pitch:0, width:82,drive:4, bass:-12,mid:0,  treble:4,  wet:58,decay:72,size:82,damp:48,jitter:10},
-  projects:{bed:'projects',mix:18,grainSize:220,grainPos:130,interval:130,pitch:0, width:72,drive:6, bass:-14,mid:4,  treble:8,  wet:60,decay:66,size:74,damp:42,jitter:8},
-  music:   {bed:'music',   mix:32,grainSize:480,grainPos:280,interval:80, pitch:-2,width:100,drive:14,bass:-8, mid:2,  treble:0,  wet:88,decay:94,size:96,damp:52,jitter:16},
-  story:   {bed:'story',   mix:25,grainSize:580,grainPos:340,interval:130,pitch:-4,width:100,drive:5, bass:-10,mid:-4, treble:-4, wet:96,decay:97,size:100,damp:60,jitter:22},
-  contact: {bed:'contact', mix:15,grainSize:320,grainPos:165,interval:160,pitch:0, width:76,drive:3, bass:-10,mid:0,  treble:2,  wet:64,decay:74,size:72,damp:44,jitter:8},
-  detail:  {bed:null,      mix:10,grainSize:300,grainPos:120,interval:180,pitch:0, width:58,drive:2, bass:-8, mid:0,  treble:6,  wet:48,decay:60,size:62,damp:50,jitter:6},
+  top:     {bed:'top',     mix:6, grainSize:300,grainPos:95, interval:200,pitch:0, width:82,drive:2, bass:-14,mid:0,  treble:4,  wet:58,decay:72,size:82,damp:48,jitter:10},
+  projects:{bed:'projects',mix:8, grainSize:220,grainPos:130,interval:180,pitch:0, width:72,drive:3, bass:-16,mid:4,  treble:8,  wet:60,decay:66,size:74,damp:42,jitter:8},
+  music:   {bed:'music',   mix:18,grainSize:480,grainPos:280,interval:120,pitch:-2,width:100,drive:8, bass:-10,mid:2,  treble:0,  wet:88,decay:94,size:96,damp:52,jitter:16},
+  story:   {bed:'story',   mix:12,grainSize:580,grainPos:340,interval:180,pitch:-4,width:100,drive:3, bass:-12,mid:-4, treble:-4, wet:96,decay:97,size:100,damp:60,jitter:22},
+  contact: {bed:'contact', mix:6, grainSize:320,grainPos:165,interval:200,pitch:0, width:76,drive:2, bass:-12,mid:0,  treble:2,  wet:64,decay:74,size:72,damp:44,jitter:8},
+  detail:  {bed:null,      mix:4, grainSize:300,grainPos:120,interval:220,pitch:0, width:58,drive:1, bass:-10,mid:0,  treble:6,  wet:48,decay:60,size:62,damp:50,jitter:6},
 };
 /* melody: one high scale per section (Hz), played by the page itself above the bed */
 const SCALES={
@@ -107,7 +107,7 @@ if(button){
     car.frequency.value=freq;car2.frequency.value=freq*1.004;mod.frequency.value=freq*ratio;
     mg.gain.setValueAtTime(freq*.8*bright,t);mg.gain.exponentialRampToValueAtTime(freq*.015,t+dur*.7);
     mod.connect(mg);mg.connect(car.frequency);mg.connect(car2.frequency);
-    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.14,t+.05);env.gain.exponentialRampToValueAtTime(.0003,t+dur*1.1);
+    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.22,t+.04);env.gain.exponentialRampToValueAtTime(.0003,t+dur*1.1);
     car.connect(env);car2.connect(env);env.connect(melody.in);
     [car,car2,mod].forEach(o=>{o.start(t);o.stop(t+dur*1.1+.1);});
     car.onended=()=>{env.disconnect();mg.disconnect();};
@@ -214,7 +214,7 @@ if(button){
     const height=.5-tilt;                                       /* pointer high on the page: brighter; low: darker */
     /* melodic events: a slow drip of notes, plus figures for hover, click, wipe */
     melodyClock-=50;
-    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?6200:scene==='story'?5800:3200)*(1-.4*motion)*(1+1.2*idle)*(.7+.6*Math.random());}
+    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?4000:scene==='story'?3500:2000)*(1-.4*motion)*(1+.8*idle)*(.7+.6*Math.random());}
     if(focusTarget&&!prevFocus)figure();prevFocus=focusTarget;
     if(bloom){bloom=false;chord();stutter=1;}
     /* scroll strum: each ~140px plucks the next scale step, down = rising, up = falling */
@@ -249,7 +249,7 @@ if(button){
     else if(!bottom&&cadenced&&scrollY<document.documentElement.scrollHeight*.5)cadenced=false;
     wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6,ch:4});}
     engine.setParams({
-      mix:Math.max(5,Math.min(60,b.mix+8*residue+4*dwell-10*idle+5*motion+6*turn-12*wipe+3*lfo)),
+      mix:Math.max(2,Math.min(30,b.mix+5*residue+3*dwell-8*idle+4*motion+4*turn-10*wipe+2*lfo)),
       width:Math.min(100,b.width+20*motion),gain:-14,
       grainSize:b.grainSize*(1-.3*focus)*(1+.15*idle)*(1+.25*vy)*(1-.5*stutter)*(1+.15*lfo2+.08*lfo3),grainPos:b.grainPos*(1+.3*lfo2+.15*lfo4),
       interval:Math.max(20,b.interval*(1-.2*focus)*(1+.2*idle)*(1-.65*stutter)*(1+.1*lfo3)-15*motion-25*turn),
@@ -271,13 +271,10 @@ if(button){
       const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
     }
     if(rain){
-      const baseRate={top:80,projects:100,music:180,story:55,contact:90,detail:140}[scene]||80;
-      const dropInterval=1000/baseRate;
-      rain.vol=.18*(1-.5*ducked)*(1+.2*idle)*(1-.15*motion);
+      const dps={top:2,projects:1.5,music:.8,story:3,contact:2,detail:1}[scene]||2;
+      rain.vol=.35*(1-.6*ducked);
       rain.clock-=50;
-      if(rain.clock<=0){rain.clock=dropInterval*(.3+Math.random()*1.7);droplet();}
-      const bedVol={top:.04,projects:.03,music:.015,story:.05,contact:.035,detail:.02}[scene]||.03;
-      rain.bed.gain.setTargetAtTime(bedVol*(1-.6*ducked)*(1+.3*idle),engine.context.currentTime,.4);
+      if(rain.clock<=0){rain.clock=(1000/dps)*(.4+Math.random()*1.2);droplet();}
     }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
     if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.1,wipeVel*.15),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(1200+1200*(1-tilt),t,.05);whoosh.last=wipeVel;}
@@ -354,11 +351,14 @@ if(button){
         src.buffer=buf;src.loop=true;filter.type='bandpass';filter.frequency.value=1800;filter.Q.value=1.1;gain.gain.value=0;
         src.connect(filter);filter.connect(gain);gain.connect(engine.device.node);src.start();
         whoosh={src,filter,gain,last:0};
-        /* melody bus: wet into the granular chain, a little dry for definition */
-        const mIn=context.createGain(),mDry=context.createGain(),mLp=context.createBiquadFilter();
-        mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.32;
-        mIn.connect(mLp);mLp.connect(engine.device.node);mLp.connect(mDry);mDry.connect(engine.master);
-        melody={in:mIn,dry:mDry};
+        /* melody bus: clean signal straight to master, bypassing the granular chain */
+        const mIn=context.createGain(),mVerb=context.createConvolver(),mDry=context.createGain(),mWet=context.createGain();
+        const mIrLen=context.sampleRate*2.5,mIrBuf=context.createBuffer(2,mIrLen,context.sampleRate);
+        for(let ch=0;ch<2;ch++){const d=mIrBuf.getChannelData(ch);for(let i=0;i<mIrLen;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/mIrLen*3)*.3;}
+        mVerb.buffer=mIrBuf;mDry.gain.value=.45;mWet.gain.value=.35;
+        mIn.connect(mDry);mIn.connect(mVerb);mVerb.connect(mWet);
+        mDry.connect(engine.master);mWet.connect(engine.master);
+        melody={in:mIn};
         /* rain: noise-burst drops + subtle pink-noise bed (ref: slee1005/rain, noised) */
         const sr=context.sampleRate;
         const rainBus=context.createGain();rainBus.gain.value=1;
@@ -374,14 +374,7 @@ if(button){
         rainDry.gain.value=.6;rainWet.gain.value=.4;
         rainBus.connect(rainDry);rainBus.connect(rainVerb);rainVerb.connect(rainWet);
         rainDry.connect(engine.master);rainWet.connect(engine.master);
-        /* subtle pink-noise bed underneath the drops */
-        const pnLen=sr*4,pnBuf=context.createBuffer(2,pnLen,sr);
-        for(let ch=0;ch<2;ch++){const d=pnBuf.getChannelData(ch);let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-          for(let i=0;i<pnLen;i++){const w=Math.random()*2-1;b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926;}}
-        const pnSrc=context.createBufferSource(),pnHp=context.createBiquadFilter(),pnG=context.createGain();
-        pnSrc.buffer=pnBuf;pnSrc.loop=true;pnHp.type='highpass';pnHp.frequency.value=600;pnHp.Q.value=.5;pnG.gain.value=0;
-        pnSrc.connect(pnHp);pnHp.connect(pnG);pnG.connect(engine.master);pnSrc.start();
-        rain={bus:rainBus,bed:pnG,vol:0,clock:0,rate:500};
+        rain={bus:rainBus,vol:0,clock:0};
       }
       await engine.context.resume();
       scene=detail?'detail':currentScene();visits[scene]=visits[scene]||1;since=performance.now();
