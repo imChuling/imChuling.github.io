@@ -329,10 +329,11 @@ if(button){
   /* the context must be created and resumed synchronously inside a user gesture; the engine can load afterwards */
   function ensureContext(existing){
     if(existing&&existing.state!=='closed'){ctx=existing;ctx.resume();return ctx;}
+    if(window.__scoreCtx&&window.__scoreCtx.state!=='closed'){ctx=window.__scoreCtx;delete window.__scoreCtx;ctx.resume();return ctx;}
     if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C();}
     ctx.resume();return ctx;
   }
-  const level=()=>ducked?0:away?.2:.34;
+  const level=()=>ducked?0:(away?0.2:0.34);
   async function start(){
     if(busy)return;busy=true;setState('loading');
     try{
@@ -410,7 +411,11 @@ if(button){
      to GitHub or a demo should not cut it. Only a playing video (ducking) or leaving the page stops it. */
   document.addEventListener('visibilitychange',()=>{
     if(!engine||!enabled||document.hidden)return;
-    engine.context.resume();engine.volume(level(),.6);          /* a browser may have suspended it on its own */
+    engine.context.resume().then(()=>engine.volume(level(),.6));
   });
+  ['touchstart','mousedown'].forEach(ev=>addEventListener(ev,function nudge(){
+    if(engine&&enabled&&engine.context.state==='suspended')engine.context.resume();
+    removeEventListener(ev,nudge);
+  },{once:true,passive:true}));
   addEventListener('pagehide',()=>{if(enabled)stop();});
 }

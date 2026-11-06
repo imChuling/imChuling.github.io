@@ -44,6 +44,7 @@ const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: 
       let audioCtx=null;
       if(wantSound){const C=window.AudioContext||window.webkitAudioContext;audioCtx=new C();audioCtx.resume();}
       document.dispatchEvent(new CustomEvent('score:enter',{detail:{sound:wantSound,audioCtx}}));
+      if(wantSound&&audioCtx)window.__scoreCtx=audioCtx;
       land();
     },{once:true}));
   }
