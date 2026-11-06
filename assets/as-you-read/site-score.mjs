@@ -10,12 +10,12 @@ const LABEL={top:'Arrival',projects:'Projects',music:'Stage',story:'Story',conta
 
 /* bed = which pad plays underneath; the rest is the treatment on top */
 const SCENES={
-  top:     {bed:'top',     mix:30,grainSize:200,grainPos:90, interval:110,pitch:0, width:70,drive:10,bass:0,  mid:0,  treble:0,  wet:35,decay:55,size:70,damp:65,jitter:15},
-  projects:{bed:'projects',mix:48,grainSize:130,grainPos:120,interval:70, pitch:0, width:55,drive:24,bass:-10,mid:6,  treble:14, wet:38,decay:48,size:60,damp:55,jitter:10},
-  music:   {bed:'music',   mix:82,grainSize:360,grainPos:260,interval:42, pitch:-5,width:95,drive:52,bass:12, mid:4,  treble:-6, wet:74,decay:82,size:88,damp:70,jitter:25},
-  story:   {bed:'story',   mix:70,grainSize:480,grainPos:320,interval:95, pitch:-7,width:100,drive:14,bass:-6, mid:-8, treble:-14,wet:92,decay:94,size:100,damp:80,jitter:45},
-  contact: {bed:'contact', mix:38,grainSize:240,grainPos:150,interval:125,pitch:0, width:60,drive:8, bass:6,  mid:0,  treble:4,  wet:42,decay:58,size:55,damp:60,jitter:10},
-  detail:  {bed:null,      mix:22,grainSize:220,grainPos:110,interval:140,pitch:0, width:45,drive:6, bass:0,  mid:2,  treble:8,  wet:28,decay:42,size:45,damp:70,jitter:8},
+  top:     {bed:'top',     mix:36,grainSize:220,grainPos:95, interval:95, pitch:0, width:82,drive:18,bass:0,  mid:0,  treble:0,  wet:54,decay:68,size:78,damp:50,jitter:18},
+  projects:{bed:'projects',mix:54,grainSize:150,grainPos:130,interval:58, pitch:0, width:72,drive:28,bass:-8, mid:6,  treble:10, wet:56,decay:62,size:72,damp:44,jitter:14},
+  music:   {bed:'music',   mix:86,grainSize:400,grainPos:280,interval:34, pitch:-5,width:100,drive:54,bass:10, mid:4,  treble:-4, wet:86,decay:92,size:94,damp:56,jitter:28},
+  story:   {bed:'story',   mix:76,grainSize:520,grainPos:340,interval:75, pitch:-7,width:100,drive:20,bass:-4, mid:-6, treble:-12,wet:96,decay:97,size:100,damp:64,jitter:48},
+  contact: {bed:'contact', mix:44,grainSize:260,grainPos:165,interval:105,pitch:0, width:76,drive:14,bass:4,  mid:0,  treble:2,  wet:60,decay:72,size:68,damp:46,jitter:14},
+  detail:  {bed:null,      mix:28,grainSize:240,grainPos:120,interval:120,pitch:0, width:58,drive:10,bass:0,  mid:2,  treble:6,  wet:44,decay:56,size:58,damp:54,jitter:12},
 };
 /* melody: one high scale per section (Hz), played by the page itself above the bed */
 const SCALES={
@@ -99,13 +99,15 @@ if(button){
     }
     if(!melody)return;
     const c=engine.context,t=c.currentTime+when;
-    const car=c.createOscillator(),car2=c.createOscillator(),mod=c.createOscillator(),mg=c.createGain(),env=c.createGain();
-    car.frequency.value=freq;car2.frequency.value=freq*1.004;mod.frequency.value=freq*ratio;
-    mg.gain.setValueAtTime(freq*1.4*bright,t);mg.gain.exponentialRampToValueAtTime(freq*.04,t+dur*.55);
-    mod.connect(mg);mg.connect(car.frequency);mg.connect(car2.frequency);
-    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.11,t+.014);env.gain.exponentialRampToValueAtTime(.0004,t+dur);
-    car.connect(env);car2.connect(env);env.connect(melody.in);
-    [car,car2,mod].forEach(o=>{o.start(t);o.stop(t+dur+.05);});
+    const car=c.createOscillator(),car2=c.createOscillator(),car3=c.createOscillator(),car4=c.createOscillator();
+    const mod=c.createOscillator(),mg=c.createGain(),env=c.createGain();
+    car.frequency.value=freq;car2.frequency.value=freq*1.005;car3.frequency.value=freq*.995;car4.frequency.value=freq*1.002;
+    mod.frequency.value=freq*ratio;
+    mg.gain.setValueAtTime(freq*.9*bright,t);mg.gain.exponentialRampToValueAtTime(freq*.015,t+dur*.72);
+    mod.connect(mg);[car,car2,car3,car4].forEach(o=>mg.connect(o.frequency));
+    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.07,t+.05);env.gain.exponentialRampToValueAtTime(.0003,t+dur*1.15);
+    [car,car2,car3,car4].forEach(o=>o.connect(env));env.connect(melody.in);
+    [car,car2,car3,car4,mod].forEach(o=>{o.start(t);o.stop(t+dur*1.15+.1);});
     car.onended=()=>{env.disconnect();mg.disconnect();};
   }
   const pitchOf=(deg,oct=octave)=>{const s=SCALES[scale];return s[((deg%s.length)+s.length)%s.length]*Math.pow(2,oct+Math.floor(deg/s.length));};
@@ -114,17 +116,17 @@ if(button){
     const target=Math.round(pan*6),step=Math.random()<.2?2:1;
     degree+=Math.random()<.6?(Math.sign(target-degree)||(Math.random()<.5?-1:1))*step:(Math.random()<.5?-step:step);
     degree=Math.max(0,Math.min(6,degree));octave=Math.random()<.15+.25*motion?1:0;
-    const ratio=RATIOS[Math.random()<.7?0:1+Math.floor(Math.random()*3)];
-    const dur=scene==='story'?4.5:2.4+Math.random()*1.6,vel=.26+.22*Math.random();
-    note(pitchOf(degree),{vel,dur,bright:.8+.6*motion,ratio});
-    const r=Math.random();                                      /* sometimes a pair or a triplet answers */
-    if(r<.22)note(pitchOf(degree+(Math.random()<.5?2:-2)),{vel:vel*.8,dur:dur*.8,when:.19,ratio});
-    else if(r<.32)[1,2].forEach(i=>note(pitchOf(degree+i),{vel:vel*.7,dur:1.4,when:.14*i,ratio}));
+    const ratio=RATIOS[Math.random()<.5?0:Math.random()<.45?2:Math.random()<.7?1:3];
+    const dur=scene==='story'?5.5:3.2+Math.random()*2.2,vel=.2+.18*Math.random();
+    note(pitchOf(degree),{vel,dur,bright:.7+.5*motion,ratio});
+    const r=Math.random();                                      /* overlapping voices build the wash */
+    if(r<.35)note(pitchOf(degree+(Math.random()<.5?2:-2)),{vel:vel*.75,dur:dur*.9,when:.22,ratio});
+    else if(r<.52)[1,2].forEach(i=>note(pitchOf(degree+i),{vel:vel*.65,dur:dur*.7,when:.16*i,ratio}));
   }
-  function motif(up){const rh=[0,.13,.31,.46];for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:.32,dur:3,when:rh[i],ratio:RATIOS[i%2]});}
-  function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.3,dur:1.8,when:i*.09,bright:1.2});}
-  function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.28,dur:4.5+i*.4,when:i*.025,ratio:i===3?3.0:2.01,ch:3}));}
-  function arpeggio(){const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:.22,dur:2.2,when:i*.42,ratio:1.5});}
+  function motif(up){const rh=[0,.16,.36,.54];for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:.26,dur:4,when:rh[i],ratio:RATIOS[i%2]});}
+  function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.24,dur:2.4,when:i*.11,bright:1.1});}
+  function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.22,dur:5.5+i*.5,when:i*.03,ratio:i===3?3.0:2.01,ch:3}));}
+  function arpeggio(){const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:.18,dur:3,when:i*.48,ratio:1.5});}
   /* a run from where the melody is to a new root: used when the page travels (nav links, sheets) */
   function glide(toHz,{steps=6,span=.42,vel=.18,ratio=3.0}={}){
     const from=pitchOf(degree);
@@ -187,7 +189,7 @@ if(button){
     const height=.5-tilt;                                       /* pointer high on the page: brighter; low: darker */
     /* melodic events: a slow drip of notes, plus figures for hover, click, wipe */
     melodyClock-=50;
-    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?5200:scene==='story'?4800:2600)*(1-.45*motion)*(1+1.2*idle)*(.7+.6*Math.random());}
+    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?6200:scene==='story'?5800:3200)*(1-.4*motion)*(1+1.2*idle)*(.7+.6*Math.random());}
     if(focusTarget&&!prevFocus)figure();prevFocus=focusTarget;
     if(bloom){bloom=false;chord();stutter=1;}
     /* scroll strum: each ~140px plucks the next scale step, down = rising, up = falling */
@@ -301,10 +303,21 @@ if(button){
         src.buffer=buf;src.loop=true;filter.type='bandpass';filter.frequency.value=1800;filter.Q.value=1.1;gain.gain.value=0;
         src.connect(filter);filter.connect(gain);gain.connect(engine.device.node);src.start();
         whoosh={src,filter,gain,last:0};
-        /* melody bus: mostly into the chain (granulated, reverberated), a little dry for definition */
+        /* melody bus: wet into the granular chain, dry with shimmer delay for shoegaze trails */
         const mIn=context.createGain(),mDry=context.createGain(),mLp=context.createBiquadFilter();
-        mLp.type='lowpass';mLp.frequency.value=5200;mDry.gain.value=.22;
+        mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.2;
         mIn.connect(mLp);mLp.connect(engine.device.node);mLp.connect(mDry);mDry.connect(engine.master);
+        /* chorus: slow modulated micro-delay widens the stereo field */
+        const chDly=context.createDelay(.05),chLfo=context.createOscillator(),chDepth=context.createGain();
+        chDly.delayTime.value=.009;chLfo.frequency.value=.55;chLfo.type='sine';chDepth.gain.value=.003;
+        chLfo.connect(chDepth);chDepth.connect(chDly.delayTime);
+        mLp.connect(chDly);chDly.connect(engine.device.node);chLfo.start();
+        /* shimmer: filtered feedback delay, high frequencies linger and build a bright tail */
+        const shimDly=context.createDelay(1),shimFb=context.createGain(),shimHi=context.createBiquadFilter();
+        shimDly.delayTime.value=.54;shimFb.gain.value=.24;
+        shimHi.type='highpass';shimHi.frequency.value=1400;
+        mDry.connect(shimDly);shimDly.connect(shimHi);shimHi.connect(shimFb);shimFb.connect(shimDly);
+        shimHi.connect(engine.master);
         melody={in:mIn,dry:mDry};
       }
       await engine.context.resume();
