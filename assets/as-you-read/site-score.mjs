@@ -97,14 +97,29 @@ if(button){
   document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-hover],a,button')){swell=1;bloom=true;}touch();});
   addEventListener('keydown',touch,{passive:true});
 
-  /* ---------- melody : a high FM bell the page plays, sent into the same chain ---------- */
+  /* ---------- melody : a high FM bell the page plays ----------
+     In synth mode (score-synth patch loaded) all sound comes from Max/RNBO.
+     MIDI channels:
+       ch 1  — melody drip, idle phrases, glide runs
+       ch 2  — scroll strum notes
+       ch 3  — chords, cadence, text-selection release
+       ch 4  — wipe ornaments
+       ch 5  — story-step highlights
+       ch 6  — rain/droplet triggers (note = scale tone, vel = drop volume)
+     CC on ch 1:
+       CC 1  — brightness (0–127, mapped from bright 0–2)
+       CC 2  — FM ratio index (0=bell, 1=glassy, 2=hollow, 3=metallic)
+     All continuous state goes via named parameters (score/*). */
   function note(freq,{vel=.4,dur=2.6,bright=1,when=0,ratio=2.01,ch=1}={}){
     if(ducked||!engine)return;
-    if(synth){                                                   /* Max generates the sound: send a MIDI note */
+    if(synth){
       const midi=Math.round(69+12*Math.log2(freq/440)),v=Math.max(1,Math.min(127,Math.round(vel*200)));
       const t=engine.context.currentTime*1000+when*1000,status=0x90|((ch-1)&15);
       engine.device.scheduleEvent(new RNBO.MIDIEvent(t,0,[status,midi,v]));
       engine.device.scheduleEvent(new RNBO.MIDIEvent(t+dur*1000,0,[status,midi,0]));
+      const cc1=0xB0|((ch-1)&15);
+      engine.device.scheduleEvent(new RNBO.MIDIEvent(t,0,[cc1,1,Math.round(Math.min(127,bright*64))]));
+      engine.device.scheduleEvent(new RNBO.MIDIEvent(t,0,[cc1,2,RATIOS.indexOf(ratio)*32||0]));
       return;
     }
     if(!melody)return;
@@ -148,16 +163,20 @@ if(button){
 
   /* ---------- raindrop : a tuned plink on a scale tone ---------- */
   function droplet(){
-    if(!rain||!engine||ducked)return;
-    const c=engine.context,t=c.currentTime;
-    const vol=rain.vol;
+    if(!engine||ducked)return;
     const s=SCALES[scale];
     const freq=s[Math.floor(Math.random()*s.length)]*(Math.random()<.25?2:1);
-    const dur=.3+Math.random()*.5;                                /* shorter: 0.3-0.8s */
+    const dur=.3+Math.random()*.5;
+    if(synth){
+      note(freq,{vel:rain.vol*.6,dur,ch:6});return;
+    }
+    if(!rain)return;
+    const c=engine.context,t=c.currentTime;
+    const vol=rain.vol;
     const osc=c.createOscillator(),osc2=c.createOscillator(),env=c.createGain();
     const pan=c.createStereoPanner();
     osc.type='sine';osc2.type='sine';
-    osc.frequency.value=freq;osc2.frequency.value=freq*1.003;     /* gentle detuning */
+    osc.frequency.value=freq;osc2.frequency.value=freq*1.003;
     env.gain.setValueAtTime(0,t);
     env.gain.linearRampToValueAtTime(vol*(.08+Math.random()*.08),t+.003);
     env.gain.exponentialRampToValueAtTime(.0001,t+dur);
@@ -170,6 +189,10 @@ if(button){
   /* ---------- selecting text : the highlight hums, and each dozen characters is read as a note ---------- */
   let selLen=0,drone=null;
   function hum(len){
+    if(synth){
+      /* in Max mode, score/select (0–1) drives the drone; Max reads it every tick */
+      return;
+    }
     if(!melody)return;const c=engine.context,t=c.currentTime;
     if(!drone){const osc=c.createOscillator(),osc2=c.createOscillator(),lp=c.createBiquadFilter(),g=c.createGain();
       osc.type='triangle';osc2.type='sine';lp.type='lowpass';lp.frequency.value=400;g.gain.value=0;
@@ -268,21 +291,67 @@ if(button){
       'reverb/mix':Math.min(100,b.wet+12*residue+6*dwell+25*swell+8*wipe+4*lfo),'reverb/decay':Math.min(100,b.decay+8*residue+6*dwell+3*lfo3),
       'reverb/size':Math.min(100,b.size+6*lfo+4*lfo3),'reverb/damp':Math.max(0,b.damp-25*wipe-8*moveSpeed),'reverb/diff':80,'reverb/jitter':b.jitter+4*moveSpeed,
     });
-    if(synth){                                                   /* hand the whole state to Max */
+    if(synth){
+      /* ── continuous parameters sent to Max every tick (50 ms) ──
+         All values are normalized 0–1 unless noted.
+         Group: scene
+           score/scene     int 0–5  (top=0 projects=1 music=2 story=3 contact=4 detail=5) — jumps
+           score/residue   0–1      how many times this section has been visited before
+           score/dwell     0–1      how long the visitor has stayed in this section (0→1 over 45 s)
+           score/away      0/1      pointer has left the browser window
+         Group: interaction
+           score/motion    0–1      recent scroll + pointer speed (decays ×.9 per tick)
+           score/focus     0–1      pointer is over an interactive element (card, image, link)
+           score/swell     0–1      a click just happened (decays ×.9)
+           score/turn      0–1      the section just changed (decays ×.93)
+           score/stutter   0–1      a button/link was clicked (decays ×.86)
+         Group: pointer
+           score/pan       0–1      pointer x position (0=left, 1=right)
+           score/tilt      0–1      pointer y position (0=top, 1=bottom)
+           score/hx        -1–1     pointer horizontal velocity
+           score/vy        -1–1     pointer vertical velocity
+           score/drift     -1–1     scroll direction accumulator (negative=up, positive=down)
+           score/moveSpeed 0–1      pointer movement speed
+           score/hoverPitch float   pitch offset from hovered element's data-pitch attribute
+         Group: story glass wipe
+           score/wipe      0–1      how much the glass has been wiped (lingers ~6 s)
+           score/wipeVel   0–1      current wipe velocity
+         Group: text selection
+           score/select    0–1      length of selected text (0–400 chars mapped to 0–1)
+         Group: state
+           score/idle      0–1      time since last input (ramps 0→1 over 20 s after 8 s)
+           score/duck      0/1      a video is playing, step aside
+           score/bedRoot   Hz       root note of the current section's scale (÷4 for bass register)
+           score/height    -0.5–0.5 pointer height (positive = high on page = brighter)
+         Group: rain (Max handles rain synthesis in synth mode)
+           score/rainRate  float    target drops per second for this section
+           score/rainVol   0–1      target volume per drop
+         Group: LFOs (slow modulation sources, use in Max for drift/shimmer)
+           score/lfo1      -1–1     period  9 s
+           score/lfo2      -1–1     period 23 s
+           score/lfo3      -1–1     period 37 s
+           score/lfo4      -1–1     period 15 s  */
       const SCENE_INDEX={top:0,projects:1,music:2,story:3,contact:4,detail:5};
       Object.assign(engine.targets,{
-        'score/residue':residue,'score/dwell':dwell,'score/idle':idle,
+        'score/residue':residue,'score/dwell':dwell,'score/idle':idle,'score/away':away?1:0,
         'score/motion':motion,'score/focus':focus,'score/swell':swell,'score/turn':turn,'score/stutter':stutter,
-        'score/wipe':wipe,'score/wipeVel':wipeVel,'score/pan':pan,'score/tilt':tilt,'score/hx':hx,'score/vy':vy,
-        'score/drift':drift,'score/hoverPitch':hoverPitch*focus,'score/select':Math.min(1,selLen/400),'score/duck':ducked?1:0,
-        'score/bedRoot':SCALES[scale][0]/4,'score/bedLevel':.5,
+        'score/pan':pan,'score/tilt':tilt,'score/hx':hx,'score/vy':vy,
+        'score/drift':drift,'score/moveSpeed':moveSpeed,'score/hoverPitch':hoverPitch*focus,
+        'score/wipe':wipe,'score/wipeVel':wipeVel,
+        'score/select':Math.min(1,selLen/400),'score/duck':ducked?1:0,
+        'score/bedRoot':SCALES[scale][0]/4,'score/height':height,
+        'score/rainRate':b.rainRate||0,'score/rainVol':b.rainVol||0,
+        'score/lfo1':lfo,'score/lfo2':lfo2,'score/lfo3':lfo3,'score/lfo4':lfo4,
       });
-      const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
+      const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];
     }
-    if(rain){
-      const dps=b.rainRate||0;
-      rain.vol=b.rainVol*(1-.6*ducked);
-      if(dps>0){rain.clock-=50;if(rain.clock<=0){rain.clock=(1000/dps)*(.4+Math.random()*1.2);droplet();}}
+    {
+      if(synth&&!rain)rain={vol:0,clock:0};
+      if(rain){
+        const dps=b.rainRate||0;
+        rain.vol=b.rainVol*(1-.6*ducked);
+        if(dps>0){rain.clock-=50;if(rain.clock<=0){rain.clock=(1000/dps)*(.4+Math.random()*1.2);droplet();}}
+      }
     }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
     if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.1,wipeVel*.15),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(1200+1200*(1-tilt),t,.05);whoosh.last=wipeVel;}
