@@ -103,15 +103,13 @@ if(button){
     }
     if(!melody)return;
     const c=engine.context,t=c.currentTime+when;
-    const car=c.createOscillator(),car2=c.createOscillator(),car3=c.createOscillator(),car4=c.createOscillator();
-    const mod=c.createOscillator(),mg=c.createGain(),env=c.createGain();
-    car.frequency.value=freq;car2.frequency.value=freq*1.005;car3.frequency.value=freq*.995;car4.frequency.value=freq*1.002;
-    mod.frequency.value=freq*ratio;
-    mg.gain.setValueAtTime(freq*.9*bright,t);mg.gain.exponentialRampToValueAtTime(freq*.015,t+dur*.72);
-    mod.connect(mg);[car,car2,car3,car4].forEach(o=>mg.connect(o.frequency));
-    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.07,t+.05);env.gain.exponentialRampToValueAtTime(.0003,t+dur*1.15);
-    [car,car2,car3,car4].forEach(o=>o.connect(env));env.connect(melody.in);
-    [car,car2,car3,car4,mod].forEach(o=>{o.start(t);o.stop(t+dur*1.15+.1);});
+    const car=c.createOscillator(),car2=c.createOscillator(),mod=c.createOscillator(),mg=c.createGain(),env=c.createGain();
+    car.frequency.value=freq;car2.frequency.value=freq*1.004;mod.frequency.value=freq*ratio;
+    mg.gain.setValueAtTime(freq*.8*bright,t);mg.gain.exponentialRampToValueAtTime(freq*.015,t+dur*.7);
+    mod.connect(mg);mg.connect(car.frequency);mg.connect(car2.frequency);
+    env.gain.setValueAtTime(0,t);env.gain.linearRampToValueAtTime(vel*.07,t+.05);env.gain.exponentialRampToValueAtTime(.0003,t+dur*1.1);
+    car.connect(env);car2.connect(env);env.connect(melody.in);
+    [car,car2,mod].forEach(o=>{o.start(t);o.stop(t+dur*1.1+.1);});
     car.onended=()=>{env.disconnect();mg.disconnect();};
   }
   const pitchOf=(deg,oct=octave)=>{const s=SCALES[scale];return s[((deg%s.length)+s.length)%s.length]*Math.pow(2,oct+Math.floor(deg/s.length));};
@@ -324,21 +322,10 @@ if(button){
         src.buffer=buf;src.loop=true;filter.type='bandpass';filter.frequency.value=1800;filter.Q.value=1.1;gain.gain.value=0;
         src.connect(filter);filter.connect(gain);gain.connect(engine.device.node);src.start();
         whoosh={src,filter,gain,last:0};
-        /* melody bus: wet into the granular chain, dry with shimmer delay for shoegaze trails */
+        /* melody bus: wet into the granular chain, a little dry for definition */
         const mIn=context.createGain(),mDry=context.createGain(),mLp=context.createBiquadFilter();
-        mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.2;
+        mLp.type='lowpass';mLp.frequency.value=4800;mDry.gain.value=.18;
         mIn.connect(mLp);mLp.connect(engine.device.node);mLp.connect(mDry);mDry.connect(engine.master);
-        /* chorus: slow modulated micro-delay widens the stereo field */
-        const chDly=context.createDelay(.05),chLfo=context.createOscillator(),chDepth=context.createGain();
-        chDly.delayTime.value=.009;chLfo.frequency.value=.55;chLfo.type='sine';chDepth.gain.value=.003;
-        chLfo.connect(chDepth);chDepth.connect(chDly.delayTime);
-        mLp.connect(chDly);chDly.connect(engine.device.node);chLfo.start();
-        /* shimmer: filtered feedback delay, high frequencies linger and build a bright tail */
-        const shimDly=context.createDelay(1),shimFb=context.createGain(),shimHi=context.createBiquadFilter();
-        shimDly.delayTime.value=.54;shimFb.gain.value=.24;
-        shimHi.type='highpass';shimHi.frequency.value=1400;
-        mDry.connect(shimDly);shimDly.connect(shimHi);shimHi.connect(shimFb);shimFb.connect(shimDly);
-        shimHi.connect(engine.master);
         melody={in:mIn,dry:mDry};
       }
       await engine.context.resume();
