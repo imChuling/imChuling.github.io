@@ -38,7 +38,8 @@ if(button){
   let panner=null,whoosh=null,synth=false;   /* synth: the loaded export generates its own sound (score-synth) */
   let melody=null,melodyClock=1800,degree=2,octave=0,scale='top',prevFocus=0,bloom=false,wipeCool=0;
   let stutter=0,strumAcc=0,strumDir=1,strumCool=0,strums=0,arpClock=9000;   /* click stutter, scroll strum, dwell arpeggio */
-  let prevIdle=0,travelled=0,settleTimer=0,cadenced=false,away=false,tickCool=0;
+  let prevIdle=0,travelled=0,settleTimer=0,cadenced=false,away=false,tickCool=0,idleClock=0,idlePhrase=0;
+  let moveDir=0,prevMoveDir=0,moveFigCool=0,moveSpeed=0;
   let lastY=scrollY,lastScroll=performance.now(),px=0,py=0,lastMove=0;
   const beds={};                       /* id → {source,gain} once loaded */
   let bedId=null,bedsReady=false;
@@ -67,9 +68,12 @@ if(button){
   addEventListener('pointermove',e=>{
     const now=performance.now(),dt=Math.max(8,now-lastMove),dx=e.clientX-px,dy=e.clientY-py;
     if(lastMove){
-      motion=Math.max(motion,Math.min(1,Math.hypot(dx,dy)/dt*.05));
-      hx=Math.max(-1,Math.min(1,hx+dx/dt*.12));          /* right lifts, left lowers */
-      vy=Math.max(-1,Math.min(1,vy+dy/dt*.12));          /* up tightens, down lengthens */
+      const spd=Math.hypot(dx,dy)/dt;
+      motion=Math.max(motion,Math.min(1,spd*.05));
+      moveSpeed+=(Math.min(1,spd*.04)-moveSpeed)*.15;
+      hx=Math.max(-1,Math.min(1,hx+dx/dt*.12));
+      vy=Math.max(-1,Math.min(1,vy+dy/dt*.12));
+      moveDir=Math.atan2(dy,dx);
     }
     pan+=((e.clientX/innerWidth)-pan)*.08;tilt+=((e.clientY/innerHeight)-tilt)*.08;
     px=e.clientX;py=e.clientY;lastMove=now;touch();
@@ -181,7 +185,7 @@ if(button){
     }
     motion*=.9;swell*=.9;turn*=.93;drift*=.97;focus+=(focusTarget-focus)*.12;
     hx*=.88;vy*=.88;wipeVel*=.75;wipe*=.985;stutter*=.86;      /* wipe lingers ~6 s, like a clearing that fogs back */
-    const lfo=Math.sin(now/9000),lfo2=Math.sin(now/23000+1.3); /* slow drift so a still page still moves */
+    const lfo=Math.sin(now/9000),lfo2=Math.sin(now/23000+1.3),lfo3=Math.sin(now/37000+2.7),lfo4=Math.sin(now/15000+.8);
     const b=SCENES[scene];
     const residue=scene==='detail'?0:Math.min(1,((visits[scene]||1)-1)*.5);
     const dwell=Math.min(1,(now-since)/45000);                  /* staying somewhere slowly thickens it */
@@ -197,10 +201,27 @@ if(button){
     if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:.2+.15*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1],ch:2});}
     else if(strumAcc<140)strumAcc*=.9;
     /* staying somewhere, the page occasionally plays an arpeggio by itself */
-    arpClock-=50;if(arpClock<=0){arpClock=9000+Math.random()*9000;if(dwell>.25&&idle<.5&&scene!=='detail')arpeggio();}
-    tickCool-=50;
+    arpClock-=50;if(arpClock<=0){arpClock=9000+Math.random()*9000;if(dwell>.25&&scene!=='detail')arpeggio();}
+    tickCool-=50;moveFigCool-=50;
+    /* idle generative layer: when nobody interacts, the score breathes on its own */
+    idleClock-=50;
+    if(idle>.3&&idleClock<=0){
+      idlePhrase=(idlePhrase+1)%5;
+      if(idlePhrase===0){const d=Math.floor(Math.random()*7);note(pitchOf(d),{vel:.12+.06*idle,dur:4.5+Math.random()*3,ratio:1.5,bright:.6});}
+      else if(idlePhrase===1){const d=Math.floor(Math.random()*5);[0,2].forEach((s,i)=>note(pitchOf(d+s),{vel:.1,dur:5,when:i*.3,ratio:2.01,bright:.5}));}
+      else if(idlePhrase===2){for(let i=0;i<3;i++)note(pitchOf(i*2),{vel:.08+.04*i,dur:3.5,when:i*.55,ratio:1.5,bright:.7});}
+      else if(idlePhrase===3){note(pitchOf(degree,-1),{vel:.14,dur:6,ratio:2.01,bright:.4});}
+      else{const up=Math.random()<.5;for(let i=0;i<4;i++)note(pitchOf(up?i:6-i),{vel:.09,dur:2.8,when:i*.6,ratio:RATIOS[i%2],bright:.6});}
+      idleClock=(3800+Math.random()*5000)*(1.4-idle*.4);
+    }
+    /* mouse movement: direction changes trigger a micro-ornament, speed shapes timbre */
+    if(moveFigCool<=0&&motion>.15){
+      const dirDelta=Math.abs(moveDir-prevMoveDir);
+      if(dirDelta>1.2&&dirDelta<5){moveFigCool=400;note(pitchOf(degree+Math.round(hx*2)),{vel:.12+.08*moveSpeed,dur:1.2+moveSpeed*1.5,ratio:moveSpeed>.5?3.0:2.01,bright:.8+.6*moveSpeed});}
+    }
+    prevMoveDir=moveDir;moveSpeed*=.92;
     /* coming back after being still: a small waking figure */
-    if(prevIdle>.5&&idle===0)figure();prevIdle=idle;
+    if(prevIdle>.5&&idle===0){figure();idleClock=0;}prevIdle=idle;
     /* reaching the end of the page resolves once; scrolling back up re-arms it */
     const bottom=scrollY+innerHeight>=document.documentElement.scrollHeight-40;
     if(bottom&&!cadenced){cadenced=true;[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.24,dur:6,when:i*.12,ratio:1.5,ch:3}));}
@@ -209,13 +230,13 @@ if(button){
     engine.setParams({
       mix:Math.max(5,Math.min(60,b.mix+8*residue+4*dwell-10*idle+5*motion+6*turn-12*wipe+3*lfo)),
       width:Math.min(100,b.width+20*motion),gain:-8,
-      grainSize:b.grainSize*(1-.3*focus)*(1+.15*idle)*(1+.25*vy)*(1-.5*stutter)*(1+.12*lfo2),grainPos:b.grainPos*(1+.3*lfo2),
-      interval:Math.max(20,b.interval*(1-.2*focus)*(1+.2*idle)*(1-.65*stutter)-15*motion-25*turn),
-      pitch:b.pitch+2*focus+hoverPitch*focus-1.5*drift+1.2*hx+3*stutter,
+      grainSize:b.grainSize*(1-.3*focus)*(1+.15*idle)*(1+.25*vy)*(1-.5*stutter)*(1+.15*lfo2+.08*lfo3),grainPos:b.grainPos*(1+.3*lfo2+.15*lfo4),
+      interval:Math.max(20,b.interval*(1-.2*focus)*(1+.2*idle)*(1-.65*stutter)*(1+.1*lfo3)-15*motion-25*turn),
+      pitch:b.pitch+2*focus+hoverPitch*focus-1.5*drift+1.2*hx+3*stutter+.3*lfo4*idle,
       'drive/drive':Math.max(0,b.drive+4*focus+3*turn-2*wipe),'drive/lowcut':34,'drive/highcut':40,'drive/mix':60,'drive/volume':0,
-      'drive/bass':b.bass-8-6*height,'drive/mid':b.mid,'drive/treble':b.treble+6*focus+10*height+8*motion+8*wipe,'drive/midfreq':0,
-      'reverb/mix':Math.min(100,b.wet+12*residue+6*dwell+25*swell+8*wipe),'reverb/decay':Math.min(100,b.decay+8*residue+6*dwell),
-      'reverb/size':Math.min(100,b.size+6*lfo),'reverb/damp':Math.max(0,b.damp-25*wipe),'reverb/diff':80,'reverb/jitter':b.jitter,
+      'drive/bass':b.bass-6-4*height+3*lfo3,'drive/mid':b.mid+2*lfo4,'drive/treble':b.treble+4*focus+8*height+6*moveSpeed+6*wipe,'drive/midfreq':0,
+      'reverb/mix':Math.min(100,b.wet+12*residue+6*dwell+25*swell+8*wipe+4*lfo),'reverb/decay':Math.min(100,b.decay+8*residue+6*dwell+3*lfo3),
+      'reverb/size':Math.min(100,b.size+6*lfo+4*lfo3),'reverb/damp':Math.max(0,b.damp-25*wipe-8*moveSpeed),'reverb/diff':80,'reverb/jitter':b.jitter+4*moveSpeed,
     });
     if(synth){                                                   /* hand the whole state to Max */
       const SCENE_INDEX={top:0,projects:1,music:2,story:3,contact:4,detail:5};
