@@ -8,14 +8,20 @@ const BEDS='assets/as-you-read/beds/';
 const FALLBACK='assets/as-you-read/source.mp3';
 const LABEL={top:'Arrival',projects:'Projects',music:'Stage',story:'Story',contact:'Hello',detail:'Close'};
 
-/* bed = which pad plays underneath; the rest is the treatment on top */
+/* bed = which pad plays underneath; the rest is the treatment on top
+   each section has a strongly different character:
+   top      — crystalline, sparse, bright (first impression)
+   projects — rhythmic, tight, mechanical (productive energy)
+   music    — lush, wide, saturated (the showcase)
+   story    — deep, slow, cavernous (intimate)
+   contact  — clean, minimal, almost silent (quiet goodbye) */
 const SCENES={
-  top:     {bed:'top',     mix:6, grainSize:300,grainPos:95, interval:200,pitch:0, width:82,drive:2, bass:-14,mid:0,  treble:4,  wet:58,decay:72,size:82,damp:48,jitter:10},
-  projects:{bed:'projects',mix:8, grainSize:220,grainPos:130,interval:180,pitch:0, width:72,drive:3, bass:-16,mid:4,  treble:8,  wet:60,decay:66,size:74,damp:42,jitter:8},
-  music:   {bed:'music',   mix:18,grainSize:480,grainPos:280,interval:120,pitch:-2,width:100,drive:8, bass:-10,mid:2,  treble:0,  wet:88,decay:94,size:96,damp:52,jitter:16},
-  story:   {bed:'story',   mix:12,grainSize:580,grainPos:340,interval:180,pitch:-4,width:100,drive:3, bass:-12,mid:-4, treble:-4, wet:96,decay:97,size:100,damp:60,jitter:22},
-  contact: {bed:'contact', mix:6, grainSize:320,grainPos:165,interval:200,pitch:0, width:76,drive:2, bass:-12,mid:0,  treble:2,  wet:64,decay:74,size:72,damp:44,jitter:8},
-  detail:  {bed:null,      mix:4, grainSize:300,grainPos:120,interval:220,pitch:0, width:58,drive:1, bass:-10,mid:0,  treble:6,  wet:48,decay:60,size:62,damp:50,jitter:6},
+  top:     {bed:'top',     mix:4, grainSize:120,grainPos:60,  interval:280,pitch:5,  width:60,drive:0, bass:-20,mid:-2, treble:12, wet:72,decay:80,size:90,damp:30,jitter:4,  melodyRate:3000,rainRate:1.2,rainVol:.12,noteVel:.15},
+  projects:{bed:'projects',mix:10,grainSize:80, grainPos:40,  interval:60, pitch:2,  width:40,drive:6, bass:-8, mid:8,  treble:6,  wet:30,decay:35,size:40,damp:70,jitter:2,  melodyRate:1600,rainRate:0,  rainVol:0,  noteVel:.18},
+  music:   {bed:'music',   mix:22,grainSize:600,grainPos:350, interval:90, pitch:-3, width:100,drive:10,bass:-6, mid:2,  treble:-2, wet:92,decay:96,size:100,damp:45,jitter:20,melodyRate:2800,rainRate:.6, rainVol:.08,noteVel:.20},
+  story:   {bed:'story',   mix:8, grainSize:900,grainPos:500, interval:300,pitch:-8, width:100,drive:1, bass:-4, mid:-6, treble:-8, wet:98,decay:100,size:100,damp:65,jitter:30,melodyRate:5000,rainRate:2.5,rainVol:.18,noteVel:.14},
+  contact: {bed:'contact', mix:2, grainSize:200,grainPos:100, interval:350,pitch:0,  width:50,drive:0, bass:-18,mid:0,  treble:2,  wet:55,decay:60,size:65,damp:50,jitter:4,  melodyRate:6000,rainRate:.8, rainVol:.06,noteVel:.10},
+  detail:  {bed:null,      mix:2, grainSize:300,grainPos:120, interval:300,pitch:0,  width:40,drive:0, bass:-14,mid:0,  treble:4,  wet:40,decay:50,size:50,damp:55,jitter:4,  melodyRate:5000,rainRate:.5, rainVol:.05,noteVel:.10},
 };
 /* melody: one high scale per section (Hz), played by the page itself above the bed */
 const SCALES={
@@ -123,15 +129,17 @@ if(button){
     if(phrasePos>=phrase.length){phrasePos=0;phraseIdx++;if(Math.random()<.3)phraseIdx+=Math.floor(Math.random()*3);}
     octave=Math.random()<.12+.2*motion?1:0;
     const ratio=RATIOS[Math.random()<.55?0:Math.random()<.5?2:1];
-    const dur=scene==='story'?5.5:3.6+Math.random()*2,vel=.28+.2*Math.random();
+    const sb=SCENES[scene]||SCENES.top;
+    const dur=scene==='story'?5.5:scene==='projects'?1.8+Math.random():3.6+Math.random()*2;
+    const vel=sb.noteVel+.1*Math.random();
     note(pitchOf(degree),{vel,dur,bright:.6+.4*motion,ratio});
     if(Math.random()<.4)note(pitchOf(degree+2),{vel:vel*.7,dur:dur*.85,when:.25,ratio});
     else if(Math.random()<.25)[1,2].forEach(i=>note(pitchOf(degree+i),{vel:vel*.6,dur:dur*.7,when:.18*i,ratio}));
   }
-  function motif(up){const rh=[0,.16,.36,.54];for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:.4,dur:4,when:rh[i],ratio:RATIOS[i%2]});}
-  function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.38,dur:2.4,when:i*.11,bright:1.1});}
-  function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.35,dur:5.5+i*.5,when:i*.03,ratio:i===3?3.0:2.01,ch:3}));}
-  function arpeggio(){const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:.28,dur:3,when:i*.48,ratio:1.5});}
+  function motif(up){const rh=[0,.16,.36,.54];const v=(SCENES[scene]||SCENES.top).noteVel;for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:v*1.2,dur:4,when:rh[i],ratio:RATIOS[i%2]});}
+  function figure(){const v=(SCENES[scene]||SCENES.top).noteVel;for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:v,dur:2.4,when:i*.11,bright:1.1});}
+  function chord(){const v=(SCENES[scene]||SCENES.top).noteVel;[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:v*1.1,dur:5.5+i*.5,when:i*.03,ratio:i===3?3.0:2.01,ch:3}));}
+  function arpeggio(){const v=(SCENES[scene]||SCENES.top).noteVel;const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:v*.9,dur:3,when:i*.48,ratio:1.5});}
   /* a run from where the melody is to a new root: used when the page travels (nav links, sheets) */
   function glide(toHz,{steps=6,span=.42,vel=.18,ratio=3.0}={}){
     const from=pitchOf(degree);
@@ -215,12 +223,12 @@ if(button){
     const height=.5-tilt;                                       /* pointer high on the page: brighter; low: darker */
     /* melodic events: a slow drip of notes, plus figures for hover, click, wipe */
     melodyClock-=50;
-    if(melodyClock<=0){drip();melodyClock=(scene==='detail'?4000:scene==='story'?3500:2200)*(1-.4*motion)*(1+.6*idle)*(.7+.6*Math.random());}
+    if(melodyClock<=0){drip();melodyClock=b.melodyRate*(1-.4*motion)*(1+.6*idle)*(.7+.6*Math.random());}
     if(focusTarget&&!prevFocus)figure();prevFocus=focusTarget;
     if(bloom){bloom=false;chord();stutter=1;}
     /* scroll strum: each ~140px plucks the next scale step, down = rising, up = falling */
     strumCool-=50;
-    if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:.35+.2*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1],ch:2});}
+    if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:b.noteVel+.08*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1],ch:2});}
     else if(strumAcc<140)strumAcc*=.9;
     /* staying somewhere, the page occasionally plays an arpeggio by itself */
     arpClock-=50;if(arpClock<=0){arpClock=8000+Math.random()*8000;if(dwell>.2&&scene!=='detail')arpeggio();}
@@ -229,24 +237,24 @@ if(button){
     idleClock-=50;
     if(idle>.3&&idleClock<=0){
       idlePhrase=(idlePhrase+1)%5;
-      if(idlePhrase===0){const d=Math.floor(Math.random()*7);note(pitchOf(d),{vel:.22+.1*idle,dur:4.5+Math.random()*3,ratio:1.5,bright:.7});}
-      else if(idlePhrase===1){const d=Math.floor(Math.random()*5);[0,2].forEach((s,i)=>note(pitchOf(d+s),{vel:.18,dur:5,when:i*.3,ratio:2.01,bright:.6}));}
-      else if(idlePhrase===2){for(let i=0;i<3;i++)note(pitchOf(i*2),{vel:.16+.06*i,dur:3.5,when:i*.55,ratio:1.5,bright:.8});}
-      else if(idlePhrase===3){note(pitchOf(degree,-1),{vel:.24,dur:6,ratio:2.01,bright:.5});}
-      else{const up=Math.random()<.5;for(let i=0;i<4;i++)note(pitchOf(up?i:6-i),{vel:.16,dur:2.8,when:i*.6,ratio:RATIOS[i%2],bright:.7});}
+      if(idlePhrase===0){const d=Math.floor(Math.random()*7);note(pitchOf(d),{vel:b.noteVel*.8+.05*idle,dur:4.5+Math.random()*3,ratio:1.5,bright:.7});}
+      else if(idlePhrase===1){const d=Math.floor(Math.random()*5);[0,2].forEach((s,i)=>note(pitchOf(d+s),{vel:b.noteVel*.7,dur:5,when:i*.3,ratio:2.01,bright:.6}));}
+      else if(idlePhrase===2){for(let i=0;i<3;i++)note(pitchOf(i*2),{vel:b.noteVel*.6+.03*i,dur:3.5,when:i*.55,ratio:1.5,bright:.8});}
+      else if(idlePhrase===3){note(pitchOf(degree,-1),{vel:b.noteVel*.9,dur:6,ratio:2.01,bright:.5});}
+      else{const up=Math.random()<.5;for(let i=0;i<4;i++)note(pitchOf(up?i:6-i),{vel:b.noteVel*.6,dur:2.8,when:i*.6,ratio:RATIOS[i%2],bright:.7});}
       idleClock=(3200+Math.random()*4000)*(1.3-idle*.4);
     }
     /* mouse movement: direction changes trigger a micro-ornament, speed shapes timbre */
     if(moveFigCool<=0&&motion>.15){
       const dirDelta=Math.abs(moveDir-prevMoveDir);
-      if(dirDelta>1.2&&dirDelta<5){moveFigCool=400;note(pitchOf(degree+Math.round(hx*2)),{vel:.24+.15*moveSpeed,dur:1.2+moveSpeed*1.5,ratio:moveSpeed>.5?3.0:2.01,bright:.9+.6*moveSpeed});}
+      if(dirDelta>1.2&&dirDelta<5){moveFigCool=400;note(pitchOf(degree+Math.round(hx*2)),{vel:b.noteVel+.08*moveSpeed,dur:1.2+moveSpeed*1.5,ratio:moveSpeed>.5?3.0:2.01,bright:.9+.6*moveSpeed});}
     }
     prevMoveDir=moveDir;moveSpeed*=.92;
     /* coming back after being still: a small waking figure */
     if(prevIdle>.5&&idle===0){figure();idleClock=0;}prevIdle=idle;
     /* reaching the end of the page resolves once; scrolling back up re-arms it */
     const bottom=scrollY+innerHeight>=document.documentElement.scrollHeight-40;
-    if(bottom&&!cadenced){cadenced=true;[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.24,dur:6,when:i*.12,ratio:1.5,ch:3}));}
+    if(bottom&&!cadenced){cadenced=true;[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:b.noteVel,dur:6,when:i*.12,ratio:1.5,ch:3}));}
     else if(!bottom&&cadenced&&scrollY<document.documentElement.scrollHeight*.5)cadenced=false;
     wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6,ch:4});}
     engine.setParams({
@@ -272,10 +280,9 @@ if(button){
       const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
     }
     if(rain){
-      const dps={top:1.8,projects:1.5,music:1,story:2.2,contact:1.8,detail:1}[scene]||1.8;
-      rain.vol=.2*(1-.6*ducked);
-      rain.clock-=50;
-      if(rain.clock<=0){rain.clock=(1000/dps)*(.4+Math.random()*1.2);droplet();}
+      const dps=b.rainRate||0;
+      rain.vol=b.rainVol*(1-.6*ducked);
+      if(dps>0){rain.clock-=50;if(rain.clock<=0){rain.clock=(1000/dps)*(.4+Math.random()*1.2);droplet();}}
     }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
     if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.1,wipeVel*.15),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(1200+1200*(1-tilt),t,.05);whoosh.last=wipeVel;}
@@ -333,7 +340,7 @@ if(button){
     if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C();}
     ctx.resume();return ctx;
   }
-  const level=()=>ducked?0:(away?0.2:0.34);
+  const level=()=>ducked?0:(away?0.1:0.2);
   async function start(){
     if(busy)return;busy=true;setState('loading');
     try{
