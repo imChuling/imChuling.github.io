@@ -35,7 +35,7 @@ if(button){
   let scene='top',visits={top:1},since=performance.now(),lastInput=performance.now();
   let motion=0,focus=0,focusTarget=0,swell=0,turn=0,drift=0,hoverPitch=0;
   let hx=0,vy=0,pan=.5,tilt=.5,wipe=0,wipeVel=0;   /* pointer: signed velocities, position, glass wiping */
-  let panner=null,whoosh=null;
+  let panner=null,whoosh=null,synth=false;   /* synth: the loaded export generates its own sound (score-synth) */
   let melody=null,melodyClock=1800,degree=2,octave=0,scale='top',prevFocus=0,bloom=false,wipeCool=0;
   let stutter=0,strumAcc=0,strumDir=1,strumCool=0,strums=0,arpClock=9000;   /* click stutter, scroll strum, dwell arpeggio */
   let prevIdle=0,travelled=0,settleTimer=0,cadenced=false,away=false,tickCool=0;
@@ -88,8 +88,16 @@ if(button){
   addEventListener('keydown',touch,{passive:true});
 
   /* ---------- melody : a high FM bell the page plays, sent into the same chain ---------- */
-  function note(freq,{vel=.4,dur=2.6,bright=1,when=0,ratio=2.01}={}){
-    if(!melody||ducked)return;
+  function note(freq,{vel=.4,dur=2.6,bright=1,when=0,ratio=2.01,ch=1}={}){
+    if(ducked||!engine)return;
+    if(synth){                                                   /* Max generates the sound: send a MIDI note */
+      const midi=Math.round(69+12*Math.log2(freq/440)),v=Math.max(1,Math.min(127,Math.round(vel*200)));
+      const t=engine.context.currentTime*1000+when*1000,status=0x90|((ch-1)&15);
+      engine.device.scheduleEvent(new RNBO.MIDIEvent(t,0,[status,midi,v]));
+      engine.device.scheduleEvent(new RNBO.MIDIEvent(t+dur*1000,0,[status,midi,0]));
+      return;
+    }
+    if(!melody)return;
     const c=engine.context,t=c.currentTime+when;
     const car=c.createOscillator(),car2=c.createOscillator(),mod=c.createOscillator(),mg=c.createGain(),env=c.createGain();
     car.frequency.value=freq;car2.frequency.value=freq*1.004;mod.frequency.value=freq*ratio;
@@ -115,7 +123,7 @@ if(button){
   }
   function motif(up){const rh=[0,.13,.31,.46];for(let i=0;i<4;i++)note(pitchOf(up?i*2:6-i*2),{vel:.32,dur:3,when:rh[i],ratio:RATIOS[i%2]});}
   function figure(){for(let i=0;i<3;i++)note(pitchOf(degree+i),{vel:.3,dur:1.8,when:i*.09,bright:1.2});}
-  function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.28,dur:4.5+i*.4,when:i*.025,ratio:i===3?3.0:2.01}));}
+  function chord(){[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.28,dur:4.5+i*.4,when:i*.025,ratio:i===3?3.0:2.01,ch:3}));}
   function arpeggio(){const up=Math.random()<.5;for(let i=0;i<5;i++)note(pitchOf(up?i:6-i,i===4?1:0),{vel:.22,dur:2.2,when:i*.42,ratio:1.5});}
   /* a run from where the melody is to a new root: used when the page travels (nav links, sheets) */
   function glide(toHz,{steps=6,span=.42,vel=.18,ratio=3.0}={}){
@@ -141,7 +149,7 @@ if(button){
       for(let i=0;i<steps;i++){degree=Math.min(6,degree+1);note(pitchOf(degree),{vel:.15,dur:.9,bright:1.3,ratio:3.0,when:i*.06});}}
     selLen=len;hum(len);touch();
   });
-  document.addEventListener('mouseup',()=>{if(selLen>24)[0,2,4].forEach((d,i)=>note(pitchOf(d),{vel:.14,dur:3.5,when:i*.04,ratio:1.5}));});
+  document.addEventListener('mouseup',()=>{if(selLen>24)[0,2,4].forEach((d,i)=>note(pitchOf(d),{vel:.14,dur:3.5,when:i*.04,ratio:1.5,ch:3}));});
 
   /* ---------- the rest of the page's gestures ---------- */
   /* nav links: a run toward the destination's root while the page travels there */
@@ -157,7 +165,7 @@ if(button){
   document.documentElement.addEventListener('mouseenter',()=>{away=false;if(enabled&&engine)engine.volume(level(),.4);});
   /* story chapters: each one that lights up gets its own note */
   const steps=[...document.querySelectorAll('.story-step')];
-  if(steps.length)new MutationObserver(ms=>{for(const m of ms)if(m.target.classList.contains('active')){const i=steps.indexOf(m.target);note(pitchOf(i*2),{vel:.22,dur:2.6,ratio:1.5});note(pitchOf(i*2+4),{vel:.12,dur:2.6,when:.12,ratio:1.5});}})
+  if(steps.length)new MutationObserver(ms=>{for(const m of ms)if(m.target.classList.contains('active')){const i=steps.indexOf(m.target);note(pitchOf(i*2),{vel:.22,dur:2.6,ratio:1.5,ch:5});note(pitchOf(i*2+4),{vel:.12,dur:2.6,when:.12,ratio:1.5,ch:5});}})
     .observe(document.querySelector('.story-steps')||document.body,{attributes:true,attributeFilter:['class'],subtree:true});
 
   /* ---------- turning the state into sound ---------- */
@@ -184,7 +192,7 @@ if(button){
     if(bloom){bloom=false;chord();stutter=1;}
     /* scroll strum: each ~140px plucks the next scale step, down = rising, up = falling */
     strumCool-=50;
-    if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:.2+.15*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1]});}
+    if(strumAcc>=140&&strumCool<=0){strumAcc=0;strumCool=70;strums++;degree=Math.max(0,Math.min(6,degree+strumDir));note(pitchOf(degree,motion>.6?1:0),{vel:.2+.15*motion,dur:1.1+.6*motion,bright:1+motion,ratio:RATIOS[1],ch:2});}
     else if(strumAcc<140)strumAcc*=.9;
     /* staying somewhere, the page occasionally plays an arpeggio by itself */
     arpClock-=50;if(arpClock<=0){arpClock=9000+Math.random()*9000;if(dwell>.25&&idle<.5&&scene!=='detail')arpeggio();}
@@ -193,9 +201,9 @@ if(button){
     if(prevIdle>.5&&idle===0)figure();prevIdle=idle;
     /* reaching the end of the page resolves once; scrolling back up re-arms it */
     const bottom=scrollY+innerHeight>=document.documentElement.scrollHeight-40;
-    if(bottom&&!cadenced){cadenced=true;[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.24,dur:6,when:i*.12,ratio:1.5}));}
+    if(bottom&&!cadenced){cadenced=true;[0,2,4,6].forEach((d,i)=>note(pitchOf(d,i===3?1:0),{vel:.24,dur:6,when:i*.12,ratio:1.5,ch:3}));}
     else if(!bottom&&cadenced&&scrollY<document.documentElement.scrollHeight*.5)cadenced=false;
-    wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6});}
+    wipeCool-=50;if(wipeVel>.45&&wipeCool<=0){wipeCool=220;note(pitchOf(2+Math.floor(Math.random()*3),1),{vel:.22,dur:.7,bright:1.6,ch:4});}
     engine.setParams({
       mix:Math.max(8,Math.min(95,b.mix+14*residue+8*dwell-14*idle+8*motion+12*turn-18*wipe+6*lfo)),
       width:Math.min(100,b.width+20*motion),gain:-8,
@@ -207,6 +215,17 @@ if(button){
       'reverb/mix':Math.min(100,b.wet+12*residue+6*dwell+25*swell+8*wipe),'reverb/decay':Math.min(100,b.decay+8*residue+6*dwell),
       'reverb/size':Math.min(100,b.size+6*lfo),'reverb/damp':Math.max(0,b.damp-25*wipe),'reverb/diff':80,'reverb/jitter':b.jitter,
     });
+    if(synth){                                                   /* hand the whole state to Max */
+      const SCENE_INDEX={top:0,projects:1,music:2,story:3,contact:4,detail:5};
+      Object.assign(engine.targets,{
+        'score/residue':residue,'score/dwell':dwell,'score/idle':idle,
+        'score/motion':motion,'score/focus':focus,'score/swell':swell,'score/turn':turn,'score/stutter':stutter,
+        'score/wipe':wipe,'score/wipeVel':wipeVel,'score/pan':pan,'score/tilt':tilt,'score/hx':hx,'score/vy':vy,
+        'score/drift':drift,'score/hoverPitch':hoverPitch*focus,'score/select':Math.min(1,selLen/400),'score/duck':ducked?1:0,
+        'score/bedRoot':SCALES[scale][0]/4,'score/bedLevel':.5,
+      });
+      const p=engine.device.parametersById.get('score/scene');if(p)p.value=SCENE_INDEX[scene];   /* scene jumps, no smoothing */
+    }
     if(panner){const t=engine.context.currentTime;panner.pan.setTargetAtTime(.4*(pan-.5)*2,t,.08);}
     if(whoosh){const t=engine.context.currentTime;whoosh.gain.gain.setTargetAtTime(Math.min(.22,wipeVel*.3),t,wipeVel>whoosh.last?.02:.12);whoosh.filter.frequency.setTargetAtTime(900+1800*(1-tilt),t,.05);whoosh.last=wipeVel;}
     if(b.bed&&b.bed!==bedId)crossfadeBed(b.bed);
@@ -269,9 +288,12 @@ if(button){
         const context=ensureContext();
         await loadLib();
         const candidate=new RNBOSound(context);
-        try{engine=await candidate.init();}catch(e){candidate.dispose();ctx=null;throw e;}
+        try{engine=await candidate.init(['score-synth','scene']);}catch(e){candidate.dispose();ctx=null;throw e;}
+        synth=engine.device.parametersById.has('score/scene');
         /* pointer x pans the whole score a little */
         panner=context.createStereoPanner();engine.master.disconnect();engine.master.connect(panner);panner.connect(engine.analyser);
+      }
+      if(!whoosh&&!synth){const context=engine.context;
         /* a soft noise bed for the glass wipe, fed into the same chain so it gets granulated and reverberated */
         const len=context.sampleRate*2,buf=context.createBuffer(1,len,context.sampleRate),d=buf.getChannelData(0);
         let lp=0;for(let i=0;i<len;i++){lp+=((Math.random()*2-1)-lp)*.25;d[i]=lp;}
@@ -287,7 +309,7 @@ if(button){
       }
       await engine.context.resume();
       scene=detail?'detail':currentScene();visits[scene]=visits[scene]||1;since=performance.now();
-      if(!bedsReady)await loadBeds();
+      if(!synth&&!bedsReady)await loadBeds();
       compose();engine.volume(level(),.9);
       enabled=true;setState('on');setLabel(LABEL[scene]);
       clearInterval(ticker);ticker=setInterval(compose,50);
@@ -295,7 +317,7 @@ if(button){
     finally{busy=false;}
   }
   function stop(){
-    if(enabled&&melody)[0,2,4].forEach((d,i)=>note(pitchOf(d),{vel:.2,dur:2.5,when:i*.05,ratio:1.5}));   /* a soft release before the fade */
+    if(enabled&&(melody||synth))[0,2,4].forEach((d,i)=>note(pitchOf(d),{vel:.2,dur:2.5,when:i*.05,ratio:1.5,ch:3}));   /* a soft release before the fade */
     enabled=false;clearInterval(ticker);setState('off');button.style.setProperty('--lvl',0);
     if(!engine)return;
     engine.volume(0,.45);setTimeout(()=>{if(!enabled){stopBeds();engine.context.suspend();}},1600);

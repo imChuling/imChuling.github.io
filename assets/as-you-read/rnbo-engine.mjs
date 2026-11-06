@@ -1,10 +1,13 @@
 // Browser hosting only. All creative DSP comes from the exported Max/RNBO patch.
 export class RNBOSound {
   constructor(context) { this.context=context; this.device=null; this.source=null; this.buffer=null; this.timer=null; this.targets={}; this.values={}; }
-  async init() {
-    const response=await fetch('assets/as-you-read/rnbo-export/scene.export.json');
-    if(!response.ok)throw new Error('RNBO export unavailable');
-    const patcher=await response.json();
+  async init(names=['scene']) {
+    let patcher=null;
+    for(const name of names){
+      const response=await fetch('assets/as-you-read/rnbo-export/'+name+'.export.json').catch(()=>null);
+      if(response&&response.ok){patcher=await response.json();this.exportName=name;break;}
+    }
+    if(!patcher)throw new Error('RNBO export unavailable');
     this.device=await RNBO.createDevice({context:this.context,patcher});
     this.master=this.context.createGain(); this.master.gain.value=0;
     this.analyser=this.context.createAnalyser(); this.analyser.fftSize=512;
