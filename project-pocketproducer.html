@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PocketProducer — Chuling LI</title>
+<meta name="description" content="Pocket Producer is a prototype for Audiotool that recommends samples from a musician's own library based on what is already in the open session, and shows the evidence behind every suggestion. Accepted at ISMIR 2026 as a Late-Breaking Demo.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Chuling Li">
+<meta property="og:title" content="PocketProducer — Chuling LI">
+<meta property="og:description" content="Pocket Producer is a prototype for Audiotool that recommends samples from a musician's own library based on what is already in the open session, and shows the evidence behind every suggestion. Accepted at ISMIR 2026 as a Late-Breaking Demo.">
+<meta property="og:url" content="https://imchuling.github.io/project-pocketproducer.html">
+<meta property="og:image" content="https://imchuling.github.io/images/pocketproducer_architecture.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+<link rel="stylesheet" href="css/project.css">
+<style>
+  .demo-note{font-size:.8rem;color:var(--muted);margin:.9rem 0 0;max-width:40rem}
+  .results{width:100%;border-collapse:collapse;margin:1.2rem 0 .6rem;font-size:.92rem}
+  .results caption{text-align:left;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+  .results th,.results td{padding:.55rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .results th{font-weight:500;color:var(--muted)}
+  .results td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  @media (max-width:640px){.results{font-size:.84rem}.results th,.results td{padding:.45rem .4rem}}
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html#projects">← Back to portfolio</a>
+
+<div class="proj-hero">
+  <h1>PocketProducer</h1>
+  <div class="proj-meta">
+    <span class="tag">Independent Research · First Author</span>
+    <span class="tag">Accepted at ISMIR 2026 LBD</span>
+    <span class="tag">Audiotool Hackathon Shortlist</span>
+    <span class="tag">Music Representations</span>
+    <span class="tag">Embeddings</span>
+    <span class="tag">Similarity</span>
+    <span class="tag">Retrieval</span>
+  </div>
+  <p class="subtitle">Sample recommendation that reads the musician's open session and proposes fragments that could fit the same piece of music, not just fragments that sound alike. The musician stays in control.</p>
+  <div class="proj-links hero-links">
+    <a class="primary" href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">ISMIR Page ↗</a>
+    <a class="primary" href="https://pocketproducer.vercel.app" target="_blank">Live Demo ↗</a>
+    <a class="secondary" href="https://github.com/imChuling/pocket-producer" target="_blank">Source Code ↗</a>
+    <a class="secondary" href="https://drive.google.com/file/d/1UwArveyTTe_2Ua5waxX633TMUIl_eqwi/view" target="_blank">Paper PDF ↗</a>
+  </div>
+  <p class="demo-note">The live demo runs on a scale-to-zero deployment: after a quiet period the first visit takes a minute or two while the backend starts and loads the audio model. It needs an Audiotool account.</p>
+</div>
+
+<div class="proj-cover">
+  <img src="images/pocketproducer_architecture.png" alt="Pocket Producer system architecture">
+</div>
+
+<div class="proj-content">
+  <h2>Overview</h2>
+  <p>When you are building a track, the right next sample is not always the one that sounds most like what is already there. A drum loop can fit a project's tempo and feel while sounding nothing like its other samples, and two fragments can sound alike yet never belong in the same piece. Audio similarity is not the same as musical compatibility.</p>
+  <p>Pocket Producer is a prototype built for Audiotool that recommends samples based on the musician's current DAW session. It looks at the samples already in the project, its tempo and tags, and an optional description of what the musician is looking for. It then ranks samples from the musician's own library based on how well they might fit. Every suggestion can be previewed, shows the evidence behind its ranking, and can be inserted into the project or undone.</p>
+
+  <h2>How it works</h2>
+  <p><strong>Session fingerprint.</strong> Through the Audiotool Nexus SDK, Pocket Producer reads the open project: its tempo, the track roles in use, up to eight unique samples referenced on the timeline, and the musician's stated intent. I use MS-CLAP to extract audio embeddings from the session samples, alongside the metadata available through Audiotool.</p>
+  <p><strong>Two rankers.</strong> The default is a transparent rules ranker over non-audio signals: tempo fit, whether a fragment fills a role the session lacks, overlap with the stated intent, tag overlap and tag novelty, and recency. The alternative is a learned fusion of five signals: mean and max CLAP similarity to the session regions, tempo fit, key match, and tag overlap, with weights trained by Bayesian Personalized Ranking (BPR). The musician can switch between the two. Audiotool does not expose a project key, so the key signal only matters in offline evaluation.</p>
+  <p><strong>Proposals, not decisions.</strong> Each recommendation shows a breakdown of the signals behind its ranking. The musician can preview it, insert it into the project in a single transaction, and undo the insertion, which restores the exact prior project state. Every preview, accept, insert, reject, and undo is logged with its rank position, with the aim of using musician feedback to train the ranker in the future.</p>
+</div>
+
+<div class="proj-content">
+  <h2>Evaluation</h2>
+  <p>There is no labeled data for "these two fragments belong in the same piece". To train and evaluate the learned ranker, I used pack co-membership in the Freesound Loop Dataset as a weak proxy: 1,797 loops from 605 packs, split by pack into 484 training and 121 held-out sources, treating loops that a creator published together as compatible. However, samples from the same pack won't necessarily work well together in an actual music project.</p>
+  <p>I measured how the fusion's advantage over plain CLAP cosine similarity changes with the experimental setup: how positive pairs are built, which negatives are mined (easy, tempo- and key-matched, or audio-similar), and which embedding space and training recipe are used. The metric is pairwise accuracy, the fraction of (positive, negative) pairs the ranker orders correctly.</p>
+
+  <table class="results">
+    <caption>Fusion minus CLAP cosine, held-out pairwise accuracy. Values are 5-seed means with 95% bootstrap confidence intervals in parentheses. The two configurations differ in several settings and are not directly comparable.</caption>
+    <thead>
+      <tr><th>Configuration</th><th>Audio-similar negatives</th><th>Overall</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>LAION-CLAP + plain BPR</td>
+        <td class="num">+2.1 pp (−1.0, +5.3)</td>
+        <td class="num">+0.6 pp (−0.4, +1.6)</td>
+      </tr>
+      <tr>
+        <td>MS-CLAP + source-weighted BPR</td>
+        <td class="num">+9.9 pp (+4.4, +15.4)</td>
+        <td class="num">+2.6 pp (+1.0, +4.2)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The results were sensitive to how the experiment was set up. Under LAION-CLAP the gain on audio-similar negatives was small and its confidence interval crossed zero. With MS-CLAP and source-weighted BPR it was larger, but that configuration also differs in embedding space, training recipe, and how the negatives were mined. The paper reports these held-out runs as exploratory.</p>
+  <p>Pack co-membership is useful for initial experiments, but it can't tell us whether musicians would actually choose these samples for their projects. The system already logs what musicians preview, insert, and undo; the next step is to use that feedback to improve the ranking.</p>
+</div>
+
+<div class="proj-paper">
+  <h3><a href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal</a></h3>
+  <p class="authors">Chuling Li</p>
+  <p class="venue">ISMIR 2026 — Late-Breaking Demo · Abu Dhabi, UAE</p>
+  <p class="abstract">Which fragments could grow into a piece of music with the ones already in a musician's open project? This target has no direct labels at cold start, and audio similarity is only one observable signal for it. Pocket Producer, a retrieval prototype evaluated offline, treats this missing-label problem as a ranking and an interaction-design challenge. It fingerprints the open session and ranks candidates with a rules default and a selectable fusion of five interpretable signals trained on pack co-membership as cold-start weak supervision. On the Freesound Loop Dataset, the learned fusion's apparent advantage varies with label construction, negative regime, and representation/training configuration. Pack co-membership is only a stand-in for the real target, and the conclusions shift with how the proxy is built and evaluated. We therefore surface retrieval as proposals the musician can inspect, preview, insert, and undo, not as automated decisions.</p>
+</div>
+
+<nav class="proj-next" aria-label="Next project">
+  <a href="project-harp.html"><span class="proj-next-label">Next project</span><span class="proj-next-title">HARP →</span></a>
+</nav>
+
+<div class="proj-foot">
+  <span>Chuling LI © 2026</span>
+</div>
+
+</body>
+</html>

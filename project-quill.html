@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUILL — Chuling LI</title>
+<meta name="description" content="Quill learns an instrument's sound and a performer's playing style separately, so musicians can mix and match timbre and expression across instruments. ISMIR 2026 LBD.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Chuling Li">
+<meta property="og:title" content="QUILL — Chuling LI">
+<meta property="og:description" content="Quill learns an instrument's sound and a performer's playing style separately, so musicians can mix and match timbre and expression across instruments. ISMIR 2026 LBD.">
+<meta property="og:url" content="https://imchuling.github.io/project-quill.html">
+<meta property="og:image" content="https://imchuling.github.io/images/quill_architecture.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+<link rel="stylesheet" href="css/project.css">
+</head>
+<body>
+
+<a class="back" href="index.html#projects">← Back to portfolio</a>
+
+<div class="proj-hero">
+  <h1>QUILL</h1>
+  <div class="proj-meta">
+    <span class="tag">Independent Research · First Author</span>
+    <span class="tag">Accepted at ISMIR 2026 LBD</span>
+    <span class="tag">Audiotool Hackathon Shortlist</span>
+    <span class="tag">DDSP · Timbre · Expressive Performance</span>
+  </div>
+  <p class="subtitle">A system that learns an instrument's sound and a performer's playing style separately, so musicians can mix and match timbre and expression across instruments.</p>
+  <div class="proj-links hero-links">
+    <a class="primary" href="https://ismir2026program.ismir.net/lbd_613.html#details" target="_blank">ISMIR Page ↗</a>
+    <a class="secondary" href="https://github.com/imChuling/quill" target="_blank">Source Code ↗</a>
+    <a class="secondary" href="https://drive.google.com/file/d/1X0hPhQCt_ArrlNl2EwzZOXuGCRSc6ptn/view" target="_blank">Paper PDF ↗</a>
+  </div>
+</div>
+
+<div class="proj-cover">
+  <img src="images/quill_architecture.png" alt="Quill system architecture">
+</div>
+
+<div class="proj-content">
+  <h2>Overview</h2>
+  <p>A violinist's vibrato, a guitarist's pitch bends, or the way a trumpet player shapes a note are all part of what makes a performance expressive. But these details are usually tied to the sound of the original instrument, making them difficult to reuse with a different timbre.</p>
+  <p>Quill explores whether an instrument's sound and a performer's playing style can be learned separately and combined in new ways. It takes monophonic recordings and learns two components: a DDSP timbre model and a library of note-level performance gestures such as vibrato and slides. Once learned, these can be mixed across instruments without retraining. A violinist's vibrato can drive a trumpet or a wine glass.</p>
+  <p>In one case study, I trained both components using just 82 seconds of rubbed-glass recordings.</p>
+
+  <h2>How it works</h2>
+  <p><strong>Timbre modelling.</strong> Quill uses a lightweight DDSP synthesizer (~500K parameters) to model each instrument's sound from pitch and loudness inputs. I trained separate models for violin and trumpet (URMP) and guitar (GuitarSet), using around 12,000 training steps per model on a single GPU.</p>
+  <p><strong>Performance library.</strong> Instead of learning expression as part of the synthesizer, Quill extracts note-level trajectories from recorded performances. Each entry contains pitch deviation, energy, spectral brightness, and noise ratio. Each entry also has an articulation label (plain, vibrato, or slide), assigned automatically from pitch contours estimated with pYIN.</p>
+  <p><strong>Cross-instrument rendering.</strong> When rendering MIDI, Quill searches the style library for a matching performance trajectory, adjusts it to the note's duration, and applies it to the selected DDSP timbre model. This allows the same performance gesture to be rendered with different instrument sounds, without retraining either component.</p>
+</div>
+
+<div class="proj-content">
+  <h2>Evaluation</h2>
+  <p><strong>Source attribution.</strong> Cross-rendering across violin, trumpet, and guitar passes all 12 source-attribution checks: behaviour signatures (pitch modulation, drift, RMS) follow the behaviour source, while timbre signatures (MFCC) follow the timbre source.</p>
+  <p><strong>Listening study.</strong> In a pre-specified, randomised study with 19 participants, renders using retrieved performance behaviour were preferred as more human-like by all 19 participants and more expressive by 18 of 19.</p>
+  <p>Participants were also tested on whether they could distinguish changes in performance behaviour and identify transferred expression across instruments. Behaviour-swap discrimination was successful for 19 of 19 and 17 of 19 participants across the two tests (one-sided binomial, p&lt;0.001). In the cross-instrument ABX task, median participant accuracy was 100% across six violin, trumpet, and guitar trials, with 17 to 19 participants answering each trial correctly.</p>
+  <p><strong>Baseline comparison.</strong> On standard violin naturalness, MIDI-DDSP scored higher (median 5 vs. 4, Wilcoxon p&lt;0.001), although it was not designed for the cross-instrument expression transfer that Quill focuses on.</p>
+</div>
+
+<div class="proj-paper">
+  <h3><a href="https://ismir2026program.ismir.net/lbd_613.html#details" target="_blank">Quill: Learning Timbre and Performance Behaviour as Separate, Swappable Assets</a></h3>
+  <p class="authors">Chuling Li</p>
+  <p class="venue">ISMIR 2026 — Late-Breaking Demo · Abu Dhabi, UAE</p>
+  <p class="abstract">An expressive renderer must learn two things: how an instrument sounds and how it is played. Quill factorizes them into two separately learned, reusable assets: a lightweight DDSP timbre model and a note-level style library of pitch and energy trajectories, retrieved by articulation-conditioned nearest-neighbor lookup. Either asset can be swapped across instruments without retraining. Cross-rendering across violin, trumpet, and guitar passes all 12 source-attribution checks. In a pre-specified listening study (N=19), listeners track behaviour across timbres and rate renders that carry it as more human-like. A paired counterfactual test isolates the articulation-label intervention from note-level confounds. A case study shows that both assets can also be learned from 82s of rubbed-glass recordings.</p>
+</div>
+
+<nav class="proj-next" aria-label="Next project">
+  <a href="project-secondself.html"><span class="proj-next-label">Next project</span><span class="proj-next-title">Second Self →</span></a>
+</nav>
+
+<div class="proj-foot">
+  <span>Chuling LI © 2026</span>
+</div>
+
+</body>
+</html>
