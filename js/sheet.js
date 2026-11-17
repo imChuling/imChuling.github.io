@@ -11,6 +11,22 @@
   /* a lifted page arrives without its scripts; the field guide is the one that needs its own */
   const GUIDE=new URL('assets/as-you-read/wood-demo.mjs?v=5',document.baseURI).href;
   const dropGuide=()=>{if(unmount){try{unmount();}catch(e){}unmount=null;}};
+  /* audio clip buttons (the Quill listening matrix) : one clip at a time, and the score steps aside */
+  const clip=new Audio();let clipBtn=null;
+  function stopClip(){
+    if(!clipBtn)return;
+    clip.pause();clipBtn.classList.remove('is-playing');clipBtn.textContent='▶';clipBtn=null;
+    emit('score:duck',{on:false});
+  }
+  clip.addEventListener('ended',stopClip);
+  body.addEventListener('click',e=>{
+    const b=e.target.closest('.qm-play');if(!b)return;
+    if(clipBtn===b){stopClip();return;}
+    stopClip();
+    clip.src=b.dataset.src;clip.play().catch(()=>{});
+    clipBtn=b;b.classList.add('is-playing');b.textContent='■';
+    emit('score:duck',{on:true});
+  });
   function wireGuide(){
     const root=body.querySelector('[data-field-guide]');if(!root)return;
     import(GUIDE).then(m=>{if(open&&root.isConnected)unmount=m.mount(root);}).catch(()=>{});
@@ -67,7 +83,7 @@
     const res=await fetch(url,{cache:'force-cache'});if(!res.ok){location.href=url;return;}
     const doc=new DOMParser().parseFromString(await res.text(),'text/html');
     await adoptStyles(doc,url);
-    dropGuide();
+    dropGuide();stopClip();
     title.textContent=(doc.querySelector('.proj-hero h1')||doc.querySelector('h1'))?.textContent||'';
     body.replaceChildren(...[...doc.body.children].filter(el=>!el.matches('.back,.proj-foot,script')));
     body.querySelectorAll('a[href^="index.html"],a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();close();}));
@@ -89,7 +105,7 @@
   }
   function close(){
     if(!open)return;open=false;
-    dropGuide();
+    dropGuide();stopClip();
     players.forEach(p=>{try{p.destroy();}catch(e){}});players=[];
     emit('score:duck',{on:false});emit('score:detail',{open:false});
     sheet.classList.remove('is-open');

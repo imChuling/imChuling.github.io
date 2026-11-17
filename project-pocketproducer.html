@@ -52,8 +52,9 @@
   <p class="demo-note">The live demo runs on a scale-to-zero deployment: after a quiet period the first visit takes a minute or two while the backend starts and loads the audio model. It needs an Audiotool account.</p>
 </div>
 
-<div class="proj-cover">
-  <img src="images/pocketproducer_architecture.png" alt="Pocket Producer system architecture">
+<div class="proj-video">
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/i8HUDhZYcdE" title="Pocket Producer demo video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+  <p class="caption">Demo video · ISMIR 2026 Late-Breaking Demo</p>
 </div>
 
 <div class="proj-content">
@@ -65,6 +66,10 @@
   <p><strong>Session fingerprint.</strong> Through the Audiotool Nexus SDK, Pocket Producer reads the open project: its tempo, the track roles in use, up to eight unique samples referenced on the timeline, and the musician's stated intent. I use MS-CLAP to extract audio embeddings from the session samples, alongside the metadata available through Audiotool.</p>
   <p><strong>Two rankers.</strong> The default is a transparent rules ranker over non-audio signals: tempo fit, whether a fragment fills a role the session lacks, overlap with the stated intent, tag overlap and tag novelty, and recency. The alternative is a learned fusion of five signals: mean and max CLAP similarity to the session regions, tempo fit, key match, and tag overlap, with weights trained by Bayesian Personalized Ranking (BPR). The musician can switch between the two. Audiotool does not expose a project key, so the key signal only matters in offline evaluation.</p>
   <p><strong>Proposals, not decisions.</strong> Each recommendation shows a breakdown of the signals behind its ranking. The musician can preview it, insert it into the project in a single transaction, and undo the insertion, which restores the exact prior project state. Every preview, accept, insert, reject, and undo is logged with its rank position, with the aim of using musician feedback to train the ranker in the future.</p>
+</div>
+
+<div class="proj-cover">
+  <img src="images/pocketproducer_architecture.png" alt="Pocket Producer system architecture">
 </div>
 
 <div class="proj-content">
