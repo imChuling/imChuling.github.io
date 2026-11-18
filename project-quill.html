@@ -5,11 +5,11 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>QUILL — Chuling LI</title>
-<meta content="Quill separates timbre and playing behaviour into reusable assets. Swap vibrato and slides across instruments through spectral synthesis, DDSP and conditioned retrieval." name="description"/>
+<meta content="Play a wine glass with a violinist’s vibrato. Quill learns how an instrument sounds and how it is played as two separate assets you can mix across instruments." name="description"/>
 <meta content="website" property="og:type"/>
 <meta content="Chuling Li" property="og:site_name"/>
 <meta content="QUILL — Chuling LI" property="og:title"/>
-<meta content="Quill separates timbre and playing behaviour into reusable assets. Swap vibrato and slides across instruments through spectral synthesis, DDSP and conditioned retrieval." property="og:description"/>
+<meta content="Play a wine glass with a violinist’s vibrato. Quill learns how an instrument sounds and how it is played as two separate assets you can mix across instruments." property="og:description"/>
 <meta content="https://imchuling.github.io/project-quill.html" property="og:url"/>
 <meta content="https://imchuling.github.io/images/quill_architecture.png" property="og:image"/>
 <meta content="summary_large_image" name="twitter:card"/>
@@ -66,58 +66,58 @@
 <div class="proj-content">
 <h2>Overview</h2>
 <p>I’ve always wished for a kind of magic. I’d take any timbre I like and put it on the way any instrument is played, or even the way any sound moves. Quill is my first prototype of that wish. It keeps the playing separate from the sound. You record a few seconds of a pitched sound and get two things: <strong>a timbre you can play from a keyboard</strong>, and <strong>a library of how the notes in that recording were shaped</strong>.</p>
-<p>Then you can mix them. Play a melody, choose the glass as the timbre and a violin recording as the behaviour, and the glass picks up the violinist’s vibrato. Switch the timbre to trumpet and the same vibrato follows. <strong>Nothing is retrained</strong> when you change the pairing.</p>
+<p>Then you can mix them. Play a melody, choose the glass as the timbre and a violin recording as the behavior, and the glass picks up the violinist’s vibrato. Switch the timbre to trumpet and the same vibrato follows. <strong>Nothing is retrained</strong> when you change the pairing.</p>
 <h2>Listen</h2>
-<p>All twelve clips play the same folk melody. Start with Glass × Glass, then Glass × Violin: the sound stays the same and the playing changes. Along a row the timbre is fixed. Down a column the behaviour is fixed.</p>
-<div aria-label="Timbre by behaviour listening matrix" class="quill-matrix" role="group">
-<span class="qm-corner">Timbre ↓ · Behaviour →</span>
+<p>All twelve clips play the same folk melody. Start with Glass × Glass, then Glass × Violin: the sound stays the same and the playing changes. Along a row the timbre is fixed. Down a column the behavior is fixed.</p>
+<div aria-label="Timbre by behavior listening matrix" class="quill-matrix" role="group">
+<span class="qm-corner">Timbre ↓ · Behavior →</span>
 <span class="qm-head">Violin</span><span class="qm-head">Trumpet</span><span class="qm-head">Guitar</span><span class="qm-head">Glass</span>
 <span class="qm-row">Violin</span>
-<button aria-label="Violin timbre, violin behaviour" aria-pressed="false" class="qm-play is-own" data-src="assets/quill/folk_violinT_violinB.wav" type="button">▶</button>
-<button aria-label="Violin timbre, trumpet behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_violinT_trumpetB.wav" type="button">▶</button>
-<button aria-label="Violin timbre, guitar behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_violinT_guitarB.wav" type="button">▶</button>
-<button aria-label="Violin timbre, glass behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_violinT_glassB.wav" type="button">▶</button>
+<button aria-label="Violin timbre, violin behavior" aria-pressed="false" class="qm-play is-own" data-src="assets/quill/folk_violinT_violinB.wav" type="button">▶</button>
+<button aria-label="Violin timbre, trumpet behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_violinT_trumpetB.wav" type="button">▶</button>
+<button aria-label="Violin timbre, guitar behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_violinT_guitarB.wav" type="button">▶</button>
+<button aria-label="Violin timbre, glass behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_violinT_glassB.wav" type="button">▶</button>
 <span class="qm-row">Trumpet</span>
-<button aria-label="Trumpet timbre, violin behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_trumpetT_violinB.wav" type="button">▶</button>
-<button aria-label="Trumpet timbre, trumpet behaviour" aria-pressed="false" class="qm-play is-own" data-src="assets/quill/folk_trumpetT_trumpetB.wav" type="button">▶</button>
-<button aria-label="Trumpet timbre, guitar behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_trumpetT_guitarB.wav" type="button">▶</button>
-<button aria-label="Trumpet timbre, glass behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_trumpetT_glassB.wav" type="button">▶</button>
+<button aria-label="Trumpet timbre, violin behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_trumpetT_violinB.wav" type="button">▶</button>
+<button aria-label="Trumpet timbre, trumpet behavior" aria-pressed="false" class="qm-play is-own" data-src="assets/quill/folk_trumpetT_trumpetB.wav" type="button">▶</button>
+<button aria-label="Trumpet timbre, guitar behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_trumpetT_guitarB.wav" type="button">▶</button>
+<button aria-label="Trumpet timbre, glass behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_trumpetT_glassB.wav" type="button">▶</button>
 <span class="qm-row">Glass</span>
-<button aria-label="Glass timbre, violin behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_glassT_violinB.wav" type="button">▶</button>
-<button aria-label="Glass timbre, trumpet behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_glassT_trumpetB.wav" type="button">▶</button>
-<button aria-label="Glass timbre, guitar behaviour" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_glassT_guitarB.wav" type="button">▶</button>
-<button aria-label="Glass timbre, glass behaviour" aria-pressed="false" class="qm-play is-own" data-src="assets/quill/folk_glassT_glassB.wav" type="button">▶</button>
+<button aria-label="Glass timbre, violin behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_glassT_violinB.wav" type="button">▶</button>
+<button aria-label="Glass timbre, trumpet behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_glassT_trumpetB.wav" type="button">▶</button>
+<button aria-label="Glass timbre, guitar behavior" aria-pressed="false" class="qm-play" data-src="assets/quill/folk_glassT_guitarB.wav" type="button">▶</button>
+<button aria-label="Glass timbre, glass behavior" aria-pressed="false" class="qm-play is-own" data-src="assets/quill/folk_glassT_glassB.wav" type="button">▶</button>
 </div>
-<p class="qm-note">Outlined cells use the timbre’s own behaviour. The clips are pre-rendered.</p>
+<p class="qm-note">Outlined cells use the timbre’s own behavior. The clips are pre-rendered.</p>
 <p aria-live="polite" class="qm-status" role="status"></p>
 <h2>How it works</h2>
-<p><strong>Capturing a sound.</strong> <strong>PESTO</strong> tracks the pitch, with <strong>pYIN</strong> as a fallback. On a <strong>short-time Fourier transform</strong> I find each harmonic’s peak and use <strong>parabolic interpolation</strong> to measure its level, keeping up to 60 harmonics per frame. I subtract those harmonics from the spectrum and keep what’s left as a 40-band noise envelope and a short attack. Stored this way, the sound can be played at any pitch and length. The synthesiser resamples the spectral envelope, so the formants stay where they were.</p>
+<p><strong>Capturing a sound.</strong> <strong>PESTO</strong> tracks the pitch, with <strong>pYIN</strong> as a fallback. On a <strong>short-time Fourier transform</strong> I find each harmonic’s peak and use <strong>parabolic interpolation</strong> to measure its level, keeping up to 60 harmonics per frame. I subtract those harmonics from the spectrum and keep what’s left as a 40-band noise envelope and a short attack. Stored this way, the sound can be played at any pitch and length. The synthesizer resamples the spectral envelope, so the formants stay where they were.</p>
 <p><strong>Describing how notes were played.</strong> For a recording with several notes, <strong>pYIN</strong> gives a pitch curve. I split it into notes at detected onsets and at steps in the pitch, which catches legato notes that have no new attack. Simple rules on the pitch curve label each note <strong>plain, vibrato or slide</strong>. For each note I store <strong>four 48-point curves</strong>: pitch deviation, energy, brightness and noisiness. I also store six things about where it sat: pitch, length, the gaps before and after, and whether it starts or ends a phrase.</p>
 <p><strong>Playing a new melody.</strong> For each note you write, Quill takes the recorded notes with the same label and picks the nearest one by <strong>Euclidean distance</strong> on those six features, each scaled by its spread in the library. It stretches that note’s curves to the new length. A few rules then clean up: a <strong>3 Hz low-pass</strong> removes leftover vibrato from plain notes, drift below 2 Hz is removed from vibrato notes, and slides take their interval from the score. The pitch curve becomes <strong>f0</strong> and the energy curve shapes the loudness.</p>
-<p><strong>Making sound.</strong> Those two curves, <strong>f0 and loudness</strong>, are all a timbre needs. For live playing I wrote an additive synthesiser in <strong>NumPy and Numba</strong> that plays the captured sound from a MIDI keyboard. For rendered audio, an instrument can have a small <strong>DDSP</strong> model: an <strong>MLP and GRU decoder</strong> with about 495,000 parameters that turns f0 and loudness into 60 harmonic levels and 65 noise bands at 16 kHz. I trained these with a <strong>multi-scale spectral loss</strong>. Because both engines take the same two inputs, any behaviour library can drive any timbre.</p>
+<p><strong>Making sound.</strong> Those two curves, <strong>f0 and loudness</strong>, are all a timbre needs. For live playing I wrote an additive synthesizer in <strong>NumPy and Numba</strong> that plays the captured sound from a MIDI keyboard. For rendered audio, an instrument can have a small <strong>DDSP</strong> model: an <strong>MLP and GRU decoder</strong> with about 495,000 parameters that turns f0 and loudness into 60 harmonic levels and 65 noise bands at 16 kHz. I trained these with a <strong>multi-scale spectral loss</strong>. Because both engines take the same two inputs, any behavior library can drive any timbre.</p>
 </div>
 <figure class="proj-cover">
-<div class="quill-architecture-frame"><img alt="DDSP branch: extract a labelled behaviour library, train a separate timbre model, then retrieve and adapt trajectories to render a new MIDI score" loading="lazy" src="images/quill_architecture.png"/></div>
+<div class="quill-architecture-frame"><img alt="DDSP branch: extract a labeled behavior library, train a separate timbre model, then retrieve and adapt trajectories to render a new MIDI score" loading="lazy" src="images/quill_architecture.png"/></div>
 <figcaption>The neural branch. The two assets meet only at f0 and loudness.</figcaption></figure>
 <div class="proj-content">
 <p><strong>In the app.</strong> The desktop app has capture from a microphone or a file, MIDI input and a piano roll. Two menus, <strong>TIMBRE and BEHAVIOR</strong>, set the pairing, so you can hear the same notes in different combinations. You can mark any note as vibrato or slide. When you play live, overlapping keys become legato or a slide, and the mod wheel sets vibrato depth.</p>
-<p>A captured sound is playable straight away. SAVE also extracts a behaviour library if the take has several notes, and BAKE DDSP can fine-tune a neural timbre in the background. Live playing uses the captured sound. Rendered playback and WAV export use the neural one.</p>
+<p>A captured sound is playable straight away. SAVE also extracts a behavior library if the take has several notes, and BAKE DDSP can fine-tune a neural timbre in the background. Live playing uses the captured sound. Rendered playback and WAV export use the neural one.</p>
 <figure class="quill-app">
 <img alt="Quill desktop prototype showing capture analysis, a piano roll, sound controls and an on-screen keyboard" decoding="async" height="1200" loading="lazy" src="images/quill-cover.jpg" width="1600"/>
 <figcaption>The desktop prototype.</figcaption>
 </figure>
 <h2>Evaluation and reflection</h2>
-<p>Spectral modelling and DDSP are existing methods. What I added is the <strong>behaviour library</strong>: playing detail stored as its own asset, which a new score can call on with any timbre. So the first thing to check was whether the two really stay separate.</p>
-<p>I cross-rendered violin, trumpet and guitar in every mixed pairing. In <strong>12 of 12 checks</strong>, the pitch-modulation features followed the behaviour source and the <strong>MFCC</strong> features followed the timbre source.</p>
-<p>Then I ran a <strong>randomised listening study with 19 people</strong>. All 19 found the version with retrieved behaviour more human-like than the same melody without it. 18 of 19 found the version with vibrato and slide labels more expressive than an all-plain one.</p>
+<p>Spectral modeling and DDSP are existing methods. What I added is the <strong>behavior library</strong>: playing detail stored as its own asset, which a new score can call on with any timbre. So the first thing to check was whether the two really stay separate.</p>
+<p>I cross-rendered violin, trumpet and guitar in every mixed pairing. In <strong>12 of 12 checks</strong>, the pitch-modulation features followed the behavior source and the <strong>MFCC</strong> features followed the timbre source.</p>
+<p>Then I ran a <strong>randomized listening study with 19 people</strong>. All 19 found the version with retrieved behavior more human-like than the same melody without it. 18 of 19 found the version with vibrato and slide labels more expressive than an all-plain one.</p>
 <p>I also rendered each note twice, changing only its label from plain to vibrato and keeping the synthesis noise the same. Energy in the vibrato band was 7 times higher in the control curves and 4.7 times higher in the audio. Most of that contrast comes from the clean-up rules. I know because I switched them off and it fell to about 1.5.</p>
-<p>The glass is the smallest case. About 82 seconds across 13 recordings gave both a timbre model and a 24-note behaviour library.</p>
+<p>The glass is the smallest case. About 82 seconds across 13 recordings gave both a timbre model and a 24-note behavior library.</p>
 <p>Quill doesn’t sound as natural as a real player yet. In the same study, MIDI-DDSP scored higher on violin naturalness (median 5 against 4). I tried rendering with the player’s own curves in place of retrieved ones, and it didn’t sound more natural. What I did hear, against the original recordings, was that Quill joins notes the player had separated. The numbers agree: at a note change a real violin’s loudness dips by about 11 dB, and Quill’s renders dip by 7 or 8. That listening was only me, on three phrases, so it tells me where to look and not much more.</p>
 <p>Along the way I learned that <strong>a lower error isn’t the same as a better performance</strong>. The average curve for a label had the lowest error against real playing, and no vibrato at all. That’s why I kept retrieval: it returns a note somebody actually played.</p>
 <p>Next, I’d let retrieval tell <strong>connected notes from detached ones</strong>, set by you or read from the gaps in the MIDI, and test it with more listeners and more pieces. For now Quill works on pitched, monophonic sounds, the neural output is 16 kHz, and the app is still a prototype.</p>
 </div>
 <div class="proj-paper">
-<h3><a href="https://ismir2026program.ismir.net/lbd_613.html#details" target="_blank">Quill: Learning Timbre and Performance Behaviour as Separate, Swappable Assets</a></h3>
+<h3><a href="https://ismir2026program.ismir.net/lbd_613.html#details" target="_blank">Quill: Learning Timbre and Performance Behavior as Separate, Swappable Assets</a></h3>
 <p class="authors">Chuling Li</p>
 <p class="venue">ISMIR 2026 — Late-Breaking Demo · Abu Dhabi, UAE</p>
 <p class="abstract">The demo paper covers the method and the listening study. The source code includes the reproduction scripts.</p>
