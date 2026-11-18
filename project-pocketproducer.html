@@ -3,21 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PocketProducer — Chuling LI</title>
-<meta name="description" content="Pocket Producer is a prototype for Audiotool that recommends samples from a musician's own library based on what is already in the open session, and shows the evidence behind every suggestion. Accepted at ISMIR 2026 as a Late-Breaking Demo.">
+<title>Pocket Producer — Chuling LI</title>
+<meta name="description" content="Pocket Producer helps musicians record or upload their own audio sketches, rediscover them during arranging, and decide what to keep by listening in context.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
-<meta property="og:title" content="PocketProducer — Chuling LI">
-<meta property="og:description" content="Pocket Producer is a prototype for Audiotool that recommends samples from a musician's own library based on what is already in the open session, and shows the evidence behind every suggestion. Accepted at ISMIR 2026 as a Late-Breaking Demo.">
+<meta property="og:title" content="Pocket Producer — Chuling LI">
+<meta property="og:description" content="Pocket Producer helps musicians record or upload their own audio sketches, rediscover them during arranging, and decide what to keep by listening in context.">
 <meta property="og:url" content="https://imchuling.github.io/project-pocketproducer.html">
 <meta property="og:image" content="https://imchuling.github.io/images/pocketproducer_architecture.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/shared.css">
 <link rel="stylesheet" href="css/project.css">
 <style>
+  .proj-content strong{font-weight:700;color:var(--ink)}
   .demo-note{font-size:.8rem;color:var(--muted);margin:.9rem 0 0;max-width:40rem}
   .results{width:100%;border-collapse:collapse;margin:1.2rem 0 .6rem;font-size:.92rem}
   .results caption{text-align:left;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
@@ -32,24 +33,24 @@
 <a class="back" href="index.html#projects">← Back to portfolio</a>
 
 <div class="proj-hero">
-  <h1>PocketProducer</h1>
+  <h1>Pocket Producer</h1>
   <div class="proj-meta">
     <span class="tag">Independent Research · First Author</span>
     <span class="tag">Accepted at ISMIR 2026 LBD</span>
     <span class="tag">Audiotool Let's Build 2026 · 3rd Place, Ideation</span>
-    <span class="tag">Music Representations</span>
-    <span class="tag">Embeddings</span>
-    <span class="tag">Similarity</span>
-    <span class="tag">Retrieval</span>
+    <span class="tag">Music Information Retrieval</span>
+    <span class="tag">Multi-Agent System</span>
+    <span class="tag">Human in the Loop</span>
+    <span class="tag">Web App</span>
   </div>
-  <p class="subtitle">Sample recommendation that reads the musician's open session and proposes fragments that could fit the same piece of music, not just fragments that sound alike. The musician stays in control.</p>
+  <p class="subtitle">Try a recording you saved months ago in the song you’re working on now.</p>
   <div class="proj-links hero-links">
     <a class="primary" href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">ISMIR Page ↗</a>
     <a class="primary" href="https://pocketproducer.vercel.app" target="_blank">Live Demo ↗</a>
     <a class="secondary" href="https://github.com/imChuling/pocket-producer" target="_blank">Source Code ↗</a>
     <a class="secondary" href="https://drive.google.com/file/d/1UwArveyTTe_2Ua5waxX633TMUIl_eqwi/view" target="_blank">Paper PDF ↗</a>
   </div>
-  <p class="demo-note">The live demo runs on a scale-to-zero deployment: after a quiet period the first visit takes a minute or two while the backend starts and loads the audio model. It needs an Audiotool account.</p>
+  <p class="demo-note">Browse the read-only demo without signing in. You’ll need an Audiotool account to try suggestions in a session.</p>
 </div>
 
 <div class="proj-video">
@@ -59,52 +60,58 @@
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>When you are building a track, the right next sample is not always the one that sounds most like what is already there. A drum loop can fit a project's tempo and feel while sounding nothing like its other samples, and two fragments can sound alike yet never belong in the same piece. Audio similarity is not the same as musical compatibility.</p>
-  <p>Pocket Producer is a prototype built for Audiotool that recommends samples based on the musician's current DAW session. It looks at the samples already in the project, its tempo and tags, and an optional description of what the musician is looking for. It then ranks samples from the musician's own library based on how well they might fit. Every suggestion can be previewed, shows the evidence behind its ranking, and can be inserted into the project or undone.</p>
+  <p>Like a lot of people who make music, I start far more ideas than I finish. A phrase I record doesn’t fit the song I’m writing that week, so it stays on my phone. Pocket Producer is a notebook for those ideas. You <strong>record or upload a sketch</strong>, add a note if you want, and the app brings it back later, when you have a song open that it might work in.</p>
+  <p>In the library, the app <strong>groups sketches that share a feeling or theme</strong>. A lyric and a melody can go together even when their tempos don’t match. When you’re arranging, it <strong>ranks your sketches against the song you have open</strong>, where timing and harmony matter.</p>
 
   <h2>How it works</h2>
-  <p><strong>Session fingerprint.</strong> Through the Audiotool Nexus SDK, Pocket Producer reads the open project: its tempo, the track roles in use, up to eight unique samples referenced on the timeline, and the musician's stated intent. I use MS-CLAP to extract audio embeddings from the session samples, alongside the metadata available through Audiotool.</p>
-  <p><strong>Two rankers.</strong> The default is a transparent rules ranker over non-audio signals: tempo fit, whether a fragment fills a role the session lacks, overlap with the stated intent, tag overlap and tag novelty, and recency. The alternative is a learned fusion of five signals: mean and max CLAP similarity to the session regions, tempo fit, key match, and tag overlap, with weights trained by Bayesian Personalized Ranking (BPR). The musician can switch between the two. Audiotool does not expose a project key, so the key signal only matters in offline evaluation.</p>
-  <p><strong>Proposals, not decisions.</strong> Each recommendation shows a breakdown of the signals behind its ranking. The musician can preview it, insert it into the project in a single transaction, and undo the insertion, which restores the exact prior project state. Every preview, accept, insert, reject, and undo is logged with its rank position, with the aim of using musician feedback to train the ranker in the future.</p>
+  <p><strong>In the library.</strong> <strong>librosa</strong> estimates tempo and key and measures loudness. <strong>Gemini</strong> suggests a title and tags from your recording and note. Two <strong>Google ADK</strong> agents use <strong>Voyage-3</strong> text embeddings to find related sketches and decide whether a new one belongs in a project. You can edit the title or tags, and those edits can inform later prompts.</p>
+  <p><strong>In a session.</strong> The app reads the tempo, tracks, and up to eight audio samples from your open project. I use three main ways to rank sketches.</p>
+  <ul>
+    <li><strong>Rules</strong> is the default. It uses cues like tempo, tags, and what you’re looking for, and works without session audio.</li>
+    <li><strong>Five-signal fusion</strong> compares a sketch’s <strong>MS-CLAP</strong> embedding with the session’s mean embedding and its closest clip, using cosine similarity for both. It also uses tempo, key if you specify one, and tag overlap. I trained the weights with <strong>source-weighted Bayesian Personalized Ranking (BPR)</strong>, using same-pack Freesound loops as positive examples.</li>
+    <li><strong>Beat Fit</strong> uses the project tempo and clip positions to put the first ten seconds of the session and the sketch on the same beat grid. It compares <strong>12-bin CQT chroma</strong> beat by beat with cosine similarity. For rhythm, it compares peak onset strengths in eight slots per beat using <strong>Pearson correlation</strong>. It needs at least four beats where both are sounding.</li>
+  </ul>
+  <p>Beat Fit shows harmony, rhythm, and the number of shared beats separately. You can <strong>listen to the sketch on its own</strong>, then decide whether to insert it and hear it against your track. The app records the objects created in one DAW transaction so <strong>undo</strong> can remove the insertion. I built the web app with <strong>Next.js</strong> and <strong>FastAPI</strong>.</p>
 </div>
 
 <div class="proj-cover">
-  <img src="images/pocketproducer_architecture.png" alt="Pocket Producer system architecture">
+  <img src="images/pocketproducer_architecture.png" alt="Original ISMIR demo architecture showing the rules and fusion rankers, ranking evidence, and musician controls">
 </div>
 
 <div class="proj-content">
-  <h2>Evaluation</h2>
-  <p>There is no labeled data for "these two fragments belong in the same piece". To train and evaluate the learned ranker, I used pack co-membership in the Freesound Loop Dataset as a weak proxy: 1,797 loops from 605 packs, split by pack into 484 training and 121 held-out sources, treating loops that a creator published together as compatible. However, samples from the same pack won't necessarily work well together in an actual music project.</p>
-  <p>I measured how the fusion's advantage over plain CLAP cosine similarity changes with the experimental setup: how positive pairs are built, which negatives are mined (easy, tempo- and key-matched, or audio-similar), and which embedding space and training recipe are used. The metric is pairwise accuracy, the fraction of (positive, negative) pairs the ranker orders correctly.</p>
+  <h2>Evaluation and reflection</h2>
+  <p>The diagram is from my ISMIR demo. In a follow-up test, I asked which features would pick up on a part arriving four beats late.</p>
+  <p>I scored each original stem and its delayed copy against the same backing. The comparison uses 402 pairs from <strong>MUSDB18-HQ</strong> where the shift changed harmony inside the analysis window.</p>
 
   <table class="results">
-    <caption>Fusion minus CLAP cosine, held-out pairwise accuracy. Values are 5-seed means with 95% bootstrap confidence intervals in parentheses. The two configurations differ in several settings and are not directly comparable.</caption>
+    <caption>Four-beat delay test on MUSDB18-HQ. Intervals resample whole songs.</caption>
     <thead>
-      <tr><th>Configuration</th><th>Audio-similar negatives</th><th>Overall</th></tr>
+      <tr><th>Method</th><th>Original scored higher</th><th>95% interval</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td>LAION-CLAP + plain BPR</td>
-        <td class="num">+2.1 pp (−1.0, +5.3)</td>
-        <td class="num">+0.6 pp (−0.4, +1.6)</td>
+        <td>Beat-aligned chroma</td>
+        <td class="num"><strong>74%</strong></td>
+        <td class="num">69–78%</td>
       </tr>
       <tr>
-        <td>MS-CLAP + source-weighted BPR</td>
-        <td class="num">+9.9 pp (+4.4, +15.4)</td>
-        <td class="num">+2.6 pp (+1.0, +4.2)</td>
+        <td>Chroma averaged over the clip</td>
+        <td class="num"><strong>45%</strong></td>
+        <td class="num">39–49%</td>
       </tr>
     </tbody>
   </table>
 
-  <p>The results were sensitive to how the experiment was set up. Under LAION-CLAP the gain on audio-similar negatives was small and its confidence interval crossed zero. With MS-CLAP and source-weighted BPR it was larger, but that configuration also differs in embedding space, training recipe, and how the negatives were mined. The paper reports these held-out runs as exploratory.</p>
-  <p>Pack co-membership is useful for initial experiments, but it can't tell us whether musicians would actually choose these samples for their projects. The system already logs what musicians preview, insert, and undo; the next step is to use that feedback to improve the ranking.</p>
+  <p>Moving a stem also changes which audio falls inside the window. These scores tell me how the features respond to the edit. Deciding which version sounds better takes listening.</p>
+  <p>In a second test, onset patterns alone ranked the original first <strong>53.2%</strong> of the time among 50 candidates of the same stem type. Adding chroma reached <strong>52.7%</strong>, with no clear gain.</p>
+  <p><strong>A loop can land right on the beat and still crowd the vocal.</strong> That’s something I judge by ear. I show the rhythm and harmony measurements separately so there’s something specific to listen for, and I made the insertion reversible so you can try a part before you commit. Next, I’d ask musicians to try their own sketches and tell me why they kept, moved, or removed one.</p>
 </div>
 
 <div class="proj-paper">
   <h3><a href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal</a></h3>
   <p class="authors">Chuling Li</p>
   <p class="venue">ISMIR 2026 — Late-Breaking Demo · Abu Dhabi, UAE</p>
-  <p class="abstract">Which fragments could grow into a piece of music with the ones already in a musician's open project? This target has no direct labels at cold start, and audio similarity is only one observable signal for it. Pocket Producer, a retrieval prototype evaluated offline, treats this missing-label problem as a ranking and an interaction-design challenge. It fingerprints the open session and ranks candidates with a rules default and a selectable fusion of five interpretable signals trained on pack co-membership as cold-start weak supervision. On the Freesound Loop Dataset, the learned fusion's apparent advantage varies with label construction, negative regime, and representation/training configuration. Pack co-membership is only a stand-in for the real target, and the conclusions shift with how the proxy is built and evaluated. We therefore surface retrieval as proposals the musician can inspect, preview, insert, and undo, not as automated decisions.</p>
+  <p class="abstract">The demo paper explains how I trained the fusion ranker and how the choice of examples changed the results.</p>
 </div>
 
 <nav class="proj-next" aria-label="Next project">
