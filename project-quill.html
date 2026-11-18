@@ -4,11 +4,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>QUILL — Chuling LI</title>
+<title>QUILL · Chuling LI</title>
 <meta content="Play a wine glass with a violinist’s vibrato. Quill learns how an instrument sounds and how it is played as two separate assets you can mix across instruments." name="description"/>
 <meta content="website" property="og:type"/>
 <meta content="Chuling Li" property="og:site_name"/>
-<meta content="QUILL — Chuling LI" property="og:title"/>
+<meta content="QUILL · Chuling LI" property="og:title"/>
 <meta content="Play a wine glass with a violinist’s vibrato. Quill learns how an instrument sounds and how it is played as two separate assets you can mix across instruments." property="og:description"/>
 <meta content="https://imchuling.github.io/project-quill.html" property="og:url"/>
 <meta content="https://imchuling.github.io/images/quill_architecture.png" property="og:image"/>
@@ -65,7 +65,7 @@
 </div>
 <div class="proj-content">
 <h2>Overview</h2>
-<p>I’ve always wished for a kind of magic. I’d take any timbre I like and put it on the way any instrument is played, or even the way any sound moves. Quill is my first prototype of that wish. It keeps the playing separate from the sound. You record a few seconds of a pitched sound and get two things: <strong>a timbre you can play from a keyboard</strong>, and <strong>a library of how the notes in that recording were shaped</strong>.</p>
+<p>I’ve always wished for a kind of magic. I’d take a timbre I like and put it on the way another instrument is played. Quill is my first prototype of that wish. It keeps the playing separate from the sound. You record a few seconds of a pitched sound and get two things: <strong>a timbre you can play from a keyboard</strong>, and <strong>a library of how the notes in that recording were shaped</strong>.</p>
 <p>Then you can mix them. Play a melody, choose the glass as the timbre and a violin recording as the behavior, and the glass picks up the violinist’s vibrato. Switch the timbre to trumpet and the same vibrato follows. <strong>Nothing is retrained</strong> when you change the pairing.</p>
 <h2>Listen</h2>
 <p>All twelve clips play the same folk melody. Start with Glass × Glass, then Glass × Violin: the sound stays the same and the playing changes. Along a row the timbre is fixed. Down a column the behavior is fixed.</p>
@@ -107,19 +107,19 @@
 <figcaption>The desktop prototype.</figcaption>
 </figure>
 <h2>Evaluation and reflection</h2>
-<p>Spectral modeling and DDSP are existing methods. What I added is the <strong>behavior library</strong>: playing detail stored as its own asset, which a new score can call on with any timbre. So the first thing to check was whether the two really stay separate.</p>
+<p>Spectral modeling and DDSP are existing methods. What I added is the <strong>behavior library</strong>: playing detail stored as its own asset, which a new score can call on with any compatible timbre. So the first thing to check was whether the two really stay separate.</p>
 <p>I cross-rendered violin, trumpet and guitar in every mixed pairing. In <strong>12 of 12 checks</strong>, the pitch-modulation features followed the behavior source and the <strong>MFCC</strong> features followed the timbre source.</p>
-<p>Then I ran a <strong>randomized listening study with 19 people</strong>. All 19 found the version with retrieved behavior more human-like than the same melody without it. 18 of 19 found the version with vibrato and slide labels more expressive than an all-plain one.</p>
+<p>Then I ran a <strong>randomized listening study with 19 people</strong>. All 19 found the version with retrieved behavior more human-like than the same melody without it. 18 of 19 found the version with vibrato and slide labels more expressive than an all-plain one. When asked to tell which instrument's behavior was driving a cross-rendered clip, listeners were correct in <strong>109 of 114 trials</strong> across six instrument pairings (each 17 to 19 out of 19, all statistically significant after Bonferroni correction). In an exploratory comparison, <strong>16 of 19</strong> preferred the retrieved behavior over a parametric curve (p = 0.004, two-sided).</p>
 <p>I also rendered each note twice, changing only its label from plain to vibrato and keeping the synthesis noise the same. Energy in the vibrato band was 7 times higher in the control curves and 4.7 times higher in the audio. Most of that contrast comes from the clean-up rules. I know because I switched them off and it fell to about 1.5.</p>
 <p>The glass is the smallest case. About 82 seconds across 13 recordings gave both a timbre model and a 24-note behavior library.</p>
 <p>Quill doesn’t sound as natural as a real player yet. In the same study, MIDI-DDSP scored higher on violin naturalness (median 5 against 4). I tried rendering with the player’s own curves in place of retrieved ones, and it didn’t sound more natural. What I did hear, against the original recordings, was that Quill joins notes the player had separated. The numbers agree: at a note change a real violin’s loudness dips by about 11 dB, and Quill’s renders dip by 7 or 8. That listening was only me, on three phrases, so it tells me where to look and not much more.</p>
-<p>Along the way I learned that <strong>a lower error isn’t the same as a better performance</strong>. The average curve for a label had the lowest error against real playing, and no vibrato at all. That’s why I kept retrieval: it returns a note somebody actually played.</p>
-<p>Next, I’d let retrieval tell <strong>connected notes from detached ones</strong>, set by you or read from the gaps in the MIDI, and test it with more listeners and more pieces. For now Quill works on pitched, monophonic sounds, the neural output is 16 kHz, and the app is still a prototype.</p>
+<p>Along the way I learned that <strong>a lower error isn’t the same as a better performance</strong>. The average curve for a label had the lowest error against real playing, and no vibrato at all. This is what motivated retrieval: it returns a note somebody actually played, with all the small irregularities a parametric curve averages away.</p>
+<p>Next, I’d let retrieval tell <strong>connected notes from detached ones</strong>, set by you or read from the gaps in the MIDI, and test it with more listeners and more pieces. For now Quill works on pitched, monophonic sounds, the neural output is 16 kHz, and the app is still a prototype. The scope is narrow on purpose. I wanted to hear one idea clearly before widening it.</p>
 </div>
 <div class="proj-paper">
 <h3><a href="https://ismir2026program.ismir.net/lbd_613.html#details" target="_blank">Quill: Learning Timbre and Performance Behavior as Separate, Swappable Assets</a></h3>
 <p class="authors">Chuling Li</p>
-<p class="venue">ISMIR 2026 — Late-Breaking Demo · Abu Dhabi, UAE</p>
+<p class="venue">ISMIR 2026 Late-Breaking Demo · Abu Dhabi, UAE</p>
 <p class="abstract">The demo paper covers the method and the listening study. The source code includes the reproduction scripts.</p>
 </div>
 <nav aria-label="Next project" class="proj-next">
