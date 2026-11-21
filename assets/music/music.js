@@ -15,6 +15,7 @@
 // A single cover stack: hover to browse, click or use arrow keys to select.
 (() => {
   const tabs = [...document.querySelectorAll('.music-track')];
+  const availableTabs = tabs.filter(tab => !tab.disabled);
   const panels = [...document.querySelectorAll('.music-panel')];
   const count = document.querySelector('.music-stack-count');
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
@@ -28,7 +29,7 @@
       panels[i].inert = i !== index;
       panels[i].dataset.layer = (i - index + tabs.length) % tabs.length;
     });
-    count.textContent = `${String(index + 1).padStart(2, '0')} / 04`;
+    count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(tabs.length).padStart(2, '0')}`;
   }
   tabs.forEach((tab, index) => {
     tab.addEventListener('pointerenter', event => {
@@ -46,14 +47,15 @@
     });
     tab.addEventListener('focus', () => { clearTimeout(pending); select(index); });
     tab.addEventListener('keydown', event => {
+      const current = availableTabs.indexOf(tab);
       const step = {ArrowDown:1, ArrowUp:-1}[event.key];
       let next;
-      if (step) next = (index + step + tabs.length) % tabs.length;
+      if (step) next = (current + step + availableTabs.length) % availableTabs.length;
       else if (event.key === 'Home') next = 0;
-      else if (event.key === 'End') next = tabs.length - 1;
+      else if (event.key === 'End') next = availableTabs.length - 1;
       else return;
       event.preventDefault();
-      tabs[next].focus();
+      availableTabs[next].focus();
     });
   });
 })();

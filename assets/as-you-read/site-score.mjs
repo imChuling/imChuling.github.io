@@ -10,11 +10,11 @@ const LABEL={top:'Arrival',projects:'Projects',music:'Stage',story:'Story',conta
 
 /* bed = which pad plays underneath; the rest is the treatment on top
    one calm, steady piece in related keys (D · A · G), with Story as the large moment:
-   top      — calm, warm, sparse (first impression)
-   projects — the same calm with a soft pulse underneath
-   music    — a little wider and warmer
-   story    — grand: a low layer opens up, a big bright room, slow
-   contact  — almost silent (quiet goodbye) */
+   top:      calm, warm, sparse (first impression)
+   projects: the same calm with a soft pulse underneath
+   music:    a little wider and warmer
+   story:    grand: a low layer opens up, a big bright room, slow
+   contact:  almost silent (quiet goodbye) */
 const SCENES={
   top:     {bed:'top',     mix:4, grainSize:120,grainPos:60,  interval:280,pitch:0,  width:70,drive:0, bass:-12,mid:0,  treble:4,  wet:45,decay:60,size:75,damp:35,jitter:2,  melodyRate:2400,rainRate:1.5},
   projects:{bed:'projects',mix:10,grainSize:80, grainPos:40,  interval:60, pitch:0,  width:55,drive:0, bass:-8, mid:2,  treble:3,  wet:30,decay:40,size:45,damp:45,jitter:2,  melodyRate:2000,rainRate:1.2},
@@ -25,11 +25,11 @@ const SCENES={
 };
 /* melody: one high scale per section (Hz), played by the page itself above the bed */
 const SCALES={
-  top:     [587.33,659.26,739.99,880.00,987.77,1174.7,1318.5],   /* D5 E5 F#5 A5 B5 D6 E6  — D major, open */
-  projects:[880.00,987.77,1108.7,1318.5,1480.0,1760.0,1975.5],   /* A5 B5 C#6 E6 F#6 A6 B6 — A major (the dominant) */
-  music:   [783.99,880.00,987.77,1174.7,1318.5,1568.0,1760.0],   /* G5 A5 B5 D6 E6 G6 A6   — G major (the subdominant) */
-  story:   [587.33,659.26,739.99,880.00,987.77,1174.7,1318.5],   /* D5 E5 F#5 A5 B5 D6 E6  — home key, made large by the bed */
-  contact: [783.99,880.00,987.77,1174.7,1318.5,1480.0,1568.0],   /* G5 A5 B5 D6 E6 F#6 G6  — Gmaj7, a soft close */
+  top:     [587.33,659.26,739.99,880.00,987.77,1174.7,1318.5],   /* D5 E5 F#5 A5 B5 D6 E6  : D major, open */
+  projects:[880.00,987.77,1108.7,1318.5,1480.0,1760.0,1975.5],   /* A5 B5 C#6 E6 F#6 A6 B6: A major (the dominant) */
+  music:   [783.99,880.00,987.77,1174.7,1318.5,1568.0,1760.0],   /* G5 A5 B5 D6 E6 G6 A6:   G major (the subdominant) */
+  story:   [587.33,659.26,739.99,880.00,987.77,1174.7,1318.5],   /* D5 E5 F#5 A5 B5 D6 E6:  home key, made large by the bed */
+  contact: [783.99,880.00,987.77,1174.7,1318.5,1480.0,1568.0],   /* G5 A5 B5 D6 E6 F#6 G6:  Gmaj7, a soft close */
 };
 const RATIOS=[2.01,3.0,1.5,3.52];   /* FM ratios: bell, glassy, hollow, metallic */
 /* the visitor's local time of day: 0 night, 1 day, with dawn 5:30–8 and dusk 18–20:30 */
@@ -41,6 +41,8 @@ const button=document.querySelector('.nav-sound');
 if(button){
   const sections=Object.keys(SCENES).filter(id=>id!=='detail').map(id=>[id,document.getElementById(id)]).filter(([,el])=>el);
   let engine=null,ctx=null,enabled=false,busy=false,ticker=0,ducked=false,detail=false;
+  let wantsSound=false,suspendTimer,labelTimer;
+  const autoplay=new AbortController();
   let scene='top',visits={top:1},since=performance.now(),lastInput=performance.now();
   let motion=0,focus=0,focusTarget=0,swell=0,turn=0,drift=0,hoverPitch=0;
   let hx=0,vy=0,pan=.5,tilt=.5,wipe=0,wipeVel=0;   /* pointer: signed velocities, position, glass wiping */
@@ -64,8 +66,23 @@ if(button){
 
   const label=document.createElement('span');label.className='nav-sound-scene';
   button.appendChild(label);
-  const setState=s=>{button.dataset.state=s;button.setAttribute('aria-pressed',String(s==='on'));if(s!=='on')label.textContent='';};
-  const setLabel=text=>{if(label.textContent===text)return;label.classList.add('is-swapping');setTimeout(()=>{label.textContent=text;label.classList.remove('is-swapping');},220);};
+  function setState(state){
+    button.dataset.state=state;
+    button.setAttribute('aria-pressed',String(state==='on'));
+    if(state==='on')return;
+    clearTimeout(labelTimer);
+    label.textContent='';
+    label.classList.remove('is-swapping');
+  }
+  function setLabel(text){
+    clearTimeout(labelTimer);
+    label.classList.toggle('is-swapping', label.textContent!==text);
+    if(label.textContent===text)return;
+    labelTimer=setTimeout(()=>{
+      label.textContent=text;
+      label.classList.remove('is-swapping');
+    },220);
+  }
 
   /* ---------- what the visitor is doing ---------- */
   const touch=()=>{lastInput=performance.now();};
@@ -115,7 +132,7 @@ if(button){
      channel has its own timbre in [p voice]: 1 melody · 2 scroll strum · 3 chords · 4 glass wipe
      · 5 story steps · 6 rain. Continuous state goes via the score/* params. */
   /* voices are tracked by their end time on the audio clock, not by 'ended' events, so the count
-     can't drift; when the pool is full the oldest voice is faded out to make room — a new note
+     can't drift; when the pool is full the oldest voice is faded out to make room; a new note
      is never dropped, so a gesture always gets its pitch */
   const MAX_VOICES=40,voices=[];
   function claim(env,oscs,end){
@@ -320,7 +337,7 @@ if(button){
       /* ── continuous parameters sent to Max every tick (50 ms) ──
          All values are normalized 0–1 unless noted.
          Group: scene
-           score/scene     int 0–5  (top=0 projects=1 music=2 story=3 contact=4 detail=5) — jumps
+           score/scene     int 0–5  (top=0 projects=1 music=2 story=3 contact=4 detail=5); jumps
            score/residue   0–1      how many times this section has been visited before
            score/dwell     0–1      how long the visitor has stayed in this section (0→1 over 45 s)
            score/away      0/1      pointer has left the browser window
@@ -427,19 +444,13 @@ if(button){
 
   /* ---------- lifecycle ---------- */
   const loadLib=()=>window.RNBO?Promise.resolve():new Promise((ok,fail)=>{const s=document.createElement('script');s.src=LIB;s.onload=ok;s.onerror=()=>fail(new Error('RNBO runtime failed to load'));document.head.appendChild(s);});
-  /* the context must be created and resumed synchronously inside a user gesture; the engine can load afterwards */
-  function ensureContext(existing){
-    if(existing&&existing.state!=='closed'){ctx=existing;ctx.resume();return ctx;}
-    if(window.__scoreCtx&&window.__scoreCtx.state!=='closed'){ctx=window.__scoreCtx;delete window.__scoreCtx;ctx.resume();return ctx;}
-    if(!ctx||ctx.state==='closed'){const C=window.AudioContext||window.webkitAudioContext;ctx=new C({latencyHint:'playback'});}
-    ctx.resume();return ctx;
-  }
   const level=()=>ducked?0:(away?0.1:0.2);
   async function start(){
-    if(busy)return;busy=true;setState('loading');
+    if(busy||enabled||!wantsSound)return;
+    busy=true;setState('loading');
     try{
       if(!engine){
-        const context=ensureContext();
+        const context=ctx;
         await loadLib();
         const candidate=new RNBOSound(context);
         try{engine=await candidate.init(['score-synth','scene']);}catch(e){candidate.dispose();ctx=null;throw e;}
@@ -480,23 +491,67 @@ if(button){
         rainDry.connect(engine.master);rainWet.connect(engine.master);
         rain={bus:rainBus,vol:0,clock:0};
       }
-      await engine.context.resume();
       scene=detail?'detail':currentScene();visits[scene]=visits[scene]||1;since=performance.now();
       if(!synth&&!bedsReady)await loadBeds();
+      if(!wantsSound){
+        engine.context.suspend().catch(()=>{});
+        return;
+      }
       compose();engine.volume(level(),.9);
       enabled=true;setState('on');setLabel(LABEL[scene]);
       clearInterval(ticker);ticker=setInterval(compose,50);
-    }catch(e){setState('error');console.warn('[score]',e);}
+    }catch(e){if(wantsSound)setState('error');console.warn('[score]',e);}
     finally{busy=false;}
   }
+  function play(){
+    wantsSound=true;
+    clearTimeout(suspendTimer);
+    if(busy)setState('loading');
+    try{
+      const Audio=window.AudioContext||window.webkitAudioContext;
+      if(!ctx||ctx.state==='closed')ctx=new Audio({latencyHint:'playback'});
+      const activate=()=>{
+        if(!wantsSound||ctx.state!=='running')return;
+        autoplay.abort();
+        start();
+      };
+      // A blocked resume can stay pending until a later trusted click.
+      if(ctx.state==='running')activate();
+      else ctx.resume().then(activate).catch(()=>{});
+    }catch(e){
+      autoplay.abort();
+      setState('error');
+      console.warn('[score]',e);
+    }
+  }
   function stop(){
+    wantsSound=false;
     if(enabled&&(melody||synth))[0,2,4].forEach((d,i)=>note(pitchOf(d),{vel:.2,dur:2.5,when:i*.05,ratio:1.5,ch:3}));   /* a soft release before the fade */
     enabled=false;clearInterval(ticker);setState('off');button.style.setProperty('--lvl',0);lastLvl='';
     if(!engine)return;
-    engine.volume(0,.45);setTimeout(()=>{if(!enabled){stopBeds();engine.context.suspend();}},1600);
+    engine.volume(0,.45);
+    suspendTimer=setTimeout(()=>{
+      if(!wantsSound){
+        stopBeds();
+        engine.context.suspend().catch(()=>{});
+      }
+    },1600);
   }
-  button.addEventListener('click',()=>{if(enabled)stop();else{ensureContext();start();}});
-  document.addEventListener('score:enter',e=>{if(e.detail.sound){ensureContext(e.detail.audioCtx);start();}});
+  button.addEventListener('click',()=>{
+    autoplay.abort();
+    const mute=enabled||button.dataset.state==='loading';
+    try{sessionStorage.setItem('website-score-muted',String(mute));}catch(e){}
+    if(mute)stop();
+    else play();
+  });
+  let muted=false;
+  try{muted=sessionStorage.getItem('website-score-muted')==='true';}catch(e){}
+  if(!muted){
+    document.addEventListener('click',event=>{
+      if(event.isTrusted&&!button.contains(event.target))play();
+    },{capture:true,signal:autoplay.signal});
+    play();
+  }
   /* a playing video asks the score to step aside; it returns when the video pauses or ends */
   document.addEventListener('score:duck',e=>{ducked=!!e.detail.on;if(enabled&&engine)engine.volume(level(),ducked?.3:.9);});
   /* a detail sheet draws the sound in close, then hands back to the section */
@@ -518,7 +573,10 @@ if(button){
   ['touchstart','mousedown'].forEach(ev=>addEventListener(ev,()=>{
     if(engine&&enabled&&engine.context.state==='suspended')engine.context.resume();
   },{passive:true}));
-  addEventListener('pagehide',()=>{if(enabled)stop();});
+  addEventListener('pagehide',()=>{
+    autoplay.abort();
+    if(wantsSound)stop();
+  });
 }
 
 /* shared with the Wood Wide Web project page, which plays the same patch with the same presets */

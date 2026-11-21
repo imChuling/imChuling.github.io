@@ -1,7 +1,7 @@
-/* Wood Wide Web — field guide. Plays the same Max/RNBO patch as the front page, with the same
+/* Wood Wide Web: field guide. Plays the same Max/RNBO patch as the front page, with the same
    section presets and scales, so every button here sounds exactly like the gesture it explains. */
 import {RNBOSound} from './rnbo-engine.mjs?v=4';
-import {SCENES,SCALES,LABEL,LIB,daylight} from './site-score.mjs?v=37';
+import {SCENES,SCALES,LABEL,LIB,daylight} from './site-score.mjs?v=38';
 
 /* mount(root) wires one field guide and returns a function that shuts it down again. The standalone
    page mounts its own; on the homepage the detail sheet mounts the copy it lifts in (scripts don't
@@ -35,7 +35,7 @@ export function mount(root){
     const C=window.AudioContext||window.webkitAudioContext;ctx=new C({latencyHint:'playback'});ctx.resume();const made=ctx;
     /* if the browser stops the audio on its own, show it: the switch says off, the next press restarts */
     ctx.addEventListener('statechange',()=>{if(ctx!==made)return;   /* an older context winding down */
-      if(ctx.state!=='running'&&on&&!document.hidden){on=false;soundBtn.setAttribute('aria-pressed','false');soundBtn.textContent='Sound off';setStatus('Sound paused — press any button to carry on.');}});
+      if(ctx.state!=='running'&&on&&!document.hidden){on=false;soundBtn.setAttribute('aria-pressed','false');soundBtn.textContent='Sound off';setStatus('Sound paused. Press any button to carry on.');}});
     setStatus('Loading the patch…');
     loading=(async()=>{
       await loadLib();
@@ -51,7 +51,7 @@ export function mount(root){
 
   async function soundOn(){
     await start();wake();on=true;engine.volume(LEVEL,.6);
-    soundBtn.setAttribute('aria-pressed','true');soundBtn.textContent='Sound on';setStatus('Playing — '+describe());
+    soundBtn.setAttribute('aria-pressed','true');soundBtn.textContent='Sound on';setStatus('Playing: '+describe());
     duck(true);
   }
   function soundOff(){
@@ -61,7 +61,7 @@ export function mount(root){
   }
   soundBtn.addEventListener('click',()=>{on?soundOff():soundOn().catch(()=>{});});
 
-  /* the state every 50 ms, smoothed in the engine — the same mapping the front page uses */
+  /* the state every 50 ms, smoothed in the engine, the same mapping the front page uses */
   function tick(){
     if(!engine)return;
     const now=performance.now(),b=SCENES[scene];
@@ -123,13 +123,13 @@ export function mount(root){
   }
   root.querySelectorAll('[data-scene]').forEach(b=>b.addEventListener('click',async()=>{
     if(b.dataset.scene!==scene){scene=b.dataset.scene;sceneSince=performance.now();}
-    choose('scene',scene);try{if(!on)await soundOn();}catch(e){return;}setStatus('Playing — '+describe());
+    choose('scene',scene);try{if(!on)await soundOn();}catch(e){return;}setStatus('Playing: '+describe());
   }));
   root.querySelectorAll('[data-time]').forEach(b=>b.addEventListener('click',async()=>{
-    time=b.dataset.time;choose('time',time);try{if(!on)await soundOn();}catch(e){return;}setStatus('Playing — '+describe());
+    time=b.dataset.time;choose('time',time);try{if(!on)await soundOn();}catch(e){return;}setStatus('Playing: '+describe());
   }));
   root.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',async()=>{
-    mode=b.dataset.mode;if(mode==='moving')idle=0;choose('mode',mode);try{if(!on)await soundOn();}catch(e){return;}setStatus('Playing — '+describe());
+    mode=b.dataset.mode;if(mode==='moving')idle=0;choose('mode',mode);try{if(!on)await soundOn();}catch(e){return;}setStatus('Playing: '+describe());
   }));
   choose('scene',scene);choose('time',time);choose('mode',mode);
 

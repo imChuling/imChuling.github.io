@@ -1,70 +1,6 @@
-/* respect the OS "reduce motion" setting — used to calm autoplay motion (rain, parallax)
+/* respect the OS "reduce motion" setting, used to calm autoplay motion (rain, parallax)
    for visitors who asked for it. Has no effect on the default experience. */
 const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* ============ preloader : frosted glass melts clear ============ */
-(function(){
-  const loader=document.getElementById('loader'),num=loader.querySelector('.l-num'),bar=loader.querySelector('.l-bar');
-  const glyphs=el=>{
-    const wrap=document.createElement('span');wrap.className='glyphs';wrap.setAttribute('aria-hidden','true');
-    [...el.dataset.text].forEach((ch,i)=>{
-      const g=document.createElement('span');g.className='g';
-      const s=document.createElement('span');s.textContent=ch===' '?' ':ch;s.style.setProperty('--i',i);
-      g.appendChild(s);wrap.appendChild(g);
-    });
-    el.appendChild(wrap);
-  };
-  glyphs(loader.querySelector('.l-title'));glyphs(document.querySelector('.hero-name'));
-  const glass=(blur,alpha)=>{
-    const f='blur('+blur.toFixed(2)+'px) saturate('+(1+.05*Math.min(blur/30,1)).toFixed(3)+')';
-    loader.style.webkitBackdropFilter=f;loader.style.backdropFilter=f;
-    loader.style.background='rgba(238,239,238,'+alpha.toFixed(3)+')';
-  };
-  const D=REDUCE?500:1900;
-  /* wait for the display face (or 1.2s), then run on a frame clock so a load stall can't skip the count */
-  Promise.race([document.fonts?document.fonts.ready:Promise.resolve(),new Promise(r=>setTimeout(r,1200))]).then(()=>{
-    requestAnimationFrame(()=>requestAnimationFrame(start));
-  });
-  function start(){
-    scrollTo(0,0);
-    loader.classList.add('l-in');
-    let t=0,last=performance.now();
-    (function tick(now){
-      t+=Math.min(now-last,50);last=now;
-      const u=Math.min(t/D,1),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
-      num.textContent=String(Math.round(e*100)).padStart(3,'0');
-      bar.style.transform='scaleX('+e+')';
-      glass(30-25*e,1-.82*e);                     /* starts opaque, melts to .18 as counter climbs */
-      if(u<1){requestAnimationFrame(tick);return;}
-      setTimeout(gate,250);
-    })(last);
-  }
-  function gate(){
-    loader.classList.add('l-gate');
-    loader.querySelectorAll('.l-enter button').forEach(b=>b.addEventListener('click',()=>{
-      const wantSound=b.dataset.sound==='1';
-      let audioCtx=null;
-      if(wantSound){const C=window.AudioContext||window.webkitAudioContext;audioCtx=new C({latencyHint:'playback'});audioCtx.resume();}
-      document.dispatchEvent(new CustomEvent('score:enter',{detail:{sound:wantSound,audioCtx}}));
-      if(wantSound&&audioCtx)window.__scoreCtx=audioCtx;
-      land();
-    },{once:true}));
-  }
-  function land(){
-    loader.classList.add('l-out');loader.classList.add('done');glass(0,0);
-    const nav=document.querySelector('nav');if(nav)nav.classList.add('nav-visible');
-    heroIn();   /* .hero-ready lifts the page name's glyphs as .l-out drops the poster's */
-    setTimeout(()=>loader.remove(),1900);
-  }
-})();
-
-/* ============ hero lines stagger in ============ */
-function heroIn(){
-  document.querySelector('.hero').classList.add('hero-ready');
-  document.querySelectorAll('.h-line').forEach((l,i)=>{
-    setTimeout(()=>l.classList.add('in'),i*160);
-    setTimeout(()=>l.classList.add('free'),i*160+1250);  /* release the mask once the line has landed */
-  });
-}
 
 /* ============ cursor ============ */
 const dot=document.querySelector('.cursor-dot'),ring=document.querySelector('.cursor-ring');
@@ -235,7 +171,7 @@ function genArt(canvas,seed){
   const bg=x.createLinearGradient(0,0,w,h);
   bg.addColorStop(0,'#E9EAEC');bg.addColorStop(1,'#DFE3E6');
   x.fillStyle=bg;x.fillRect(0,0,w,h);
-  /* layered waveform strands — a frozen piece of sound */
+  /* layered waveform strands: a frozen piece of sound */
   const inks=['rgba(90,104,128,','rgba(124,125,130,','rgba(154,148,158,','rgba(38,39,44,'];
   const L=34;
   for(let i=0;i<L;i++){
@@ -251,7 +187,7 @@ function genArt(canvas,seed){
     x.lineWidth=i%9===0?1.4:.7;
     x.stroke();
   }
-  /* sparse vertical ticks — like a score */
+  /* sparse vertical ticks, like a score */
   for(let i=0;i<14;i++){
     const tx=rnd()*w;
     x.fillStyle='rgba(38,39,44,'+(.06+rnd()*.12)+')';
@@ -276,7 +212,7 @@ function phSnapshot(ph,w,h){
   const img=ph.querySelector('img');
   g.filter='blur(8px)';
   if(img&&img.complete&&img.naturalWidth){
-    /* cover, centred — match object-fit:cover exactly so fog aligns with the image beneath */
+    /* cover, centred: match object-fit:cover exactly so fog aligns with the image beneath */
     const imgR=img.naturalWidth/img.naturalHeight,boxR=w/h;
     let sw,sh;
     if(imgR>boxR){sh=img.naturalHeight;sw=sh*boxR;}
@@ -323,7 +259,7 @@ function rainify(container){
     x.globalCompositeOperation='source-over';
   };
   container.querySelectorAll('img').forEach(img=>{if(!img.complete)img.addEventListener('load',retint,{once:true});});
-  /* a chapter change re-frosts the glass from the new photo over ~half a second — quick enough that the
+  /* a chapter change re-frosts the glass from the new photo over ~half a second, quick enough that the
      old photo's haze doesn't linger, slow enough to read as a transition. Only a real change counts:
      class writes that leave the active pane alone (the wipe hint, for one) must not touch the glass */
   let fade=0,current=activePh();
@@ -420,7 +356,7 @@ function rainify(container){
         d.vy+=d.r*.0045;
         d.vy=Math.min(d.vy,2.0);
         if(Math.random()<.018&&d.vy<.5){d.state='sit';d.sit=20+Math.random()*60;d.vy=0;}
-        /* occasional lateral jog, decays — not a sine sway */
+        /* occasional lateral jog, decays; not a sine sway */
         if(Math.random()<.05)d.jog=(Math.random()-.5)*1.6;
         d.jog*=.9;
         d.y+=d.vy;
@@ -462,7 +398,7 @@ function rainify(container){
     /* condensation keeps the dew population alive */
     if(beads.length<55&&Math.random()<.1)addBead(Math.random(),Math.random(),.5+Math.random()*1.2);
   }
-  /* 预下雨 : age the glass before anyone sees it — drops mid-run, trails half-faded */
+  /* 预下雨 : age the glass before anyone sees it: drops mid-run, trails half-faded */
   let warmup=true;
   if(!REDUCE){
     for(let i=0;i<440;i++)step();
@@ -473,7 +409,7 @@ function rainify(container){
     })();
   }
   /* reduced-motion : the frosted snapshot from size() is already drawn, and the
-     wipe handler stays live — so it's a calm static glass you can still clear. */
+     wipe handler stays live, so it's a calm static glass you can still clear. */
 }
 document.querySelectorAll('.rain').forEach(rainify);
 

@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pocket Producer — Chuling LI</title>
+<title>Pocket Producer · Chuling LI</title>
 <meta name="description" content="Pocket Producer helps musicians record or upload their own audio sketches, rediscover them during arranging, and decide what to keep by listening in context.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
-<meta property="og:title" content="Pocket Producer — Chuling LI">
+<meta property="og:title" content="Pocket Producer · Chuling LI">
 <meta property="og:description" content="Pocket Producer helps musicians record or upload their own audio sketches, rediscover them during arranging, and decide what to keep by listening in context.">
 <meta property="og:url" content="https://imchuling.github.io/project-pocketproducer.html">
 <meta property="og:image" content="https://imchuling.github.io/images/pocketproducer_architecture.png">
@@ -39,23 +39,18 @@
     <span class="tag">Accepted at ISMIR 2026 LBD</span>
     <span class="tag">Audiotool Let's Build 2026 · 3rd Place, Ideation</span>
     <span class="tag">Music Information Retrieval</span>
-    <span class="tag">Multi-Agent System</span>
-    <span class="tag">Human in the Loop</span>
-    <span class="tag">Web App</span>
   </div>
   <p class="subtitle">Try a recording you saved months ago in the song you’re working on now.</p>
   <div class="proj-links hero-links">
     <a class="primary" href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">ISMIR Page ↗</a>
-    <a class="primary" href="https://pocketproducer.vercel.app" target="_blank">Live Demo ↗</a>
     <a class="secondary" href="https://github.com/imChuling/pocket-producer" target="_blank">Source Code ↗</a>
     <a class="secondary" href="https://drive.google.com/file/d/1UwArveyTTe_2Ua5waxX633TMUIl_eqwi/view" target="_blank">Paper PDF ↗</a>
   </div>
-  <p class="demo-note">Browse the read-only demo without signing in. You’ll need an Audiotool account to try suggestions in a session.</p>
 </div>
 
 <div class="proj-video">
   <div class="video-wrap"><iframe src="https://www.youtube.com/embed/i8HUDhZYcdE" title="Pocket Producer demo video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-  <p class="caption">Demo video · ISMIR 2026 Late-Breaking Demo</p>
+  <p class="caption">Watch a sketch enter a session: preview, insert and undo in Audiotool · ISMIR 2026 Late-Breaking Demo</p>
 </div>
 
 <div class="proj-content">
@@ -64,8 +59,8 @@
   <p>In the library, the app <strong>groups sketches that share a feeling or theme</strong>. A lyric and a melody can go together even when their tempos don’t match. When you’re arranging, it <strong>ranks your sketches against the song you have open</strong>, where timing and harmony matter.</p>
 
   <h2>How it works</h2>
-  <p><strong>In the library.</strong> <strong>librosa</strong> estimates tempo and key and measures loudness. <strong>Gemini</strong> suggests a title and tags from your recording and note. Two <strong>Google ADK</strong> agents use <strong>Voyage-3</strong> text embeddings to find related sketches and decide whether a new one belongs in a project. You can edit the title or tags, and those edits can inform later prompts.</p>
-  <p><strong>In a session.</strong> The app reads the tempo, tracks, and up to eight audio samples from your open project. I use three main ways to rank sketches.</p>
+  <p><strong>In the library.</strong> Each sketch gets a title, tags for its mood and theme, and an estimate of its tempo and key. When a new one comes in, the app looks for earlier sketches that share a feeling or theme and suggests a project for it. If you rename a sketch or fix its tags, later suggestions take that into account. A language model writes the titles and tags and makes the grouping call; my fusion score is shown to it as a cue for how alike two recordings sound. Under the hood: <strong>librosa</strong> for tempo and key, <strong>Gemini</strong> agents built with <strong>Google ADK</strong>, and <strong>Voyage-3</strong> text embeddings for finding related sketches.</p>
+  <p><strong>In a session.</strong> The app reads the tempo and tracks of your open project and, for the rankers that listen to it, up to eight of its audio samples. Three rankers matter most.</p>
   <ul>
     <li><strong>Rules</strong> is the default. It uses cues like tempo, tags, and what you’re looking for, and works without session audio.</li>
     <li><strong>Five-signal fusion</strong> compares a sketch’s <strong>MS-CLAP</strong> embedding with the session’s mean embedding and its closest clip, using cosine similarity for both. It also uses tempo, key if you specify one, and tag overlap. I trained the weights with <strong>source-weighted Bayesian Personalized Ranking (BPR)</strong>, using same-pack Freesound loops as positive examples.</li>
@@ -110,7 +105,7 @@
 <div class="proj-paper">
   <h3><a href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal</a></h3>
   <p class="authors">Chuling Li</p>
-  <p class="venue">ISMIR 2026 — Late-Breaking Demo · Abu Dhabi, UAE</p>
+  <p class="venue">ISMIR 2026 Late-Breaking Demo · Abu Dhabi, UAE</p>
   <p class="abstract">The demo paper explains how I trained the fusion ranker and how the choice of examples changed the results.</p>
 </div>
 
