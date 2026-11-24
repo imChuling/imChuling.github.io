@@ -257,7 +257,9 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .story-timeline.timeline-ready .story-node[aria-selected="true"] .story-node-dot{background:var(--paper);border-color:var(--muted);box-shadow:none}
 @media(min-width:881px){.story-node[aria-selected="true"] .story-node-label{transform:translateX(3px)}}
 .s-notes{margin-top:.6rem}
-.story-step .s-label+.s-notes{margin-top:.5rem}
+/* the list heading sits on its own rule, the notes follow straight under it */
+.story-step .s-label{margin-top:1.2rem;padding-top:.8rem;border-top:1px solid var(--line);font:400 .85rem var(--serif);letter-spacing:0;color:var(--violet)}
+.story-step .s-label+.s-notes{border:0;padding-top:0;margin-top:.8rem}
 .s-notes{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--line);font:300 .7rem/1.45 var(--mono);color:var(--muted)}
 .s-notes li{padding-left:.9rem;text-indent:-.9rem}
 .s-notes li::before{content:'·';margin-right:.5rem}
@@ -691,26 +693,24 @@ footer{
         <button class="story-node" id="story-tab-1" type="button" role="tab" aria-selected="false" aria-controls="story-panel-1" tabindex="-1" data-chapter="1" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">02</span><span class="story-node-label">Solo voice</span></span></button>
         <button class="story-node" id="story-tab-2" type="button" role="tab" aria-selected="false" aria-controls="story-panel-2" tabindex="-1" data-chapter="2" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">03</span><span class="story-node-label">Richard Bird</span></span></button>
         <button class="story-node" id="story-tab-3" type="button" role="tab" aria-selected="false" aria-controls="story-panel-3" tabindex="-1" data-chapter="3" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">04</span><span class="story-node-label">Teaching & leading</span></span></button>
-        <button class="story-node" id="story-tab-4" type="button" role="tab" aria-selected="false" aria-controls="story-panel-4" tabindex="-1" data-chapter="4" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">05</span><span class="story-node-label">Building tools</span></span></button>
+        <button class="story-node" id="story-tab-4" type="button" role="tab" aria-selected="false" aria-controls="story-panel-4" tabindex="-1" data-chapter="4" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">05</span><span class="story-node-label">Next steps</span></span></button>
       </div>
       <div class="story-steps">
         <div class="story-step active" data-step="0" id="story-panel-0" role="tabpanel" aria-labelledby="story-tab-0" tabindex="0">
           <span class="s-num">CHAPTER 01 / 05</span>
-          <p>I began studying <strong>classical piano</strong> at an early age and passed the <strong>China Conservatory of Music's Grade 6</strong> examination when I was seven. I later joined the <strong>Minnan Grand Theatre</strong> Children's Choir in Xiamen, China, where I had the opportunity to perform alongside choirs from Austria, France, and New York, including <strong>Les Petits Chanteurs de Saint-Marc</strong>, the choir featured in the film <em>Les Choristes</em>. Around the same time, I also began training in <strong>bel canto</strong>. My interest in singing continued into high school, where I was admitted to <strong>Xiamen No.1 High School</strong> as a <strong>vocal specialist</strong> and performed with <strong>both its children's and mixed choirs</strong>.</p>
-          <details class="story-details"><summary>Selected Performances</summary>
+          <p>I began studying <strong>classical piano</strong> at an early age and passed the <strong>China Conservatory of Music's Grade 6</strong> examination when I was seven. I later joined the <strong>Banlam Grand Theatre</strong> Children's Choir in Xiamen, China, where I had the opportunity to perform alongside choirs from Austria, France, and New York, including <strong>Les Petits Chanteurs de Saint-Marc</strong>, the choir featured in the film <em>Les Choristes</em>. Around the same time, I also began training in <strong>bel canto</strong>. My interest in singing continued into high school, where I was admitted to <strong>Xiamen No.1 High School</strong> as a <strong>vocal specialist</strong> and performed with <strong>both its children's and mixed choirs</strong>.</p>
+          <p class="s-label">Selected Performances</p>
           <ul class="s-notes">
-            <li>With the Minnan Grand Theatre Children's Choir, shared stages with the <strong>Wilten Boys' Choir</strong> (Austria), <strong>Les Petits Chanteurs de Saint-Marc</strong> and <strong>Les Petits Chanteurs à la Croix de Bois</strong> (France), and a gospel choir from Harlem, New York</li>
+            <li>With the Banlam Grand Theatre Children's Choir, shared stages with the <strong>Wilten Boys' Choir</strong> (Austria), <strong>Les Petits Chanteurs de Saint-Marc</strong> and <strong>Les Petits Chanteurs à la Croix de Bois</strong> (France), and a gospel choir from Harlem, New York</li>
             <li>The 13th <strong>China International Chorus Festival</strong> and <strong>IFCM World Choral Education Conference</strong>: opening ceremony at the <strong>Great Hall of the People</strong>; <strong>"Four Outstanding Chinese Children's Choirs"</strong> concert at the Beijing Tianqiao Performing Arts Center</li>
             <li>Artistic exchange with Les Petits Chanteurs à la Croix de Bois in Autun, France, <strong>received at the Town Hall by the Mayor of Autun</strong></li>
             <li>Xiamen No.1 High School Choir: <strong>Gold Award and first place</strong>, Folklore category, <strong>2017 World Youth &amp; Children's Choir Festival – Hong Kong (WYCCF)</strong>, with folk songs of China's Yi and Tujia ethnic minorities ("Spring Has Come" and "Dong Dong Kui") and the Balinese "Janger"</li>
-            <li><strong>China Conservatory of Music piano examination, Grade 6, passed at age seven</strong></li>
           </ul>
-          </details>
         </div>
         <div class="story-step" data-step="1" id="story-panel-1" role="tabpanel" aria-labelledby="story-tab-1" tabindex="0" hidden>
           <span class="s-num">CHAPTER 02 / 05</span>
           <p>Since high school, I have remained active as a solo singer, performing at campus music festivals and other events. I won <strong>first place</strong> in the Xiamen No.1 High School Singing Competition in 2021, placed in the <strong>Top 10 of UNNC Voice</strong> in 2023, and was <strong>runner-up</strong> in the University of Nottingham CSSA Singing Competition in 2025. Beyond competing, I was invited to serve as a <strong>mentor and judge</strong> for UNNC Voice in 2024 and to perform at the <strong>CSSA-UK Southern Performing Arts Festival</strong> in 2026, along with various other events.</p>
-          <details class="story-details"><summary>Selected Performances</summary>
+          <p class="s-label">Selected Performances</p>
           <ul class="s-notes">
             <li>2021 · Xiamen No.1 High School Inter-School Music Festival, piano and vocal<span class="s-piece">画 (Painting) by G.E.M.</span></li>
             <li><strong>2021 · 1st place, Xiamen No.1 High School Singers Competition</strong><span class="s-piece">Baby, До свидания (Baby, Goodbye) + Ой, цветёт калина (The Snowball Tree Is Blooming) by Pu Shu / Soviet song, Listen by Beyoncé, Vaga luna, che inargenti by Bellini etc.</span></li>
@@ -721,13 +721,12 @@ footer{
             <li><strong>2025 · Runner-up, University of Nottingham CSSA Singing Competition</strong><span class="s-piece">Stop! by Sam Brown</span></li>
             <li>2026 · Invited performer, CSSA-UK Southern Performing Arts Festival<span class="s-piece">Language by Tori Kelly</span></li>
           </ul>
-          </details>
         </div>
         <div class="story-step" data-step="2" id="story-panel-2" role="tabpanel" aria-labelledby="story-tab-2" tabindex="0" hidden>
           <span class="s-num">CHAPTER 03 / 05</span>
           <p>In September 2023, four of us, all science and engineering students with a shared love of music, formed <strong>Richard Bird</strong>, a band rooted in blues and hard rock that later expanded into funk and R&amp;B. I take on <strong>lead vocals and keyboard/synthesizer</strong>. Since then, we have opened the evening stage at the <strong>CACA Music Festival</strong>, performed at multi-band showcases including To Be Found and Cracking Seeds, and played at countless other campus music festivals.</p>
           <p class="s-quote">"You know some birds are not meant to be caged,<br>their feathers are just too bright."</p>
-          <details class="story-details"><summary>Selected Performances</summary>
+          <p class="s-label">Selected Performances</p>
           <ul class="s-notes">
             <li>2023 · T!NY Vol.1, our first show, lead vocal<span class="s-piece">Whole Lotta Love by Led Zeppelin, Come as You Are by Nirvana etc.</span></li>
             <li>2023 · T!NY Vol.2 "Peace in Pieces", lead vocal<span class="s-piece">Heartbreaker by Led Zeppelin, Hammer to Fall by Queen etc.</span></li>
@@ -737,25 +736,15 @@ footer{
             <li><strong>2025 · CACA Music Festival, invited opening act for the evening stage</strong>, lead vocal and keyboard<span class="s-piece">Superstition by Stevie Wonder, 艷火 (Pyrojewel) by Deserts Chang etc.</span></li>
             <li><strong>2025 · To Be Found, UNNC Bands Club special performance</strong>, lead vocal, keyboard and live programming<span class="s-piece">Rio Funk by Lee Ritenour, Heartbreaker by Led Zeppelin, Still by Brian McKnight etc.</span></li>
           </ul>
-          </details>
         </div>
         <div class="story-step" data-step="3" id="story-panel-3" role="tabpanel" aria-labelledby="story-tab-3" tabindex="0" hidden>
           <span class="s-num">CHAPTER 04 / 05</span>
-          <p>Music has also been something to organise and pass on. I conducted my class to the <strong>Best Conductor</strong> award at Xiamen No.1 High School's choir competition, led the performance team of the <strong>UNNC Music Association</strong> for a year, and returned to UNNC Voice as a mentor with a team of my own and a seat on the jury. In the summer of 2024 I worked stage crew at a <strong>50,000-strong music festival</strong>, then spent July <strong>directing choir rehearsals for a hundred rural primary school children</strong> in Hunan.</p>
-          <details class="story-details"><summary>Selected Activities</summary>
-          <ul class="s-notes">
-            <li><strong>High school · Organised and conducted my class's entry to the Xiamen No.1 High School choir competition as overall leader; Best Conductor award</strong></li>
-            <li>2023–24 · Performance Team Leader, UNNC Music Association: weekly live music sessions, performers for university-wide events, rehearsals and performance preparation</li>
-            <li><strong>Jun 2024 · Volunteer stage crew leader, Bubbling Boiling Music &amp; Arts Festival (50,000+ attendees)</strong>: monitor-desk-to-PA operations, run-down tracking, cable patching at changeovers</li>
-            <li><strong>Jul 2024 · Volunteer teacher, Summer Education Programme, Lijiazhuang Village, Hunan</strong>: choir rehearsals for 100+ rural primary school children and interactive music workshops such as live looping</li>
-            <li><strong>Dec 2024 · Mentor and judge, UNNC Voice</strong>: built and coached my own team of contestants through the competition</li>
-            <li>Mar–Apr 2025 · Children's choir teaching in a Ningbo community</li>
-          </ul>
-          </details>
+          <p>Music has also been something to organise and pass on. In high school I organised and conducted my class's entry to the Xiamen No.1 High School choir competition as <strong>overall leader</strong>, and won the <strong>Best Conductor</strong> award. At university I served as <strong>Performance Team Leader</strong> of the UNNC Music Association through 2023–24, running weekly live music sessions, supplying performers for university-wide events, and leading their rehearsals and performance preparation.</p>
+          <p>In June 2024 I led a <strong>volunteer stage crew</strong> at the Bubbling Boiling Music &amp; Arts Festival, with more than 50,000 attendees: monitor-desk-to-PA operations, run-down tracking, and cable patching at changeovers. That July I was a <strong>volunteer teacher</strong> on a summer education programme in Lijiazhuang Village, Hunan, rehearsing a choir of over 100 rural primary school children and running interactive music workshops such as live looping. In December I returned to UNNC Voice as <strong>mentor and judge</strong>, building and coaching my own team of contestants through the competition, and in spring 2025 I taught a children's choir in a Ningbo community.</p>
         </div>
         <div class="story-step" data-step="4" id="story-panel-4" role="tabpanel" aria-labelledby="story-tab-4" tabindex="0" hidden>
           <span class="s-num">CHAPTER 05 / 05</span>
-          <p>Writing code while making music keeps bringing me back to two questions: what can AI actually do for a musician, and where does my own judgment still matter? <a href="project-pocketproducer.html" data-detail-sheet data-hover>Pocket Producer</a> began with my own half-finished demos. <a href="project-quill.html" data-detail-sheet data-hover>Quill</a> began with the wish for a sonic eyedropper that keeps the vibrato but swaps the sound. <a href="project-secondself.html" data-detail-sheet data-hover>Second Self</a> began with wondering whether a singer can duet with herself from a few minutes ago. On <a href="project-harp.html" data-detail-sheet data-hover>HARP</a> I joined a research team and learned to deploy and validate music AI models with a musician's ear. All of it points the same way: tools that leave the musician in charge of the decisions.</p>
+          <p>Making music while writing code kept raising one question: how can intelligent systems truly support musicians? I followed it from offline retrieval in <a href="project-pocketproducer.html" data-detail-sheet data-hover>Pocket Producer</a> and decoupled synthesis in <a href="project-quill.html" data-detail-sheet data-hover>Quill</a>, to validating models inside a DAW on <a href="project-harp.html" data-detail-sheet data-hover>HARP</a>, to real-time interaction on stage with <a href="project-secondself.html" data-detail-sheet data-hover>Second Self</a>. In graduate school I want to deepen my foundation in audio signal processing and music information retrieval, and to ground system design in human-computer interaction, through user studies with musicians in real creative settings. I want to ask not only whether a model is accurate, but whether it helps a musical idea develop and keeps a performance flowing. The goal is technology that expands what musicians can imagine and perform, with human creativity at the heart of it.</p>
         </div>
       </div>
       <div class="story-visual rain" data-hover>
@@ -763,7 +752,7 @@ footer{
         <div class="ph stage" data-step="1" hidden><img src="images/story-02.jpg" alt="Solo performances" width="1500" height="2000" loading="lazy" decoding="async"></div>
         <div class="ph gear" data-step="2" hidden><img src="images/story-03.jpg" alt="Richard Bird" width="1500" height="2000" loading="lazy" decoding="async"></div>
         <div class="ph stage" data-step="3" hidden><img src="images/story-04.jpg" alt="Teaching and leading" width="1500" height="2000" loading="lazy" decoding="async"></div>
-        <div class="ph abstract" data-step="4" hidden><img src="images/story-05.jpg" alt="Building tools" width="1500" height="2000" loading="lazy" decoding="async"></div>
+        <div class="ph abstract" data-step="4" hidden><img src="images/story-05.jpg" alt="Next steps" width="1500" height="2000" loading="lazy" decoding="async"></div>
         <canvas class="rain-fog" aria-hidden="true"></canvas>
         <div class="rain-hint">wipe the window</div>
       </div>
