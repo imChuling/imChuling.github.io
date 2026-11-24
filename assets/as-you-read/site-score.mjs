@@ -444,7 +444,7 @@ if(button){
 
   /* ---------- lifecycle ---------- */
   const loadLib=()=>window.RNBO?Promise.resolve():new Promise((ok,fail)=>{const s=document.createElement('script');s.src=LIB;s.onload=ok;s.onerror=()=>fail(new Error('RNBO runtime failed to load'));document.head.appendChild(s);});
-  const level=()=>ducked?0:(away?0.1:0.2);
+  const level=()=>ducked?0:(away?0.056:0.112);
   async function start(){
     if(busy||enabled||!wantsSound)return;
     busy=true;setState('loading');
