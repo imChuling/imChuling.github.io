@@ -213,43 +213,44 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 }
 .rain-done .rain-hint{opacity:0}
 
-/* ---------- STORY : pinned scrollytelling ---------- */
-.story{position:relative}
-.story-head{padding:7rem 4vw 0}
-.story-head::before{content:'';display:block;width:48px;height:1px;background:var(--line);margin-bottom:3rem}
-.story-head .sec-head{margin-bottom:2rem}
-.story .sticky{
-  position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1.1fr .9fr;
-  align-items:center;gap:5vw;padding:5rem 4vw 2rem;max-width:1500px;margin:0 auto;
-}
-.story-steps{display:grid;overflow-y:auto;overflow-x:hidden;max-height:calc(100vh - 7rem);max-height:calc(100dvh - 7rem);scrollbar-width:none;-ms-overflow-style:none}
-.story-steps::-webkit-scrollbar{display:none}
-:fullscreen .story-steps{max-height:calc(100vh - 4rem);overflow-y:hidden}
-.story-step{
-  grid-area:1/1;display:flex;flex-direction:column;justify-content:center;
-  opacity:0;transform:translateY(18px) scale(.99);filter:blur(1px);
-  transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94),filter .6s ease;
-  pointer-events:none;
-}
-.story-step.active{opacity:1;transform:none;filter:none;pointer-events:auto}
-/* leaning : the chapter follows the hand a little before it turns (--lean -1..1, set from main.js) */
-.story .sticky.leaning .story-step.active{transition-duration:.3s;transform:translateY(calc(var(--lean)*-26px));opacity:calc(1 - var(--lean-a)*.4)}
-.story .sticky.leaning .story-visual .ph.active{transition-duration:.3s;transform:translateY(calc(var(--lean)*-12px)) scale(1.03)}
-.story-rail{position:absolute;right:1.6rem;top:50%;margin-top:-33px;display:grid;gap:14px;pointer-events:none}
-.story-rail i{display:block;width:10px;height:2px;border-radius:2px;background:var(--line)}
-.story-rail b{position:absolute;right:0;top:0;width:20px;height:2px;border-radius:2px;background:var(--violet);transition:translate .35s cubic-bezier(.22,1,.36,1);will-change:translate}
-.fullscreen-hint{background:none;border:1px solid var(--line);border-radius:99px;padding:.4rem 1rem;font:400 .68rem var(--mono);letter-spacing:.08em;color:var(--muted);cursor:pointer;transition:color .3s,border-color .3s;margin-left:auto}
-.fullscreen-hint:hover{color:var(--violet);border-color:var(--violet)}
-:fullscreen .fullscreen-hint{display:none}
-.story-step .s-num{font-family:var(--display);font-weight:400;font-size:1.15rem;letter-spacing:.24em;color:var(--violet);margin-bottom:1.2rem}
-.story-step h3{
-  font-family:var(--stamp);font-weight:400;font-size:clamp(1.8rem,4.2vw,3.4rem);line-height:1.18;letter-spacing:.01em;text-wrap:balance;
-}
+/* ---------- STORY : choose a chapter on the timeline ---------- */
+.story{position:relative;padding-bottom:4rem}
+.story-head{padding:5rem 4vw 0}
+.story-head::before{content:'';display:block;width:48px;height:1px;background:var(--line);margin-bottom:2rem}
+.story-head .sec-head{margin-bottom:.8rem}
+.story-instruction{font:300 .75rem/1.7 var(--mono);color:var(--muted);margin-bottom:2rem}
+.story-track{height:auto}
+.story-layout{display:grid;grid-template-columns:155px minmax(0,1.25fr) minmax(0,.85fr);align-items:start;gap:clamp(1.5rem,3vw,3.5rem);padding:0 4vw;max-width:1500px;margin:0 auto}
+.story-timeline{position:relative;display:flex;flex-direction:column;padding:.25rem 0}
+.story-timeline::before{content:'';position:absolute;left:8px;top:26px;bottom:26px;width:1px;background:var(--line)}
+.story-node{position:relative;display:grid;grid-template-columns:18px minmax(0,1fr);gap:.7rem;align-items:center;width:100%;padding:1rem 0;border:0;background:transparent;text-align:left;color:var(--muted);cursor:pointer;transition:color .25s}
+.story-node::before{content:'';width:9px;height:9px;margin-left:4px;border-radius:50%;background:var(--paper);border:1px solid var(--muted);z-index:1;transition:background .25s,box-shadow .25s}
+.story-node[aria-selected="true"]{color:var(--ink)}
+.story-node[aria-selected="true"]::before{background:var(--violet);border-color:var(--violet);box-shadow:0 0 0 5px rgba(90,104,128,.12)}
+.story-node:hover{color:var(--violet)}
+.story-node-number{display:block;font:300 .58rem/1.6 var(--mono);letter-spacing:.12em}
+.story-node-label{display:block;font:400 1rem/1.3 var(--serif)}
+.story-node:focus-visible,.story-details summary:focus-visible,.story-step:focus-visible{outline:2px solid var(--violet);outline-offset:5px;border-radius:4px}
+.story-steps{min-width:0;min-height:470px;overflow:visible}
+.story-step[hidden],.story-visual .ph[hidden]{display:none}
+.story-step{display:block;animation:story-in .35s ease-out}
+.story-step .s-num{display:block;font:400 .75rem var(--display);letter-spacing:.18em;color:var(--violet);margin-bottom:1rem}
+.story-step h3{font:400 clamp(1.7rem,2.8vw,2.6rem)/1.18 var(--stamp);letter-spacing:.01em;text-wrap:balance}
 .story-step h3 em{font-style:normal;color:inherit}
-.story-step p{margin-top:1.4rem;color:var(--ink);font-family:var(--mono);font-weight:300;font-size:.92rem;line-height:1.9;text-wrap:pretty}
+.story-step p{margin-top:1.1rem;color:var(--ink);font:300 .85rem/1.85 var(--mono);text-wrap:pretty}
 .story-step p strong{font-weight:600}
-.story-step .s-label{margin-top:1.2rem}
-.story-step .s-notes{margin-top:.6rem}
+.story-details{margin-top:1.2rem;border-top:1px solid var(--line);padding-top:.8rem}
+.story-details summary{display:flex;justify-content:space-between;align-items:center;gap:1rem;list-style:none;cursor:pointer;font:400 .85rem var(--serif);color:var(--violet)}
+.story-details summary::-webkit-details-marker{display:none}
+.story-details summary::after{content:'+';font:300 1.2rem var(--sans)}
+.story-details[open] summary::after{content:'−'}
+.story-details .s-notes{border:0;padding-top:0;margin-top:.8rem}
+.story-visual{position:relative;aspect-ratio:3/4;width:100%;max-width:350px;justify-self:center;border-radius:20px;overflow:hidden;background:var(--paper-2);box-shadow:0 8px 24px rgba(24,21,31,.08),0 40px 80px -30px rgba(24,21,31,.25)}
+.story-visual .ph{position:absolute;inset:0;animation:story-photo-in .4s ease-out}
+.story-visual .ph img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
+@keyframes story-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes story-photo-in{from{opacity:.25}to{opacity:1}}
+.s-notes{margin-top:.6rem}
 .story-step .s-label+.s-notes{margin-top:.5rem}
 .s-notes{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--line);font:300 .7rem/1.45 var(--mono);color:var(--muted)}
 .s-notes li{padding-left:.9rem;text-indent:-.9rem}
@@ -258,45 +259,25 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .s-piece::before{content:'♫ '}
 .s-label{font:400 .72rem var(--stamp);letter-spacing:.06em;color:var(--muted)}
 .story-step .s-quote{margin:1.2rem auto 0;padding:0 2rem;text-align:center;font:400 1.05rem/1.55 var(--stamp);color:var(--violet);letter-spacing:.01em}
-/* the window keeps the photos' 3:4 and scales to whatever room there is, never crops to a band or stretches */
-.story-visual{position:relative;aspect-ratio:3/4;width:min(100%,calc(74vh * .75));justify-self:center;border-radius:24px;overflow:hidden;box-shadow:0 8px 24px rgba(24,21,31,.08),0 40px 80px -30px rgba(24,21,31,.35)}
-.story-visual .ph{position:absolute;inset:0;opacity:0;transform:scale(1.04);filter:blur(1px);transition:opacity .9s cubic-bezier(.25,.46,.45,.94),transform 1.4s cubic-bezier(.25,.46,.45,.94),filter .7s ease}
-.story-visual .ph.active{opacity:1;transform:none;filter:none}
-.story-visual .ph img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
-.story-track{height:550vh}
-@media(min-width:881px) and (max-height:820px){
-  .story .sticky{padding-top:4.5rem;padding-bottom:1.5rem}
-  .story-steps{max-height:calc(100vh - 6rem)}
-  .story-step h3{font-size:clamp(1.6rem,3.2vw,2.6rem)}
-  .story-step p{margin-top:.8rem;font-family:var(--mono);font-weight:300;font-size:.82rem;line-height:1.6}
-  .story-step .s-num{margin-bottom:.8rem}
-  .s-label{margin-top:.8rem;margin-bottom:-.3rem;font-size:.65rem}
-  .s-notes{margin-top:.6rem;padding-top:.5rem;font-size:.6rem;line-height:1.4;gap:.15rem}
-  .s-notes li{padding-left:.7rem;text-indent:-.7rem}
-  .s-piece{font-size:.55rem;padding-left:.9rem;margin-bottom:0}
-}
-/* the fullscreen invitation stays on small windows; phones (narrow, or touch-only) can't use it */
-@media(max-width:680px),(hover:none) and (pointer:coarse){.fullscreen-hint{display:none}}
+
+@media(max-width:1050px){.story-layout{grid-template-columns:125px minmax(0,1.3fr) minmax(0,.8fr);gap:1.5rem}.story-node-label{font-size:.9rem}.story-step p{font-size:.8rem}}
 @media(max-width:880px){
-  .story-track{height:auto}
-  .story .sticky{position:relative;height:auto;display:block;padding:0 5vw 2rem}
-  .story-steps{display:flex;flex-direction:column;gap:0;overflow:visible;max-height:none}
-  .story-step{opacity:1;transform:none;filter:none;pointer-events:auto;transition:none;padding:2.5rem 0 2.5rem 1.4rem;border-bottom:1px solid var(--line);border-left:2px solid var(--lavender);position:relative}
-  .story-step:last-child{border-bottom:none;padding-bottom:0}
-  .story-step .s-num{margin-bottom:.8rem;position:relative}
-  .story-step .s-num::before{content:'';position:absolute;left:calc(-1.4rem - 4px);top:50%;width:8px;height:8px;border-radius:50%;background:var(--violet);transform:translateY(-50%)}
-  .story-visual,.rain-hint,.story-rail{display:none}
-  .story-step h3{font-size:clamp(1.5rem,6vw,2rem)}
-  .story-step p{margin-top:.9rem;font-size:.88rem;line-height:1.7}
-  .story-step .s-quote{padding:0;font-size:.88rem;letter-spacing:0}
-  .s-notes{font-size:.65rem;line-height:1.5;gap:.25rem;margin-top:.6rem;padding-top:.6rem}
-  .s-piece{font-size:.6rem;padding-left:.9rem}
-  .s-label{font-size:.65rem;margin-top:1rem}
+ .story-layout{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr);gap:1.8rem}
+ .story-timeline{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:0}
+ .story-timeline::before{left:10%;right:10%;top:8px;bottom:auto;width:auto;height:1px}
+ .story-node{display:flex;flex-direction:column;gap:.65rem;padding:0 .2rem .5rem;text-align:center}
+ .story-node::before{margin:4px 0 0;flex-shrink:0}.story-node-label{font-size:.85rem}.story-node-number{font-size:.55rem}
+ .story-steps{min-height:440px}.story-visual{max-width:300px}
 }
+@media(max-width:600px){
+ .story-head{padding:3rem 5vw 0}.story-layout{grid-template-columns:1fr;padding:0 5vw;gap:1.5rem}
+ .story-timeline{order:0}.story-visual{order:1;width:min(100%,210px)}.story-steps{order:2;min-height:0}
+ .story-node-label{font-size:.72rem;line-height:1.35}.story-node-number{font-size:.5rem}.story-instruction{font-size:.68rem}
+ .story-step h3{font-size:1.8rem}.story-step p{font-size:.82rem;line-height:1.8}
+ .story-step .s-quote{font-size:.9rem;padding:0}.s-notes{font-size:.66rem;line-height:1.65}
+}
+@media(prefers-reduced-motion:reduce){.story-step,.story-visual .ph{animation:none}.story-node,.story-node::before{transition:none}}
 @media(max-width:380px){.nav-links a,.nav-sound{font-size:.66rem;letter-spacing:.05em}}
-@media(max-width:360px){
-  .story-step p{font-size:.78rem}
-}
 
 /* ---------- marquee band ---------- */
 .marquee{overflow:hidden;padding:2.2rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.35)}
@@ -691,19 +672,27 @@ footer{
 </section>
 <script src="assets/music/music.js?v=3" defer></script>
 
-<!-- ============ STORY : pinned scrollytelling ============ -->
+<!-- ============ STORY : interactive timeline ============ -->
 <div class="story" id="story">
   <div class="shell story-head">
-    <div class="sec-head reveal"><h2 class="sec-title">The story <em>so far</em></h2><span class="sec-num">03 · STORY</span><button class="fullscreen-hint" onclick="document.documentElement.requestFullscreen?.().then(()=>{document.querySelector('.story-track')?.scrollIntoView({behavior:'smooth'})}).catch(()=>{})" aria-label="Enter fullscreen">⛶ Fullscreen for the best experience</button></div>
+    <div class="sec-head reveal"><h2 class="sec-title">The story <em>so far</em></h2><span class="sec-num">03 · STORY</span></div>
+    <p class="story-instruction">Explore the timeline. Hover, click, or use the arrow keys to choose a chapter.</p>
   </div>
   <div class="story-track">
-    <div class="sticky">
+    <div class="story-layout">
+      <div class="story-timeline" role="tablist" aria-label="Story chapters" aria-orientation="vertical">
+        <button class="story-node" id="story-tab-0" type="button" role="tab" aria-selected="true" aria-controls="story-panel-0" tabindex="0" data-chapter="0" data-hover><span><span class="story-node-number">01</span><span class="story-node-label">Choir years</span></span></button>
+        <button class="story-node" id="story-tab-1" type="button" role="tab" aria-selected="false" aria-controls="story-panel-1" tabindex="-1" data-chapter="1" data-hover><span><span class="story-node-number">02</span><span class="story-node-label">Solo voice</span></span></button>
+        <button class="story-node" id="story-tab-2" type="button" role="tab" aria-selected="false" aria-controls="story-panel-2" tabindex="-1" data-chapter="2" data-hover><span><span class="story-node-number">03</span><span class="story-node-label">Richard Bird</span></span></button>
+        <button class="story-node" id="story-tab-3" type="button" role="tab" aria-selected="false" aria-controls="story-panel-3" tabindex="-1" data-chapter="3" data-hover><span><span class="story-node-number">04</span><span class="story-node-label">Teaching & leading</span></span></button>
+        <button class="story-node" id="story-tab-4" type="button" role="tab" aria-selected="false" aria-controls="story-panel-4" tabindex="-1" data-chapter="4" data-hover><span><span class="story-node-number">05</span><span class="story-node-label">Building tools</span></span></button>
+      </div>
       <div class="story-steps">
-        <div class="story-step" data-step="0">
+        <div class="story-step active" data-step="0" id="story-panel-0" role="tabpanel" aria-labelledby="story-tab-0" tabindex="0">
           <span class="s-num">CHAPTER 01 / 05</span>
           <h3>It started in a choir.</h3>
           <p>I began studying <strong>classical piano</strong> at an early age and passed the <strong>China Conservatory of Music's Grade 6</strong> examination when I was seven. I later joined the <strong>Minnan Grand Theatre</strong> Children's Choir in Xiamen, China, where I had the opportunity to perform alongside choirs from Austria, France, and New York, including <strong>Les Petits Chanteurs de Saint-Marc</strong>, the choir featured in the film <em>Les Choristes</em>. Around the same time, I also began training in <strong>bel canto</strong>. My interest in singing continued into high school, where I was admitted to <strong>Xiamen No.1 High School</strong> as a <strong>vocal specialist</strong> and performed with <strong>both its children's and mixed choirs</strong>.</p>
-          <p class="s-label">Selected Performances</p>
+          <details class="story-details"><summary>Selected Performances</summary>
           <ul class="s-notes">
             <li>With the Minnan Grand Theatre Children's Choir, shared stages with the <strong>Wilten Boys' Choir</strong> (Austria), <strong>Les Petits Chanteurs de Saint-Marc</strong> and <strong>Les Petits Chanteurs à la Croix de Bois</strong> (France), and a gospel choir from Harlem, New York</li>
             <li>The 13th <strong>China International Chorus Festival</strong> and <strong>IFCM World Choral Education Conference</strong>: opening ceremony at the <strong>Great Hall of the People</strong>; <strong>"Four Outstanding Chinese Children's Choirs"</strong> concert at the Beijing Tianqiao Performing Arts Center</li>
@@ -711,12 +700,13 @@ footer{
             <li>Xiamen No.1 High School Choir: <strong>Gold Award and first place</strong>, Folklore category, <strong>2017 World Youth &amp; Children's Choir Festival – Hong Kong (WYCCF)</strong>, with folk songs of China's Yi and Tujia ethnic minorities ("Spring Has Come" and "Dong Dong Kui") and the Balinese "Janger"</li>
             <li><strong>China Conservatory of Music piano examination, Grade 6, passed at age seven</strong></li>
           </ul>
+          </details>
         </div>
-        <div class="story-step" data-step="1">
+        <div class="story-step" data-step="1" id="story-panel-1" role="tabpanel" aria-labelledby="story-tab-1" tabindex="0" hidden>
           <span class="s-num">CHAPTER 02 / 05</span>
           <h3>A voice of my own.</h3>
           <p>Since high school, I have remained active as a solo singer, performing at campus music festivals and other events. I won <strong>first place</strong> in the Xiamen No.1 High School Singing Competition in 2021, placed in the <strong>Top 10 of UNNC Voice</strong> in 2023, and was <strong>runner-up</strong> in the University of Nottingham CSSA Singing Competition in 2025. Beyond competing, I was invited to serve as a <strong>mentor and judge</strong> for UNNC Voice in 2024 and to perform at the <strong>CSSA-UK Southern Performing Arts Festival</strong> in 2026, along with various other events.</p>
-          <p class="s-label">Selected Performances</p>
+          <details class="story-details"><summary>Selected Performances</summary>
           <ul class="s-notes">
             <li>2021 · Xiamen No.1 High School Inter-School Music Festival, piano and vocal<span class="s-piece">画 (Painting) by G.E.M.</span></li>
             <li><strong>2021 · 1st place, Xiamen No.1 High School Singers Competition</strong><span class="s-piece">Baby, До свидания (Baby, Goodbye) + Ой, цветёт калина (The Snowball Tree Is Blooming) by Pu Shu / Soviet song, Listen by Beyoncé, Vaga luna, che inargenti by Bellini etc.</span></li>
@@ -727,13 +717,14 @@ footer{
             <li><strong>2025 · Runner-up, University of Nottingham CSSA Singing Competition</strong><span class="s-piece">Stop! by Sam Brown</span></li>
             <li>2026 · Invited performer, CSSA-UK Southern Performing Arts Festival<span class="s-piece">Language by Tori Kelly</span></li>
           </ul>
+          </details>
         </div>
-        <div class="story-step" data-step="2">
+        <div class="story-step" data-step="2" id="story-panel-2" role="tabpanel" aria-labelledby="story-tab-2" tabindex="0" hidden>
           <span class="s-num">CHAPTER 03 / 05</span>
           <h3>Then came the band.</h3>
           <p>In September 2023, four of us, all science and engineering students with a shared love of music, formed <strong>Richard Bird</strong>, a band rooted in blues and hard rock that later expanded into funk and R&amp;B. I take on <strong>lead vocals and keyboard/synthesizer</strong>. Since then, we have opened the evening stage at the <strong>CACA Music Festival</strong>, performed at multi-band showcases including To Be Found and Cracking Seeds, and played at countless other campus music festivals.</p>
           <p class="s-quote">"You know some birds are not meant to be caged,<br>their feathers are just too bright."</p>
-          <p class="s-label">Selected Performances</p>
+          <details class="story-details"><summary>Selected Performances</summary>
           <ul class="s-notes">
             <li>2023 · T!NY Vol.1, our first show, lead vocal<span class="s-piece">Whole Lotta Love by Led Zeppelin, Come as You Are by Nirvana etc.</span></li>
             <li>2023 · T!NY Vol.2 "Peace in Pieces", lead vocal<span class="s-piece">Heartbreaker by Led Zeppelin, Hammer to Fall by Queen etc.</span></li>
@@ -743,12 +734,13 @@ footer{
             <li><strong>2025 · CACA Music Festival, invited opening act for the evening stage</strong>, lead vocal and keyboard<span class="s-piece">Superstition by Stevie Wonder, 艷火 (Pyrojewel) by Deserts Chang etc.</span></li>
             <li><strong>2025 · To Be Found, UNNC Bands Club special performance</strong>, lead vocal, keyboard and live programming<span class="s-piece">Rio Funk by Lee Ritenour, Heartbreaker by Led Zeppelin, Still by Brian McKnight etc.</span></li>
           </ul>
+          </details>
         </div>
-        <div class="story-step" data-step="3">
+        <div class="story-step" data-step="3" id="story-panel-3" role="tabpanel" aria-labelledby="story-tab-3" tabindex="0" hidden>
           <span class="s-num">CHAPTER 04 / 05</span>
           <h3>Passing it on.</h3>
           <p>Music has also been something to organise and pass on. I conducted my class to the <strong>Best Conductor</strong> award at Xiamen No.1 High School's choir competition, led the performance team of the <strong>UNNC Music Association</strong> for a year, and returned to UNNC Voice as a mentor with a team of my own and a seat on the jury. In the summer of 2024 I worked stage crew at a <strong>50,000-strong music festival</strong>, then spent July <strong>directing choir rehearsals for a hundred rural primary school children</strong> in Hunan.</p>
-          <p class="s-label">Selected Activities</p>
+          <details class="story-details"><summary>Selected Activities</summary>
           <ul class="s-notes">
             <li><strong>High school · Organised and conducted my class's entry to the Xiamen No.1 High School choir competition as overall leader; Best Conductor award</strong></li>
             <li>2023–24 · Performance Team Leader, UNNC Music Association: weekly live music sessions, performers for university-wide events, rehearsals and performance preparation</li>
@@ -757,11 +749,13 @@ footer{
             <li><strong>Dec 2024 · Mentor and judge, UNNC Voice</strong>: built and coached my own team of contestants through the competition</li>
             <li>Mar–Apr 2025 · Children's choir teaching in a Ningbo community</li>
           </ul>
+          </details>
         </div>
-        <div class="story-step" data-step="4">
+        <div class="story-step" data-step="4" id="story-panel-4" role="tabpanel" aria-labelledby="story-tab-4" tabindex="0" hidden>
           <span class="s-num">CHAPTER 05 / 05</span>
           <h3>My work lives in<br>the room <em>between.</em></h3>
           <p>Writing code while making music keeps bringing me back to two questions: what can AI actually do for a musician, and where does my own judgment still matter? <strong>Pocket Producer</strong> began with my own half-finished demos. <strong>Quill</strong> began with the wish for a sonic eyedropper that keeps the vibrato but swaps the sound. <strong>Second Self</strong> began with wondering whether a singer can duet with herself from a few minutes ago. On <strong>HARP</strong> I joined a research team and learned to deploy and validate music AI models with a musician's ear. All of it points the same way: tools that leave the musician in charge of the decisions.</p>
+          <details class="story-details"><summary>Projects & next steps</summary>
           <ul class="s-notes">
             <li><strong>Pocket Producer</strong>: session-conditioned retrieval for unfinished music; every suggestion can be inspected, auditioned, inserted and undone · ISMIR 2026 LBD</li>
             <li><strong>Quill</strong>: how an instrument sounds and how it is played, learned as two swappable assets and played live from a MIDI keyboard · ISMIR 2026 LBD</li>
@@ -769,16 +763,15 @@ footer{
             <li><strong>Second Self</strong>: a Max for Live system in which a singer duets with herself from a few minutes earlier, steered by the chords being played</li>
             <li>Next: audio signal processing, music information retrieval and human-computer interaction: pairing rigorous evaluation with watching how musicians actually use a tool</li>
           </ul>
+          </details>
         </div>
       </div>
-      <div class="story-visual rain tilt" data-hover>
-        <div class="ph retro" data-step="0"><img src="images/story-01.jpg" alt="Choir years" width="1500" height="2000" decoding="async"></div>
-        <div class="ph stage" data-step="1"><img src="images/story-02.jpg" alt="Solo performances" width="1500" height="2000" loading="lazy" decoding="async"></div>
-        <div class="ph gear" data-step="2"><img src="images/story-03.jpg" alt="Richard Bird" width="1500" height="2000" loading="lazy" decoding="async"></div>
-        <div class="ph stage" data-step="3"><img src="images/story-04.jpg" alt="Teaching and leading" width="1500" height="2000" loading="lazy" decoding="async"></div>
-        <div class="ph abstract" data-step="4"><img src="images/story-05.jpg" alt="Building tools" width="1500" height="2000" loading="lazy" decoding="async"></div>
-        <canvas class="rain-fog"></canvas>
-        <div class="rain-hint">wipe the window</div>
+      <div class="story-visual">
+        <div class="ph retro active" data-step="0"><img src="images/story-01.jpg" alt="Choir years" width="1500" height="2000" decoding="async"></div>
+        <div class="ph stage" data-step="1" hidden><img src="images/story-02.jpg" alt="Solo performances" width="1500" height="2000" loading="lazy" decoding="async"></div>
+        <div class="ph gear" data-step="2" hidden><img src="images/story-03.jpg" alt="Richard Bird" width="1500" height="2000" loading="lazy" decoding="async"></div>
+        <div class="ph stage" data-step="3" hidden><img src="images/story-04.jpg" alt="Teaching and leading" width="1500" height="2000" loading="lazy" decoding="async"></div>
+        <div class="ph abstract" data-step="4" hidden><img src="images/story-05.jpg" alt="Building tools" width="1500" height="2000" loading="lazy" decoding="async"></div>
       </div>
     </div>
   </div>
@@ -828,7 +821,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=42"></script>
+<script src="js/main.js?v=43"></script>
 <script src="js/sheet.js?v=7"></script>
 <script type="module" src="assets/as-you-read/site-score.mjs?v=38"></script>
 </body>

@@ -45,110 +45,53 @@ addEventListener('scroll',()=>{
   });
 },{passive:true});
 
-/* ============ story scrollytelling ============ */
+/* ============ story timeline : explicit selection, never scroll interception ============ */
 (function(){
-  const track=document.querySelector('.story-track');
-  const steps=document.querySelectorAll('.story-step');
-  const visuals=document.querySelectorAll('.story-visual .ph');
-  const last=steps.length-1;
-  /* chapter k owns the third of the track around k/last, so the settle points sit mid-range */
-  function range(){const r=track.getBoundingClientRect();return {top:r.top+scrollY,total:r.height-innerHeight};}
-  function progress(){const {top,total}=range();return Math.min(Math.max((scrollY-top)/total,0),1);}
-  const stepsBox=document.querySelector('.story-steps');
-  const pinned=document.querySelector('.story .sticky');
-  /* chapter rail : one tick per chapter and a marker that leans with the hand before the page turns */
-  const rail=document.createElement('div');rail.className='story-rail';rail.setAttribute('aria-hidden','true');
-  rail.innerHTML='<i></i>'.repeat(steps.length)+'<b></b>';pinned.appendChild(rail);
-  const marker=rail.lastChild;
-  let shown=0,pull=0,relaxT=0;
-  const PULL=90;   /* wheel distance that turns a chapter */
-  function lean(v){
-    pull=v;const f=Math.max(-1,Math.min(1,v/PULL));
-    pinned.classList.toggle('leaning',f!==0);
-    pinned.style.setProperty('--lean',f.toFixed(3));pinned.style.setProperty('--lean-a',Math.abs(f).toFixed(3));
-    marker.style.translate='0 '+((shown+f*.6)*16).toFixed(1)+'px';
+  const story=document.querySelector('#story');
+  if(!story)return;
+  const tabs=[...story.querySelectorAll('.story-node')];
+  const panels=[...story.querySelectorAll('.story-step')];
+  const visuals=[...story.querySelectorAll('.story-visual .ph')];
+  const tablist=story.querySelector('[role="tablist"]');
+  const fine=matchMedia('(hover:hover) and (pointer:fine)');
+  const narrow=matchMedia('(max-width:880px)');
+  let active=0,pending;
+  function select(index){
+    if(index===active)return;
+    active=index;
+    tabs.forEach((tab,i)=>{
+      const selected=i===index;
+      tab.setAttribute('aria-selected',String(selected));
+      tab.tabIndex=selected?0:-1;
+      panels[i].hidden=!selected;
+      panels[i].classList.toggle('active',selected);
+      visuals[i].hidden=!selected;
+      visuals[i].classList.toggle('active',selected);
+    });
   }
-  function update(){
-    const idx=Math.round(progress()*last);
-    if(idx!==shown){shown=idx;marker.style.translate='0 '+((shown+Math.max(-1,Math.min(1,pull/PULL))*.6)*16).toFixed(1)+'px';}
-    steps.forEach((s,i)=>s.classList.toggle('active',i===idx));
-    visuals.forEach((v,i)=>v.classList.toggle('active',i===idx));
-    if(stepsBox){const a=steps[idx];stepsBox.style.overflowY=a&&a.scrollHeight>stepsBox.clientHeight?'auto':'hidden';}
-  }
-  /* two consecutive same-direction scrolls advance to the next/prev chapter */
-  let settle,prevIdx=null,flicks=0,flickDir=0,flickTime=0;
-  function snap(){
-    if(innerWidth<=880)return;
-    const {top,total}=range();
-    if(scrollY<top||scrollY>top+total)return;
-    const p=progress(),raw=p*last,nearest=Math.round(raw);
-    const frac=raw-nearest,dir=frac>0?1:frac<0?-1:0,now=Date.now();
-    if(dir!==0&&prevIdx===nearest&&now-flickTime<800){
-      if(dir===flickDir){flicks++;} else {flicks=1;flickDir=dir;}
-      if(flicks>=2){
-        const next=Math.max(0,Math.min(last,nearest+dir));
-        flicks=0;flickTime=now;prevIdx=next;
-        scrollTo({top:top+next/last*total,behavior:REDUCE?'auto':'smooth'});
-        return;
-      }
-    }else{flicks=dir!==0?1:0;flickDir=dir;}
-    flickTime=now;prevIdx=nearest;
-    const target=top+nearest/last*total;
-    if(Math.abs(target-scrollY)>2)scrollTo({top:target,behavior:REDUCE?'auto':'smooth'});
-  }
-  addEventListener('scroll',()=>{update();clearTimeout(settle);settle=setTimeout(snap,140);},{passive:true});
-  /* wheel / trackpad : the page doesn't scroll between chapters, the hand pulls on it. Every bit of
-     wheel travel leans the chapter and moves the rail marker, so even a tiny nudge is answered; the
-     nudges add up, and once they reach PULL the chapter turns. Left alone, a lean eases back.
-     One gesture turns exactly one chapter, however far it travels. The gesture is
-     held while its inertia runs out, so the momentum can't carry into a second chapter. Inertia only
-     ever decays, so once the turn has played, anything that isn't decay is the hand again : the
-     speed picking back up, a reversal, or a separate wheel notch. That keeps slow, small, continuous
-     scrolling turning pages too. Past the first or last chapter the page scrolls normally again.
-     Keyboard, scrollbar and touch still use snap() above. */
-  let held=false,heldAt=0,heldDir=0,idleT=0,low=Infinity,lastAt=0;
-  const release=()=>{held=false;low=Infinity;};
-  function turn(idx,top,total,dir){
-    held=true;heldAt=Date.now();heldDir=dir;low=Infinity;
-    clearTimeout(relaxT);lean(0);
-    scrollTo({top:top+idx/last*total,behavior:REDUCE?'auto':'smooth'});
-  }
-  /* listened for on the story only, so wheel scrolling everywhere else stays on the compositor */
-  document.querySelector('.story').addEventListener('wheel',e=>{
-    if(innerWidth<=880||e.ctrlKey||!e.deltaY||document.documentElement.classList.contains('sheet-open'))return;
-    const {top,total}=range(),end=top+total,y=scrollY;
-    const dy=e.deltaY*(e.deltaMode===1?40:e.deltaMode===2?innerHeight:1),dir=dy>0?1:-1,mag=Math.abs(dy);
-    const now=Date.now(),gap=now-lastAt;lastAt=now;
-    if(held){
-      e.preventDefault();
-      clearTimeout(idleT);idleT=setTimeout(release,160);
-      const since=now-heldAt;
-      const fresh=since>500&&(dir!==heldDir||(mag>=low+3&&mag>=low*1.5)||(gap>45&&mag>=3))||since>250&&dir!==heldDir&&mag>=3;
-      if(since>300)low=Math.min(low,mag);   /* the push itself is still rising before that */
-      if(!fresh)return;
-      held=false;
-    }
-    const inside=y>=top-1&&y<=end+1;
-    if(!inside){
-      /* arriving : stop on the first (or, coming back up, the last) chapter instead of flying through */
-      if(y<top&&y+dy>=top){e.preventDefault();turn(0,top,total,dir);idleT=setTimeout(release,160);}
-      else if(y>end&&y+dy<=end){e.preventDefault();turn(last,top,total,dir);idleT=setTimeout(release,160);}
-      return;
-    }
-    /* a chapter taller than its box scrolls inside itself first */
-    if(stepsBox&&stepsBox.contains(e.target)&&stepsBox.scrollHeight>stepsBox.clientHeight+1){
-      const room=dir>0?stepsBox.scrollHeight-stepsBox.clientHeight-stepsBox.scrollTop:stepsBox.scrollTop;
-      if(room>1)return;
-    }
-    const idx=Math.round(progress()*last),to=pull+dy,next=idx+(to>0?1:-1);
-    clearTimeout(relaxT);
-    if(next<0||next>last){lean(0);return;}   /* off either end : the page scrolls on */
-    e.preventDefault();
-    if(Math.abs(to)<PULL){lean(to);relaxT=setTimeout(()=>lean(0),1100);return;}
-    turn(next,top,total,to>0?1:-1);
-    clearTimeout(idleT);idleT=setTimeout(release,160);
-  },{passive:false});
-  update();
+  tabs.forEach((tab,index)=>{
+    tab.addEventListener('pointerenter',e=>{
+      // Hover never hides a panel the keyboard user is currently reading.
+      if(!fine.matches||e.pointerType==='touch'||panels[active].contains(document.activeElement))return;
+      clearTimeout(pending);pending=setTimeout(()=>select(index),100);
+    });
+    tab.addEventListener('pointerleave',()=>clearTimeout(pending));
+    tab.addEventListener('click',()=>{clearTimeout(pending);select(index);});
+    tab.addEventListener('focus',()=>{clearTimeout(pending);select(index);});
+    tab.addEventListener('keydown',e=>{
+      const delta={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];
+      let next;
+      if(delta)next=(index+delta+tabs.length)%tabs.length;
+      else if(e.key==='Home')next=0;
+      else if(e.key==='End')next=tabs.length-1;
+      else return;
+      e.preventDefault();tabs[next].focus();
+    });
+  });
+  const orientation=()=>{clearTimeout(pending);tablist.setAttribute('aria-orientation',narrow.matches?'horizontal':'vertical');};
+  narrow.addEventListener('change',orientation);
+  fine.addEventListener('change',()=>clearTimeout(pending));
+  orientation();
 })();
 
 /* ============ reveal ============ */
