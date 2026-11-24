@@ -85,6 +85,11 @@
 .proj-hero.compact{padding-bottom:3rem}
 
 @media(max-width:640px){
+  /* phones : less air between the heading, the video and the text */
+  .proj-hero{padding-bottom:2.4rem}
+  .proj-hero.compact{padding-bottom:2rem}
+  .proj-video{margin:0 auto 2.6rem}
+  .proj-cover{margin-bottom:2.6rem}
   .proj-links{flex-direction:column}
   .proj-links a{justify-content:center}
   .proj-meta{gap:.4rem}

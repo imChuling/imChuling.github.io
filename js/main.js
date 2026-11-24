@@ -98,7 +98,7 @@ addEventListener('scroll',()=>{
     animations.forEach(animation=>animation.cancel());animations=[];
     stage.style.height='';stage.style.overflow='';
     stage.scrollTop=0;stage.classList.remove('more');
-    active=index;
+    active=index;page();
     const turn=revision;
     tabs.forEach((tab,i)=>{
       const selected=i===index;
@@ -192,6 +192,22 @@ addEventListener('scroll',()=>{
       e.preventDefault();tabs[next].focus();
     });
   });
+  /* previous / next under the chapter : on a phone the timeline is a long scroll back up */
+  const pager=document.createElement('div');pager.className='story-pager';pager.setAttribute('role','group');pager.setAttribute('aria-label','Previous and next chapter');
+  const label=i=>tabs[i].querySelector('.story-node-label').textContent.trim();
+  const step=(delta,word)=>{
+    const b=document.createElement('button');b.type='button';
+    b.addEventListener('click',()=>{const next=active+delta;if(next<0||next>=tabs.length)return;select(next);tablist.scrollIntoView({block:'start',behavior:reduced.matches?'auto':'smooth'});});
+    pager.appendChild(b);return {b,delta,word};
+  };
+  const steps=[step(-1,'Previous'),step(1,'Next')];
+  stage.parentNode.appendChild(pager);
+  function page(){
+    steps.forEach(({b,delta,word})=>{
+      const i=active+delta,there=i>=0&&i<tabs.length;
+      b.hidden=!there;if(there)b.innerHTML='<span>'+word+'</span>'+label(i);
+    });
+  }
   /* when the section is held in place its chapter area gets one fixed height, so the block stays the
      same size from chapter to chapter and can sit centred : the tallest chapter, or the room there is */
   const held=matchMedia('(min-width:881px) and (min-height:700px)');
@@ -206,7 +222,7 @@ addEventListener('scroll',()=>{
     story.style.setProperty('--h',Math.max(240,Math.min(tallest,room))+'px');
   }
   const layout=()=>{
-    clearTimeout(pending);layers=[active];settle();fit();more();
+    clearTimeout(pending);layers=[active];settle();fit();more();page();
     tablist.setAttribute('aria-orientation',narrow.matches?'horizontal':'vertical');positionMarker();
   };
   narrow.addEventListener('change',layout);

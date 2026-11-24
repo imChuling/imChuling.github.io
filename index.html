@@ -189,6 +189,17 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
  .hero-actions{gap:.6rem}.hero-action{font-size:.72rem;padding:.8rem 1rem;gap:.9rem}
  .about-skills{margin-top:0}.about-skills-label{font-size:.7rem}.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding-top:1.3rem}.skills-group h3{font-size:.95rem}.skills-group ul{font-size:.72rem}
  #projects,#wood-wide-web,#story,#contact{scroll-margin-top:6rem}
+ /* phones : tighter gaps between sections, and things a thumb can hit */
+ .hero-kicker{font-size:.66rem;letter-spacing:.07em}
+ .sec-head{margin-bottom:2.6rem;gap:.6rem 2rem}
+ .music-wrap{padding-top:1rem;padding-bottom:1rem}
+ .nav-sound{padding:.5rem 0}
+ .me-meta{flex-wrap:wrap;gap:.2rem 1.7rem;margin-top:1.6rem}
+ .me-meta span{flex-basis:100%;margin-bottom:.5rem;line-height:1.7}
+ .me-meta a{padding:.8rem 0;margin:0}
+ .rain-hint,.story-visual .rain-hint{font-size:.6rem}
+ /* the bar over a detail page stays readable while the page scrolls under it */
+ .sheet-bar{padding-bottom:.9rem;background:rgba(243,242,239,.97);border-bottom:1px solid var(--line)}
 }
 @media(prefers-reduced-motion:reduce){.hero-action:hover{transform:none}}
 
@@ -286,6 +297,17 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
  .story-steps.more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent)}
  .story-visual{width:min(100%,400px,calc(var(--h,533px)*.75))}
 }
+/* previous / next chapter, for layouts where the timeline scrolls out of reach above a long chapter */
+.story-pager{display:none}
+@media(max-width:880px){
+ .story-timeline{scroll-margin-top:7rem}
+ .story-pager{display:flex;justify-content:space-between;gap:1rem;grid-column:1/-1;margin-top:.4rem;padding-top:1.1rem;border-top:1px solid var(--line)}
+ .story-pager button{display:flex;flex-direction:column;gap:.25rem;max-width:48%;padding:.5rem 0;border:0;background:none;color:var(--ink);text-align:left;font:400 .9rem/1.3 var(--serif);cursor:pointer}
+ .story-pager button:last-child{text-align:right;margin-left:auto;align-items:flex-end}
+ .story-pager button span{font:300 .6rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+ .story-pager button[hidden]{display:none}
+ .story-pager button:focus-visible{outline:2px solid var(--violet);outline-offset:4px;border-radius:4px}
+}
 @media(max-width:1050px){.story-layout{grid-template-columns:125px minmax(0,1.3fr) minmax(0,.8fr);gap:1.5rem}.story-node-label{font-size:.9rem}.story-step p{font-size:.8rem}}
 @media(max-width:880px){
  .story-layout{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr);gap:1.8rem}
@@ -298,12 +320,13 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 @media(max-width:600px){
  .story-head{padding:3rem 5vw 0}.story-layout{grid-template-columns:1fr;padding:0 5vw;gap:1.5rem}
  .story-timeline{order:0}.story-visual{order:1;width:min(100%,210px)}.story-steps{order:2;min-height:0}
- .story-node-label{font-size:.72rem;line-height:1.35}.story-node-number{font-size:.5rem}.story-instruction{font-size:.68rem}
+ .story-node-label{font-size:.72rem;line-height:1.35}.story-node-number{font-size:.6rem}.story-pager{order:3}.story-instruction{font-size:.68rem}
  .story-step p{font-size:.82rem;line-height:1.8}
  .story-step .s-quote{font-size:.9rem;padding:0}.s-notes{font-size:.66rem;line-height:1.65}
 }
 @media(prefers-reduced-motion:reduce){.story-step,.story-visual .ph{animation:none}.story-node,.story-node-dot,.story-timeline.timeline-ready .story-marker,.story-node-label,.story-details summary::after{transition:none}}
 @media(max-width:380px){.nav-links a,.nav-sound{font-size:.66rem;letter-spacing:.05em}}
+@media(max-width:340px){.nav-links a,.nav-sound{font-size:.6rem;letter-spacing:.02em}.logo{font-size:1.05rem}.hero-kicker{font-size:.58rem;letter-spacing:.04em}}
 
 /* ---------- marquee band ---------- */
 .marquee{overflow:hidden;padding:2.2rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.35)}
@@ -541,7 +564,7 @@ footer{
 <header class="hero" id="top" aria-labelledby="hero-heading">
   <div class="hero-identity">
     <p class="hero-name">Chuling Li</p>
-    <p class="hero-kicker">COMPUTER SCIENTIST · VOCALIST · KEYBOARDIST</p>
+    <p class="hero-kicker">COMPUTER SCIENTIST&nbsp;· VOCALIST&nbsp;· KEYBOARDIST</p>
   </div>
   <h1 class="hero-title" id="hero-heading">
     <span class="h-line"><span class="txt">Music AI &amp;</span><span class="strip performance-strip" aria-hidden="true"><span class="ph"><img src="images/hero-music.jpg" alt="Chuling Li performing live on stage" width="2400" height="343" fetchpriority="high" decoding="async"></span></span></span>
@@ -824,7 +847,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=48"></script>
+<script src="js/main.js?v=49"></script>
 <script src="js/sheet.js?v=7"></script>
 <script type="module" src="assets/as-you-read/site-score.mjs?v=38"></script>
 </body>
