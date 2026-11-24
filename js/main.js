@@ -174,14 +174,11 @@ addEventListener('scroll',()=>{
     });
   });
   tabs.forEach((tab,index)=>{
-    /* hovering opens a chapter only once the pointer has come to rest on it : one merely passing
-       over the timeline on its way somewhere else must not flip through chapters */
-    const rest=e=>{
+    /* hovering a chapter opens it; the short wait only filters a pointer sweeping straight across */
+    tab.addEventListener('pointerenter',e=>{
       if(!fine.matches||e.pointerType==='touch'||panels[active].contains(document.activeElement))return;
-      clearTimeout(pending);pending=setTimeout(()=>select(index),240);
-    };
-    tab.addEventListener('pointerenter',rest);
-    tab.addEventListener('pointermove',rest);
+      clearTimeout(pending);pending=setTimeout(()=>select(index),70);
+    });
     tab.addEventListener('pointerleave',()=>clearTimeout(pending));
     tab.addEventListener('click',()=>{clearTimeout(pending);select(index);});
     tab.addEventListener('focus',()=>{clearTimeout(pending);select(index);});
@@ -195,8 +192,21 @@ addEventListener('scroll',()=>{
       e.preventDefault();tabs[next].focus();
     });
   });
+  /* when the section is held in place its chapter area gets one fixed height, so the block stays the
+     same size from chapter to chapter and can sit centred : the tallest chapter, or the room there is */
+  const held=matchMedia('(min-width:881px) and (min-height:700px)');
+  const pin=story.querySelector('.story-pin'),head=story.querySelector('.story-head');
+  function fit(){
+    story.style.removeProperty('--h');
+    if(!held.matches||!pin)return;
+    const cs=getComputedStyle(pin);
+    const room=innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-head.offsetHeight;
+    let tallest=0;
+    panels.forEach(panel=>{const was=panel.hidden;panel.hidden=false;tallest=Math.max(tallest,panel.offsetHeight);panel.hidden=was;});
+    story.style.setProperty('--h',Math.max(240,Math.min(tallest,room))+'px');
+  }
   const layout=()=>{
-    clearTimeout(pending);layers=[active];settle();
+    clearTimeout(pending);layers=[active];settle();fit();more();
     tablist.setAttribute('aria-orientation',narrow.matches?'horizontal':'vertical');positionMarker();
   };
   narrow.addEventListener('change',layout);
@@ -204,7 +214,7 @@ addEventListener('scroll',()=>{
   fine.addEventListener('change',()=>clearTimeout(pending));
   new ResizeObserver(()=>{positionMarker();}).observe(tablist);
   addEventListener('resize',layout,{passive:true});
-  document.fonts.ready.then(positionMarker);
+  document.fonts.ready.then(()=>{fit();more();positionMarker();});
   layout();requestAnimationFrame(()=>tablist.classList.add('timeline-ready'));
 })();
 

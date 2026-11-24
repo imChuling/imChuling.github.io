@@ -249,7 +249,7 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .story-details[open] summary::after{transform:rotate(45deg)}
 .story-details.is-closing summary::after{transform:none}
 .story-details .s-notes{border:0;padding-top:0;margin-top:.8rem}
-.story-visual{position:relative;aspect-ratio:3/4;width:100%;max-width:350px;justify-self:center;border-radius:20px;overflow:hidden;background:var(--paper-2);box-shadow:0 8px 24px rgba(24,21,31,.08),0 40px 80px -30px rgba(24,21,31,.25)}
+.story-visual{position:relative;aspect-ratio:3/4;width:100%;max-width:400px;justify-self:center;border-radius:20px;overflow:hidden;background:var(--paper-2);box-shadow:0 8px 24px rgba(24,21,31,.08),0 40px 80px -30px rgba(24,21,31,.25)}
 .story-visual .ph{position:absolute;inset:0}.story-visual .ph.active{z-index:2}
 .story-visual .ph img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
 .story-marker{position:absolute;left:0;top:0;width:9px;height:9px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px rgba(90,104,128,.12);z-index:3;pointer-events:none;opacity:0}
@@ -273,16 +273,18 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
    scrolls inside it, with its last lines fading while there is more below */
 @media(min-width:881px) and (min-height:700px){
  .story{height:150vh;padding-bottom:0}
- .story-pin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding-bottom:2.4rem}
- .story-head{padding-top:6.2rem;width:100%}
+ /* the whole block (heading, timeline, chapter, photograph) sits in the middle of what is left under the
+    nav. --h is the height of the chapter area, set from main.js : the tallest chapter, or the room there is */
+ .story-pin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:5.4rem 0 1.4rem}
+ .story-head{padding-top:0;width:100%}
  .story-head::before{margin-bottom:1.4rem}
  .story-instruction{margin-bottom:1.5rem}
- .story-track{flex:1;min-height:0}
- .story-layout{height:100%;width:100%;grid-template-rows:minmax(0,1fr)}
- .story-steps{min-height:0;max-height:100%;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
+ .story-track{flex:none}
+ .story-layout{width:100%}
+ .story-steps{min-height:0;height:var(--h,auto);overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
  .story-steps::-webkit-scrollbar{display:none}
  .story-steps.more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent)}
- .story-visual{width:min(100%,350px,calc((100vh - 19rem)*.75))}
+ .story-visual{width:min(100%,400px,calc(var(--h,533px)*.75))}
 }
 @media(max-width:1050px){.story-layout{grid-template-columns:125px minmax(0,1.3fr) minmax(0,.8fr);gap:1.5rem}.story-node-label{font-size:.9rem}.story-step p{font-size:.8rem}}
 @media(max-width:880px){
@@ -822,7 +824,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script src="js/sheet.js?v=7"></script>
 <script type="module" src="assets/as-you-read/site-score.mjs?v=38"></script>
 </body>
