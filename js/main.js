@@ -60,6 +60,9 @@ addEventListener('scroll',()=>{
   const marker=document.createElement('span');
   marker.className='story-marker';marker.setAttribute('aria-hidden','true');tablist.appendChild(marker);
   let active=0,pending,animations=[],revision=0;
+  /* one curve for anything that moves, one for plain fades */
+  const MOVE='cubic-bezier(.22,1,.36,1)',FADE='cubic-bezier(.4,0,.2,1)';
+  const shown=el=>el.hidden?0:parseFloat(getComputedStyle(el).opacity)||0;
   function positionMarker(){
     const root=tablist.getBoundingClientRect();
     const dot=tabs[active].querySelector('.story-node-dot').getBoundingClientRect();
@@ -70,15 +73,21 @@ addEventListener('scroll',()=>{
     animations.forEach(animation=>animation.cancel());animations=[];
     stage.style.height='';stage.style.overflow='';
     panels.forEach((panel,i)=>{panel.hidden=i!==active;});
-    visuals.forEach((visual,i)=>{visual.hidden=i!==active;});
+    visuals.forEach((visual,i)=>{visual.hidden=i!==active;visual.style.zIndex='';visual.style.opacity='';});
   }
+  /* photographs that are still on the glass, bottom to top */
+  let layers=[0];
   function select(index){
     if(index===active)return;
-    const previous=active;
-    settle();
+    const previous=active,dir=index>previous?1:-1;
+    /* where everything is right now, so a change made mid-transition carries on from there */
     const startHeight=stage.getBoundingClientRect().height;
+    const textNow=panels.map(shown),photoNow=visuals.map(shown);
+    revision++;
+    animations.forEach(animation=>animation.cancel());animations=[];
+    stage.style.height='';stage.style.overflow='';
     active=index;
-    const turn=++revision;
+    const turn=revision;
     tabs.forEach((tab,i)=>{
       const selected=i===index;
       tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;
@@ -91,23 +100,63 @@ addEventListener('scroll',()=>{
       visuals[i].classList.toggle('active',selected);
     });
     positionMarker();
-    if(reduced.matches||!panels[index].animate)return;
+    if(reduced.matches||!panels[index].animate){layers=[index];visuals.forEach(v=>{v.style.zIndex='';v.style.opacity='';});return;}
     const endHeight=stage.getBoundingClientRect().height;
-    panels[previous].hidden=false;visuals[previous].hidden=false;
-    stage.style.height=startHeight+'px';stage.style.overflow='clip';
-    const ease='cubic-bezier(.22,1,.36,1)';
     const animate=(el,frames,options)=>{
       const animation=el.animate(frames,{fill:'both',...options});animations.push(animation);return animation;
     };
-    animate(panels[previous],[{opacity:1},{opacity:0}],{duration:140,easing:'ease-out'});
-    animate(panels[index],[{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:320,delay:80,easing:ease});
-    animate(visuals[previous],[{opacity:1},{opacity:0}],{duration:360,easing:'ease-out'});
-    animate(visuals[index],[{opacity:0},{opacity:1}],{duration:480,easing:'ease-in-out'});
-    animate(stage,[{height:startHeight+'px'},{height:endHeight+'px'}],{duration:400,easing:ease});
+    /* the chapter leaves towards where it came from, the next one arrives from the other side;
+       along the timeline's own axis, so the text moves the way the marker does */
+    const shift=d=>narrow.matches?`translateX(${d}px)`:`translateY(${d}px)`;
+    let leaving=false;
+    panels.forEach((panel,i)=>{
+      if(i===index||textNow[i]<.02)return;
+      leaving=true;panel.hidden=false;
+      animate(panel,[{opacity:textNow[i]},{opacity:0,transform:shift(-dir*5)}],{duration:150,easing:FADE});
+    });
+    const from=textNow[index];
+    animate(panels[index],[{opacity:from,transform:shift(dir*8*(1-from))},{opacity:1,transform:shift(0)}],{duration:320,delay:leaving?110:0,easing:MOVE});
+    /* the new photograph fades in over the ones already there, which stay solid underneath :
+       the glass never goes half empty in the middle of a change */
+    layers=layers.filter(i=>i!==index&&photoNow[i]>.02).slice(-2);
+    layers.forEach((i,z)=>{visuals[i].hidden=false;visuals[i].style.zIndex=z;visuals[i].style.opacity=photoNow[i];});
+    layers.push(index);
+    visuals[index].style.zIndex=2;visuals[index].style.opacity='';
+    animate(visuals[index],[{opacity:photoNow[index]},{opacity:1}],{duration:420,easing:FADE});
+    if(Math.abs(endHeight-startHeight)>1){
+      stage.style.height=startHeight+'px';stage.style.overflow='clip';
+      animate(stage,[{height:startHeight+'px'},{height:endHeight+'px'}],{duration:320,easing:MOVE});
+    }
     Promise.all(animations.map(animation=>animation.finished)).then(()=>{
-      if(turn===revision)settle();
+      if(turn===revision){layers=[active];settle();}
     }).catch(()=>{}); // A newer choice cancels this transition and owns cleanup.
   }
+  /* the notes under a chapter open and close instead of snapping */
+  story.querySelectorAll('.story-details').forEach(details=>{
+    const summary=details.querySelector('summary'),notes=details.querySelector('.s-notes');
+    if(!summary||!notes)return;
+    let run=null;
+    summary.addEventListener('click',e=>{
+      if(reduced.matches||!notes.animate)return;
+      e.preventDefault();
+      const closing=details.classList.contains('is-closing'),opening=!details.open||closing;
+      const now=details.open?notes.getBoundingClientRect().height:0,seen=details.open?parseFloat(getComputedStyle(notes).opacity):0;
+      if(run){run.cancel();run=null;}
+      details.classList.toggle('is-closing',!opening);
+      if(opening)details.open=true;
+      const gap=getComputedStyle(notes).marginTop,full=notes.getBoundingClientRect().height;
+      const shut={height:'0px',marginTop:'0px',opacity:0},wide={height:full+'px',marginTop:gap,opacity:1};
+      const here={height:now+'px',marginTop:now?gap:'0px',opacity:seen};
+      notes.style.overflow='clip';
+      run=notes.animate([here,opening?wide:shut],{duration:300,easing:MOVE});
+      const mine=run;
+      mine.finished.then(()=>{
+        if(run!==mine)return;
+        run=null;notes.style.overflow='';
+        if(!opening){details.open=false;details.classList.remove('is-closing');}
+      }).catch(()=>{});
+    });
+  });
   tabs.forEach((tab,index)=>{
     tab.addEventListener('pointerenter',e=>{
       if(!fine.matches||e.pointerType==='touch'||panels[active].contains(document.activeElement))return;
@@ -127,7 +176,7 @@ addEventListener('scroll',()=>{
     });
   });
   const layout=()=>{
-    clearTimeout(pending);settle();
+    clearTimeout(pending);layers=[active];settle();
     tablist.setAttribute('aria-orientation',narrow.matches?'horizontal':'vertical');positionMarker();
   };
   narrow.addEventListener('change',layout);
