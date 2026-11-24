@@ -60,6 +60,16 @@ addEventListener('scroll',()=>{
   const marker=document.createElement('span');
   marker.className='story-marker';marker.setAttribute('aria-hidden','true');tablist.appendChild(marker);
   let active=0,pending,animations=[],revision=0;
+  /* the other chapters' photographs are fetched and decoded as the section comes near, so a chapter
+     never opens on an empty frame that fills in a moment later */
+  new IntersectionObserver((entries,io)=>{
+    if(!entries.some(e=>e.isIntersecting))return;
+    io.disconnect();
+    visuals.forEach(v=>{const img=v.querySelector('img');if(!img)return;img.loading='eager';if(img.decode)img.decode().catch(()=>{});});
+  },{rootMargin:'900px 0px'}).observe(story);
+  /* a chapter longer than the room it has scrolls inside it; its last lines fade while more is below */
+  const more=()=>stage.classList.toggle('more',stage.scrollHeight-stage.scrollTop-stage.clientHeight>6);
+  stage.addEventListener('scroll',more,{passive:true});
   /* one curve for anything that moves, one for plain fades */
   const MOVE='cubic-bezier(.22,1,.36,1)',FADE='cubic-bezier(.4,0,.2,1)';
   const shown=el=>el.hidden?0:parseFloat(getComputedStyle(el).opacity)||0;
@@ -74,6 +84,7 @@ addEventListener('scroll',()=>{
     stage.style.height='';stage.style.overflow='';
     panels.forEach((panel,i)=>{panel.hidden=i!==active;});
     visuals.forEach((visual,i)=>{visual.hidden=i!==active;visual.style.zIndex='';visual.style.opacity='';});
+    more();
   }
   /* photographs that are still on the glass, bottom to top */
   let layers=[0];
@@ -86,6 +97,7 @@ addEventListener('scroll',()=>{
     revision++;
     animations.forEach(animation=>animation.cancel());animations=[];
     stage.style.height='';stage.style.overflow='';
+    stage.scrollTop=0;stage.classList.remove('more');
     active=index;
     const turn=revision;
     tabs.forEach((tab,i)=>{
@@ -112,20 +124,24 @@ addEventListener('scroll',()=>{
     panels.forEach((panel,i)=>{
       if(i===index||textNow[i]<.02)return;
       leaving=true;panel.hidden=false;
-      animate(panel,[{opacity:textNow[i]},{opacity:0,transform:shift(-dir*5)}],{duration:150,easing:FADE});
+      animate(panel,[{opacity:textNow[i]},{opacity:0}],{duration:240,easing:FADE});
+      animate(panel,[{transform:shift(0)},{transform:shift(-dir*6)}],{duration:240,easing:FADE});
     });
-    const from=textNow[index];
-    animate(panels[index],[{opacity:from,transform:shift(dir*8*(1-from))},{opacity:1,transform:shift(0)}],{duration:320,delay:leaving?110:0,easing:MOVE});
+    /* the new chapter starts while the old one is still going, so the column is never blank;
+       it fades on the fade curve and travels on the movement curve, which is what stops it popping */
+    const from=textNow[index],wait=leaving?60:0;
+    animate(panels[index],[{opacity:from},{opacity:1}],{duration:380,delay:wait,easing:FADE});
+    animate(panels[index],[{transform:shift(dir*12*(1-from))},{transform:shift(0)}],{duration:520,delay:wait,easing:MOVE});
     /* the new photograph fades in over the ones already there, which stay solid underneath :
        the glass never goes half empty in the middle of a change */
     layers=layers.filter(i=>i!==index&&photoNow[i]>.02).slice(-2);
     layers.forEach((i,z)=>{visuals[i].hidden=false;visuals[i].style.zIndex=z;visuals[i].style.opacity=photoNow[i];});
     layers.push(index);
     visuals[index].style.zIndex=2;visuals[index].style.opacity='';
-    animate(visuals[index],[{opacity:photoNow[index]},{opacity:1}],{duration:420,easing:FADE});
+    animate(visuals[index],[{opacity:photoNow[index]},{opacity:1}],{duration:560,easing:FADE});
     if(Math.abs(endHeight-startHeight)>1){
       stage.style.height=startHeight+'px';stage.style.overflow='clip';
-      animate(stage,[{height:startHeight+'px'},{height:endHeight+'px'}],{duration:320,easing:MOVE});
+      animate(stage,[{height:startHeight+'px'},{height:endHeight+'px'}],{duration:420,easing:MOVE});
     }
     Promise.all(animations.map(animation=>animation.finished)).then(()=>{
       if(turn===revision){layers=[active];settle();}
@@ -158,10 +174,14 @@ addEventListener('scroll',()=>{
     });
   });
   tabs.forEach((tab,index)=>{
-    tab.addEventListener('pointerenter',e=>{
+    /* hovering opens a chapter only once the pointer has come to rest on it : one merely passing
+       over the timeline on its way somewhere else must not flip through chapters */
+    const rest=e=>{
       if(!fine.matches||e.pointerType==='touch'||panels[active].contains(document.activeElement))return;
-      clearTimeout(pending);pending=setTimeout(()=>select(index),180);
-    });
+      clearTimeout(pending);pending=setTimeout(()=>select(index),240);
+    };
+    tab.addEventListener('pointerenter',rest);
+    tab.addEventListener('pointermove',rest);
     tab.addEventListener('pointerleave',()=>clearTimeout(pending));
     tab.addEventListener('click',()=>{clearTimeout(pending);select(index);});
     tab.addEventListener('focus',()=>{clearTimeout(pending);select(index);});
@@ -289,13 +309,16 @@ function rainify(container){
   /* a photo that finishes loading after the first snapshot recolours the existing fog in place (source-atop
      keeps the wiped holes and drop trails). The slow re-frost can't do this: at alpha .006 an 8-bit canvas
      rounds any colour difference under ~83 levels to zero, so the gradient frost would never turn into the photo */
-  const retint=()=>{
-    snaps.clear();if(!w||!h)return;
+  let started=false;
+  const retint=ph=>{
+    snaps.delete(ph);
+    if(!w||!h||ph!==activePh())return;      /* a photo behind a chapter that isn't showing changes nothing yet */
+    if(started&&onScreen&&!REDUCE){fade=30;return;}   /* in view, a late photo fades in over the glass instead of snapping */
     x.globalAlpha=1;x.globalCompositeOperation='source-atop';
     x.drawImage(snap(),0,0);
     x.globalCompositeOperation='source-over';
   };
-  container.querySelectorAll('img').forEach(img=>{if(!img.complete)img.addEventListener('load',retint,{once:true});});
+  container.querySelectorAll('img').forEach(img=>{if(!img.complete)img.addEventListener('load',()=>retint(img.closest('.ph')),{once:true});});
   /* a chapter change re-frosts the glass from the new photo over ~half a second, quick enough that the
      old photo's haze doesn't linger, slow enough to read as a transition. Only a real change counts:
      class writes that leave the active pane alone (the wipe hint, for one) must not touch the glass */
@@ -443,7 +466,7 @@ function rainify(container){
   let warmup=true;
   if(!REDUCE){
     for(let i=0;i<440;i++)step();
-    warmup=false;
+    warmup=false;started=true;
     (function loop(){
       requestAnimationFrame(loop);
       if(onScreen)step();

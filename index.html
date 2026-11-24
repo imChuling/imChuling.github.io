@@ -268,6 +268,22 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .s-label{font:400 .72rem var(--stamp);letter-spacing:.06em;color:var(--muted)}
 .story-step .s-quote{margin:1.2rem auto 0;padding:0 2rem;text-align:center;font:400 1.05rem/1.55 var(--stamp);color:var(--violet);letter-spacing:.01em}
 
+/* held in place : on a window with room for it the section pins while the page scrolls a little past,
+   like Music and About. The chapter area takes whatever height is left; a chapter longer than that
+   scrolls inside it, with its last lines fading while there is more below */
+@media(min-width:881px) and (min-height:700px){
+ .story{height:150vh;padding-bottom:0}
+ .story-pin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding-bottom:2.4rem}
+ .story-head{padding-top:6.2rem;width:100%}
+ .story-head::before{margin-bottom:1.4rem}
+ .story-instruction{margin-bottom:1.5rem}
+ .story-track{flex:1;min-height:0}
+ .story-layout{height:100%;width:100%;grid-template-rows:minmax(0,1fr)}
+ .story-steps{min-height:0;max-height:100%;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
+ .story-steps::-webkit-scrollbar{display:none}
+ .story-steps.more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent)}
+ .story-visual{width:min(100%,350px,calc((100vh - 19rem)*.75))}
+}
 @media(max-width:1050px){.story-layout{grid-template-columns:125px minmax(0,1.3fr) minmax(0,.8fr);gap:1.5rem}.story-node-label{font-size:.9rem}.story-step p{font-size:.8rem}}
 @media(max-width:880px){
  .story-layout{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr);gap:1.8rem}
@@ -682,6 +698,7 @@ footer{
 
 <!-- ============ STORY : interactive timeline ============ -->
 <div class="story" id="story">
+<div class="story-pin">
   <div class="shell story-head">
     <div class="sec-head reveal"><h2 class="sec-title">The story <em>so far</em></h2><span class="sec-num">03 · STORY</span></div>
     <p class="story-instruction">Choose a chapter to explore.</p>
@@ -759,6 +776,7 @@ footer{
     </div>
   </div>
 </div>
+</div>
 
 <!-- ============ ABOUT ME ============ -->
 <section class="me-wrap" id="contact" aria-label="About and contact">
@@ -804,7 +822,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=46"></script>
+<script src="js/main.js?v=47"></script>
 <script src="js/sheet.js?v=7"></script>
 <script type="module" src="assets/as-you-read/site-score.mjs?v=38"></script>
 </body>
