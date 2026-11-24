@@ -224,16 +224,16 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .story-timeline{position:relative;display:flex;flex-direction:column;padding:.25rem 0}
 .story-timeline::before{content:'';position:absolute;left:8px;top:26px;bottom:26px;width:1px;background:var(--line)}
 .story-node{position:relative;display:grid;grid-template-columns:18px minmax(0,1fr);gap:.7rem;align-items:center;width:100%;padding:1rem 0;border:0;background:transparent;text-align:left;color:var(--muted);cursor:pointer;transition:color .25s}
-.story-node::before{content:'';width:9px;height:9px;margin-left:4px;border-radius:50%;background:var(--paper);border:1px solid var(--muted);z-index:1;transition:background .25s,box-shadow .25s}
+.story-node-dot{width:9px;height:9px;margin-left:4px;border-radius:50%;background:var(--paper);border:1px solid var(--muted);z-index:1;transition:background .25s,box-shadow .25s}
 .story-node[aria-selected="true"]{color:var(--ink)}
-.story-node[aria-selected="true"]::before{background:var(--violet);border-color:var(--violet);box-shadow:0 0 0 5px rgba(90,104,128,.12)}
+.story-node[aria-selected="true"] .story-node-dot{background:var(--violet);border-color:var(--violet);box-shadow:0 0 0 5px rgba(90,104,128,.12)}
 .story-node:hover{color:var(--violet)}
 .story-node-number{display:block;font:300 .58rem/1.6 var(--mono);letter-spacing:.12em}
-.story-node-label{display:block;font:400 1rem/1.3 var(--serif)}
+.story-node-label{display:block;transition:transform .35s cubic-bezier(.22,1,.36,1);font:400 1rem/1.3 var(--serif)}
 .story-node:focus-visible,.story-details summary:focus-visible,.story-step:focus-visible{outline:2px solid var(--violet);outline-offset:5px;border-radius:4px}
-.story-steps{min-width:0;min-height:470px;overflow:visible}
+.story-steps{display:grid;align-items:start;min-width:0;min-height:470px;overflow:visible}
 .story-step[hidden],.story-visual .ph[hidden]{display:none}
-.story-step{display:block;animation:story-in .35s ease-out}
+.story-step{display:block;grid-area:1/1;align-self:start}
 .story-step .s-num{display:block;font:400 .75rem var(--display);letter-spacing:.18em;color:var(--violet);margin-bottom:1rem}
 .story-step h3{font:400 clamp(1.7rem,2.8vw,2.6rem)/1.18 var(--stamp);letter-spacing:.01em;text-wrap:balance}
 .story-step h3 em{font-style:normal;color:inherit}
@@ -242,14 +242,16 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .story-details{margin-top:1.2rem;border-top:1px solid var(--line);padding-top:.8rem}
 .story-details summary{display:flex;justify-content:space-between;align-items:center;gap:1rem;list-style:none;cursor:pointer;font:400 .85rem var(--serif);color:var(--violet)}
 .story-details summary::-webkit-details-marker{display:none}
-.story-details summary::after{content:'+';font:300 1.2rem var(--sans)}
-.story-details[open] summary::after{content:'−'}
+.story-details summary::after{content:'+';font:300 1.2rem var(--sans);transition:transform .25s}
+.story-details[open] summary::after{transform:rotate(45deg)}
 .story-details .s-notes{border:0;padding-top:0;margin-top:.8rem}
 .story-visual{position:relative;aspect-ratio:3/4;width:100%;max-width:350px;justify-self:center;border-radius:20px;overflow:hidden;background:var(--paper-2);box-shadow:0 8px 24px rgba(24,21,31,.08),0 40px 80px -30px rgba(24,21,31,.25)}
-.story-visual .ph{position:absolute;inset:0;animation:story-photo-in .4s ease-out}
+.story-visual .ph{position:absolute;inset:0}.story-visual .ph.active{z-index:2}
 .story-visual .ph img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
-@keyframes story-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@keyframes story-photo-in{from{opacity:.25}to{opacity:1}}
+.story-marker{position:absolute;left:0;top:0;width:9px;height:9px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px rgba(90,104,128,.12);z-index:3;pointer-events:none;opacity:0}
+.story-timeline.timeline-ready .story-marker{opacity:1;transition:transform .42s cubic-bezier(.22,1,.36,1)}
+.story-timeline.timeline-ready .story-node[aria-selected="true"] .story-node-dot{background:var(--paper);border-color:var(--muted);box-shadow:none}
+@media(min-width:881px){.story-node[aria-selected="true"] .story-node-label{transform:translateX(3px)}}
 .s-notes{margin-top:.6rem}
 .story-step .s-label+.s-notes{margin-top:.5rem}
 .s-notes{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--line);font:300 .7rem/1.45 var(--mono);color:var(--muted)}
@@ -266,7 +268,7 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
  .story-timeline{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:0}
  .story-timeline::before{left:10%;right:10%;top:8px;bottom:auto;width:auto;height:1px}
  .story-node{display:flex;flex-direction:column;gap:.65rem;padding:0 .2rem .5rem;text-align:center}
- .story-node::before{margin:4px 0 0;flex-shrink:0}.story-node-label{font-size:.85rem}.story-node-number{font-size:.55rem}
+ .story-node-dot{margin:4px 0 0;flex-shrink:0}.story-node-label{font-size:.85rem}.story-node-number{font-size:.55rem}
  .story-steps{min-height:440px}.story-visual{max-width:300px}
 }
 @media(max-width:600px){
@@ -276,7 +278,7 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
  .story-step h3{font-size:1.8rem}.story-step p{font-size:.82rem;line-height:1.8}
  .story-step .s-quote{font-size:.9rem;padding:0}.s-notes{font-size:.66rem;line-height:1.65}
 }
-@media(prefers-reduced-motion:reduce){.story-step,.story-visual .ph{animation:none}.story-node,.story-node::before{transition:none}}
+@media(prefers-reduced-motion:reduce){.story-step,.story-visual .ph{animation:none}.story-node,.story-node-dot,.story-timeline.timeline-ready .story-marker,.story-node-label,.story-details summary::after{transition:none}}
 @media(max-width:380px){.nav-links a,.nav-sound{font-size:.66rem;letter-spacing:.05em}}
 
 /* ---------- marquee band ---------- */
@@ -676,16 +678,16 @@ footer{
 <div class="story" id="story">
   <div class="shell story-head">
     <div class="sec-head reveal"><h2 class="sec-title">The story <em>so far</em></h2><span class="sec-num">03 · STORY</span></div>
-    <p class="story-instruction">Explore the timeline. Hover, click, or use the arrow keys to choose a chapter.</p>
+    <p class="story-instruction">Choose a chapter to explore.</p>
   </div>
   <div class="story-track">
     <div class="story-layout">
       <div class="story-timeline" role="tablist" aria-label="Story chapters" aria-orientation="vertical">
-        <button class="story-node" id="story-tab-0" type="button" role="tab" aria-selected="true" aria-controls="story-panel-0" tabindex="0" data-chapter="0" data-hover><span><span class="story-node-number">01</span><span class="story-node-label">Choir years</span></span></button>
-        <button class="story-node" id="story-tab-1" type="button" role="tab" aria-selected="false" aria-controls="story-panel-1" tabindex="-1" data-chapter="1" data-hover><span><span class="story-node-number">02</span><span class="story-node-label">Solo voice</span></span></button>
-        <button class="story-node" id="story-tab-2" type="button" role="tab" aria-selected="false" aria-controls="story-panel-2" tabindex="-1" data-chapter="2" data-hover><span><span class="story-node-number">03</span><span class="story-node-label">Richard Bird</span></span></button>
-        <button class="story-node" id="story-tab-3" type="button" role="tab" aria-selected="false" aria-controls="story-panel-3" tabindex="-1" data-chapter="3" data-hover><span><span class="story-node-number">04</span><span class="story-node-label">Teaching & leading</span></span></button>
-        <button class="story-node" id="story-tab-4" type="button" role="tab" aria-selected="false" aria-controls="story-panel-4" tabindex="-1" data-chapter="4" data-hover><span><span class="story-node-number">05</span><span class="story-node-label">Building tools</span></span></button>
+        <button class="story-node" id="story-tab-0" type="button" role="tab" aria-selected="true" aria-controls="story-panel-0" tabindex="0" data-chapter="0" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">01</span><span class="story-node-label">Choir years</span></span></button>
+        <button class="story-node" id="story-tab-1" type="button" role="tab" aria-selected="false" aria-controls="story-panel-1" tabindex="-1" data-chapter="1" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">02</span><span class="story-node-label">Solo voice</span></span></button>
+        <button class="story-node" id="story-tab-2" type="button" role="tab" aria-selected="false" aria-controls="story-panel-2" tabindex="-1" data-chapter="2" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">03</span><span class="story-node-label">Richard Bird</span></span></button>
+        <button class="story-node" id="story-tab-3" type="button" role="tab" aria-selected="false" aria-controls="story-panel-3" tabindex="-1" data-chapter="3" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">04</span><span class="story-node-label">Teaching & leading</span></span></button>
+        <button class="story-node" id="story-tab-4" type="button" role="tab" aria-selected="false" aria-controls="story-panel-4" tabindex="-1" data-chapter="4" data-hover><span class="story-node-dot" aria-hidden="true"></span><span><span class="story-node-number">05</span><span class="story-node-label">Building tools</span></span></button>
       </div>
       <div class="story-steps">
         <div class="story-step active" data-step="0" id="story-panel-0" role="tabpanel" aria-labelledby="story-tab-0" tabindex="0">
@@ -821,7 +823,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=43"></script>
+<script src="js/main.js?v=44"></script>
 <script src="js/sheet.js?v=7"></script>
 <script type="module" src="assets/as-you-read/site-score.mjs?v=38"></script>
 </body>
