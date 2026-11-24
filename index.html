@@ -239,6 +239,9 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .story-step p{margin-top:1.1rem;color:var(--ink);font:300 .85rem/1.85 var(--mono);text-wrap:pretty}
 .story-step .s-num+p{margin-top:0}
 .story-step p strong{font-weight:600}
+.story-step p a{color:inherit;font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--muted);transition:text-decoration-color .3s}
+.story-step p a:hover{text-decoration-color:var(--violet)}
+.story-step p a:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:3px}
 .story-details{margin-top:1.2rem;border-top:1px solid var(--line);padding-top:.8rem}
 .story-details summary{display:flex;justify-content:space-between;align-items:center;gap:1rem;list-style:none;cursor:pointer;font:400 .85rem var(--serif);color:var(--violet)}
 .story-details summary::-webkit-details-marker{display:none}
@@ -752,16 +755,7 @@ footer{
         </div>
         <div class="story-step" data-step="4" id="story-panel-4" role="tabpanel" aria-labelledby="story-tab-4" tabindex="0" hidden>
           <span class="s-num">CHAPTER 05 / 05</span>
-          <p>Writing code while making music keeps bringing me back to two questions: what can AI actually do for a musician, and where does my own judgment still matter? <strong>Pocket Producer</strong> began with my own half-finished demos. <strong>Quill</strong> began with the wish for a sonic eyedropper that keeps the vibrato but swaps the sound. <strong>Second Self</strong> began with wondering whether a singer can duet with herself from a few minutes ago. On <strong>HARP</strong> I joined a research team and learned to deploy and validate music AI models with a musician's ear. All of it points the same way: tools that leave the musician in charge of the decisions.</p>
-          <details class="story-details"><summary>Projects & next steps</summary>
-          <ul class="s-notes">
-            <li><strong>Pocket Producer</strong>: session-conditioned retrieval for unfinished music; every suggestion can be inspected, auditioned, inserted and undone · ISMIR 2026 LBD</li>
-            <li><strong>Quill</strong>: how an instrument sounds and how it is played, learned as two swappable assets and played live from a MIDI keyboard · ISMIR 2026 LBD</li>
-            <li><strong>HARP</strong>: joined a research team; deployed and validated 29 music AI models inside a DAW workflow; a per-model MIDI-instrument check I proposed was merged</li>
-            <li><strong>Second Self</strong>: a Max for Live system in which a singer duets with herself from a few minutes earlier, steered by the chords being played</li>
-            <li>Next: audio signal processing, music information retrieval and human-computer interaction: pairing rigorous evaluation with watching how musicians actually use a tool</li>
-          </ul>
-          </details>
+          <p>Writing code while making music keeps bringing me back to two questions: what can AI actually do for a musician, and where does my own judgment still matter? <a href="project-pocketproducer.html" data-detail-sheet data-hover>Pocket Producer</a> began with my own half-finished demos. <a href="project-quill.html" data-detail-sheet data-hover>Quill</a> began with the wish for a sonic eyedropper that keeps the vibrato but swaps the sound. <a href="project-secondself.html" data-detail-sheet data-hover>Second Self</a> began with wondering whether a singer can duet with herself from a few minutes ago. On <a href="project-harp.html" data-detail-sheet data-hover>HARP</a> I joined a research team and learned to deploy and validate music AI models with a musician's ear. All of it points the same way: tools that leave the musician in charge of the decisions.</p>
         </div>
       </div>
       <div class="story-visual rain" data-hover>
