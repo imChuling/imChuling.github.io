@@ -289,7 +289,7 @@ function rainify(container){
   new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;},{threshold:.02}).observe(container);
 
   let wiping=false,lx=0,ly=0;
-  container.addEventListener('mousemove',e=>{
+  const wipe=e=>{
     const r=container.getBoundingClientRect();
     const cx=e.clientX-r.left,cy=e.clientY-r.top;
     x.globalCompositeOperation='destination-out';
@@ -303,9 +303,13 @@ function rainify(container){
     x.globalCompositeOperation='source-over';
     lx=cx;ly=cy;wiping=true;
     container.classList.add('rain-done');
-  });
+  };
+  container.addEventListener('pointermove',wipe,{passive:true});
+  container.addEventListener('pointerdown',wipe,{passive:true});
   let wasWiping=false;
-  container.addEventListener('mouseleave',()=>wiping=false);
+  container.addEventListener('pointerleave',()=>wiping=false);
+  container.addEventListener('pointerup',e=>{if(e.pointerType==='touch')wiping=false;});
+  container.addEventListener('pointercancel',()=>wiping=false);
   let wipeLast=0,refrostDelay=180;
 
   function step(){

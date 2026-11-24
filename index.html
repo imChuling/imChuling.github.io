@@ -212,6 +212,7 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
   padding:.5rem 1.1rem;border-radius:99px;transition:opacity 1s;
 }
 .rain-done .rain-hint{opacity:0}
+.story-visual .rain-hint{white-space:nowrap;font-size:clamp(.5rem,.7vw,.65rem);letter-spacing:.12em;padding:.5rem .8rem}
 
 /* ---------- STORY : choose a chapter on the timeline ---------- */
 .story{position:relative;padding-bottom:4rem}
@@ -235,9 +236,8 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .story-step[hidden],.story-visual .ph[hidden]{display:none}
 .story-step{display:block;grid-area:1/1;align-self:start}
 .story-step .s-num{display:block;font:400 .75rem var(--display);letter-spacing:.18em;color:var(--violet);margin-bottom:1rem}
-.story-step h3{font:400 clamp(1.7rem,2.8vw,2.6rem)/1.18 var(--stamp);letter-spacing:.01em;text-wrap:balance}
-.story-step h3 em{font-style:normal;color:inherit}
 .story-step p{margin-top:1.1rem;color:var(--ink);font:300 .85rem/1.85 var(--mono);text-wrap:pretty}
+.story-step .s-num+p{margin-top:0}
 .story-step p strong{font-weight:600}
 .story-details{margin-top:1.2rem;border-top:1px solid var(--line);padding-top:.8rem}
 .story-details summary{display:flex;justify-content:space-between;align-items:center;gap:1rem;list-style:none;cursor:pointer;font:400 .85rem var(--serif);color:var(--violet)}
@@ -275,7 +275,7 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
  .story-head{padding:3rem 5vw 0}.story-layout{grid-template-columns:1fr;padding:0 5vw;gap:1.5rem}
  .story-timeline{order:0}.story-visual{order:1;width:min(100%,210px)}.story-steps{order:2;min-height:0}
  .story-node-label{font-size:.72rem;line-height:1.35}.story-node-number{font-size:.5rem}.story-instruction{font-size:.68rem}
- .story-step h3{font-size:1.8rem}.story-step p{font-size:.82rem;line-height:1.8}
+ .story-step p{font-size:.82rem;line-height:1.8}
  .story-step .s-quote{font-size:.9rem;padding:0}.s-notes{font-size:.66rem;line-height:1.65}
 }
 @media(prefers-reduced-motion:reduce){.story-step,.story-visual .ph{animation:none}.story-node,.story-node-dot,.story-timeline.timeline-ready .story-marker,.story-node-label,.story-details summary::after{transition:none}}
@@ -692,7 +692,6 @@ footer{
       <div class="story-steps">
         <div class="story-step active" data-step="0" id="story-panel-0" role="tabpanel" aria-labelledby="story-tab-0" tabindex="0">
           <span class="s-num">CHAPTER 01 / 05</span>
-          <h3>It started in a choir.</h3>
           <p>I began studying <strong>classical piano</strong> at an early age and passed the <strong>China Conservatory of Music's Grade 6</strong> examination when I was seven. I later joined the <strong>Minnan Grand Theatre</strong> Children's Choir in Xiamen, China, where I had the opportunity to perform alongside choirs from Austria, France, and New York, including <strong>Les Petits Chanteurs de Saint-Marc</strong>, the choir featured in the film <em>Les Choristes</em>. Around the same time, I also began training in <strong>bel canto</strong>. My interest in singing continued into high school, where I was admitted to <strong>Xiamen No.1 High School</strong> as a <strong>vocal specialist</strong> and performed with <strong>both its children's and mixed choirs</strong>.</p>
           <details class="story-details"><summary>Selected Performances</summary>
           <ul class="s-notes">
@@ -706,7 +705,6 @@ footer{
         </div>
         <div class="story-step" data-step="1" id="story-panel-1" role="tabpanel" aria-labelledby="story-tab-1" tabindex="0" hidden>
           <span class="s-num">CHAPTER 02 / 05</span>
-          <h3>A voice of my own.</h3>
           <p>Since high school, I have remained active as a solo singer, performing at campus music festivals and other events. I won <strong>first place</strong> in the Xiamen No.1 High School Singing Competition in 2021, placed in the <strong>Top 10 of UNNC Voice</strong> in 2023, and was <strong>runner-up</strong> in the University of Nottingham CSSA Singing Competition in 2025. Beyond competing, I was invited to serve as a <strong>mentor and judge</strong> for UNNC Voice in 2024 and to perform at the <strong>CSSA-UK Southern Performing Arts Festival</strong> in 2026, along with various other events.</p>
           <details class="story-details"><summary>Selected Performances</summary>
           <ul class="s-notes">
@@ -723,7 +721,6 @@ footer{
         </div>
         <div class="story-step" data-step="2" id="story-panel-2" role="tabpanel" aria-labelledby="story-tab-2" tabindex="0" hidden>
           <span class="s-num">CHAPTER 03 / 05</span>
-          <h3>Then came the band.</h3>
           <p>In September 2023, four of us, all science and engineering students with a shared love of music, formed <strong>Richard Bird</strong>, a band rooted in blues and hard rock that later expanded into funk and R&amp;B. I take on <strong>lead vocals and keyboard/synthesizer</strong>. Since then, we have opened the evening stage at the <strong>CACA Music Festival</strong>, performed at multi-band showcases including To Be Found and Cracking Seeds, and played at countless other campus music festivals.</p>
           <p class="s-quote">"You know some birds are not meant to be caged,<br>their feathers are just too bright."</p>
           <details class="story-details"><summary>Selected Performances</summary>
@@ -740,7 +737,6 @@ footer{
         </div>
         <div class="story-step" data-step="3" id="story-panel-3" role="tabpanel" aria-labelledby="story-tab-3" tabindex="0" hidden>
           <span class="s-num">CHAPTER 04 / 05</span>
-          <h3>Passing it on.</h3>
           <p>Music has also been something to organise and pass on. I conducted my class to the <strong>Best Conductor</strong> award at Xiamen No.1 High School's choir competition, led the performance team of the <strong>UNNC Music Association</strong> for a year, and returned to UNNC Voice as a mentor with a team of my own and a seat on the jury. In the summer of 2024 I worked stage crew at a <strong>50,000-strong music festival</strong>, then spent July <strong>directing choir rehearsals for a hundred rural primary school children</strong> in Hunan.</p>
           <details class="story-details"><summary>Selected Activities</summary>
           <ul class="s-notes">
@@ -755,7 +751,6 @@ footer{
         </div>
         <div class="story-step" data-step="4" id="story-panel-4" role="tabpanel" aria-labelledby="story-tab-4" tabindex="0" hidden>
           <span class="s-num">CHAPTER 05 / 05</span>
-          <h3>My work lives in<br>the room <em>between.</em></h3>
           <p>Writing code while making music keeps bringing me back to two questions: what can AI actually do for a musician, and where does my own judgment still matter? <strong>Pocket Producer</strong> began with my own half-finished demos. <strong>Quill</strong> began with the wish for a sonic eyedropper that keeps the vibrato but swaps the sound. <strong>Second Self</strong> began with wondering whether a singer can duet with herself from a few minutes ago. On <strong>HARP</strong> I joined a research team and learned to deploy and validate music AI models with a musician's ear. All of it points the same way: tools that leave the musician in charge of the decisions.</p>
           <details class="story-details"><summary>Projects & next steps</summary>
           <ul class="s-notes">
@@ -768,12 +763,14 @@ footer{
           </details>
         </div>
       </div>
-      <div class="story-visual">
+      <div class="story-visual rain" data-hover>
         <div class="ph retro active" data-step="0"><img src="images/story-01.jpg" alt="Choir years" width="1500" height="2000" decoding="async"></div>
         <div class="ph stage" data-step="1" hidden><img src="images/story-02.jpg" alt="Solo performances" width="1500" height="2000" loading="lazy" decoding="async"></div>
         <div class="ph gear" data-step="2" hidden><img src="images/story-03.jpg" alt="Richard Bird" width="1500" height="2000" loading="lazy" decoding="async"></div>
         <div class="ph stage" data-step="3" hidden><img src="images/story-04.jpg" alt="Teaching and leading" width="1500" height="2000" loading="lazy" decoding="async"></div>
         <div class="ph abstract" data-step="4" hidden><img src="images/story-05.jpg" alt="Building tools" width="1500" height="2000" loading="lazy" decoding="async"></div>
+        <canvas class="rain-fog" aria-hidden="true"></canvas>
+        <div class="rain-hint">wipe the window</div>
       </div>
     </div>
   </div>
@@ -823,7 +820,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=44"></script>
+<script src="js/main.js?v=45"></script>
 <script src="js/sheet.js?v=7"></script>
 <script type="module" src="assets/as-you-read/site-score.mjs?v=38"></script>
 </body>
