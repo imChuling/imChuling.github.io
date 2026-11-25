@@ -136,14 +136,14 @@
   </ul>
 
   <h2>Interactive Sound Design</h2>
-  <p>The soundscape is built around <strong>movement and stillness</strong>. User interactions trigger different synthesised instruments, while fifteen seconds of inactivity brings in birdsong by day, or a distant owl by night. The birds stop when movement resumes.</p>
+  <p>The soundscape is built around <strong>movement and stillness</strong>. User interactions trigger different synthesized instruments, while fifteen seconds of inactivity brings in birdsong by day, or a distant owl by night. The birds stop when movement resumes.</p>
   <p>On the first visit, the website generates a <strong>four-note bird call</strong> and saves it in the browser. The same call plays on future visits, sung in the scale of the current section. Each visitor therefore has a different bird call.</p>
   <p>The soundscape also adapts to the <strong>local time of day</strong>. Daytime uses brighter tones and birdsong, while nighttime introduces owl calls and longer, softer high-frequency sounds. The five sections use related keys and share the same instruments, with three-second transitions between sections. Story opens up within about two seconds, adding deep low-frequency layers, a high shimmer and a larger reverb.</p>
-  <p>There are <strong>eight synthesised instruments</strong>: glass celesta, kalimba, warm keys, glass, vibraphone, water drop, wood, and bird. Each note has its own amplitude and brightness envelope. <strong>Gesture velocity controls brightness</strong>, while <strong>pitch controls stereo panning</strong>, placing lower notes to the left and higher notes to the right. Higher notes are filtered to reduce harshness.</p>
+  <p>There are <strong>eight synthesized instruments</strong>: glass celesta, kalimba, warm keys, glass, vibraphone, water drop, wood, and bird. Each note has its own amplitude and brightness envelope. <strong>Gesture velocity controls brightness</strong>, while <strong>pitch controls stereo panning</strong>, placing lower notes to the left and higher notes to the right. Higher notes are filtered to reduce harshness.</p>
   <p>The background is based on an <strong>add9 chord</strong> with six independently modulated tones, combined with wind textures, high-register accents, and a low-frequency layer that responds to text selection.</p>
 
   <h2>Technical Implementation</h2>
-  <p>All sounds are synthesised in <strong>Max 9</strong> and exported as <strong>WebAssembly using RNBO</strong>. The sound engines are written in <code>codebox~</code>, and a build script assembles them into the Max patch.</p>
+  <p>All sounds are synthesized in <strong>Max 9</strong> and exported as <strong>WebAssembly using RNBO</strong>. The sound engines are written in <code>codebox~</code>, and a build script assembles them into the Max patch.</p>
   <ul>
     <li>Background sounds are processed through <strong>granular synthesis</strong>, light overdrive, and plate reverb.</li>
     <li>Individual instruments bypass the granular processing and use only the <strong>shared reverb</strong> to preserve clear note attacks.</li>

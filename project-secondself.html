@@ -45,7 +45,7 @@
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>Second Self is a vocal performance system built as three Max for Live devices. The singer performs a duet with her own voice recorded earlier in the same song. Once the take starts, the system has no operator and no controller.</p>
+  <p>Second Self grew out of the friction of operating software while performing. It is a vocal performance system built as three Max for Live devices: it records and slices the vocal in real time, recalls earlier phrases according to the chord being played, and keeps them in time with Ableton Live. Once the take starts, nothing is operated by hand.</p>
   <p>All output is derived from the voice recorded during the performance. The system runs on an M2 MacBook Air CPU and uses no neural models.</p>
 
   <h2>How it works</h2>
@@ -55,9 +55,9 @@
   <p><strong>Fitting.</strong> Each recalled phrase gets a conflict score from 0 to 1 against the current chord. The score sets the depth of a pitch-class spectral mask (8192-point FFT) that attenuates partials outside the chord by up to about 9 dB. The same score moves the phrase outward in the stereo field and increases its low-pass filtering and reverb send.</p>
 
   <h2>Four acts</h2>
-  <p>The act sets which part of the verse the second voice draws from, relative to the singer’s position. Acts advance on elapsed time, onset count, vocal density, dynamics and silence.</p>
+  <p>Over four acts the system shifts from a passive follower to an active musical partner. The act sets which part of the verse the second voice draws from, relative to the singer’s position. Acts advance on elapsed time, onset count, vocal density, dynamics and silence.</p>
   <table class="results">
-    <caption>Behaviour of the second voice by act</caption>
+    <caption>Behavior of the second voice by act</caption>
     <thead><tr><th>Act</th><th>Source material</th><th>Processing</th></tr></thead>
     <tbody>
       <tr><td class="act">I</td><td>None. The system records and stays silent.</td><td>None</td></tr>
@@ -68,15 +68,15 @@
   </table>
 
   <h2>Research gap</h2>
-  <p><strong>OMax</strong>, <strong>Somax2</strong> and <strong>DYCI2</strong> recombine a performer’s material for improvisation and are often steered by an operator. The <strong>Reflexive Looper</strong> aligns a performer’s recordings to a chord grid and selects its behaviour from the performer’s current playing mode.</p>
-  <p>I found little prior work that combines song form, material limited to the current performance, and no operator. In Second Self the system’s independence is also composed over the form of the song: it increases act by act. The open question is how a singer can predict and steer such a partner with her voice alone.</p>
+  <p><strong>OMax</strong>, <strong>Somax2</strong> and <strong>DYCI2</strong> recombine a performer’s material for improvisation and are often steered by an operator. The <strong>Reflexive Looper</strong> aligns a performer’s recordings to a chord grid and selects its behavior from the performer’s current playing mode.</p>
+  <p>I found little prior work that combines song form, material limited to the current performance, and no operator. In Second Self the system’s independence is also composed over the form of the song: it increases act by act. The open question is how a performer can anticipate and steer such a partner through singing alone, without breaking her expressive flow.</p>
 
   <h2>Limitations</h2>
   <ul>
     <li>All decisions are hand-written rules, tuned to one song with a fixed loop and verse form.</li>
     <li>Chord input is a MIDI clip. The accompaniment audio is ignored.</li>
     <li>The pitch shifter has no formant correction and adds 85 ms of latency at 48 kHz. Recorded voice is shifted downward only.</li>
-    <li>The act II shadow is heard about 130 ms after the singer (estimate).</li>
+    <li>The act II shadow is heard about 130 ms after the singer (estimate): the 40 ms read offset plus the pitch shifter’s latency.</li>
     <li>Onset detection can cut a sustained note in two.</li>
     <li>No study with listeners or other performers has been run. An ablation mode for comparing retrieval strategies is implemented and unused.</li>
   </ul>

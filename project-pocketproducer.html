@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="css/project.css">
 <style>
   .proj-content strong{font-weight:700;color:var(--ink)}
+  .proj-cover figcaption{font-family:var(--mono);font-size:.74rem;line-height:1.6;color:var(--muted);margin-top:.8rem}
   .demo-note{font-size:.8rem;color:var(--muted);margin:.9rem 0 0;max-width:40rem}
   .results{width:100%;border-collapse:collapse;margin:1.2rem 0 .6rem;font-size:.92rem}
   .results caption{text-align:left;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
@@ -55,62 +56,81 @@
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>Like a lot of people who make music, I start far more ideas than I finish. A phrase I record doesn’t fit the song I’m writing that week, so it stays on my phone. Pocket Producer is a notebook for those ideas. You <strong>record or upload a sketch</strong>, add a note if you want, and the app brings it back later, when you have a song open that it might work in.</p>
-  <p>In the library, the app <strong>groups sketches that share a feeling or theme</strong>. A lyric and a melody can go together even when their tempos don’t match. When you’re arranging, it <strong>ranks your sketches against the song you have open</strong>, where timing and harmony matter.</p>
+  <p>Pocket Producer grew out of my frustration with unfinished songs and scattered musical ideas. In the library, a multi-agent system organizes audio clips and lyrics into cohesive projects. In an open <strong>Audiotool</strong> session, it ranks your own fragments against the arrangement, shows the evidence, and lets you preview, insert, and undo.</p>
 
-  <h2>How it works</h2>
-  <p><strong>In the library.</strong> Each sketch gets a title, tags for its mood and theme, and an estimate of its tempo and key. When a new one comes in, the app looks for earlier sketches that share a feeling or theme and suggests a project for it. If you rename a sketch or fix its tags, later suggestions take that into account. A language model writes the titles and tags and makes the grouping call; my fusion score is shown to it as a cue for how alike two recordings sound. Under the hood: <strong>librosa</strong> for tempo and key, <strong>Gemini</strong> agents built with <strong>Google ADK</strong>, and <strong>Voyage-3</strong> text embeddings for finding related sketches.</p>
-  <p><strong>In a session.</strong> The app reads the tempo and tracks of your open project and, for the rankers that listen to it, up to eight of its audio samples. Three rankers matter most.</p>
+  <h2>System</h2>
+  <p><strong>Library.</strong> Each upload is analyzed with <strong>librosa</strong> (tempo, key, 12-bin CQT chroma, onset strength) and embedded with a frozen <strong>MS-CLAP</strong> encoder. <strong>Gemini</strong> proposes a title and tags for emotion, theme, and style. Two <strong>Google ADK</strong> agents retrieve neighbors with <strong>Voyage-3</strong> text embeddings and decide whether the fragment joins a project, with my audio fusion score as one cue.</p>
+  <p><strong>Session ranking.</strong> Through the Nexus SDK the app reads project tempo, region positions, and up to eight audio samples. The app includes nine rankers; the three that matter most are described here.</p>
   <ul>
-    <li><strong>Rules</strong> is the default. It uses cues like tempo, tags, and what you’re looking for, and works without session audio.</li>
-    <li><strong>Five-signal fusion</strong> compares a sketch’s <strong>MS-CLAP</strong> embedding with the session’s mean embedding and its closest clip, using cosine similarity for both. It also uses tempo, key if you specify one, and tag overlap. I trained the weights with <strong>source-weighted Bayesian Personalized Ranking (BPR)</strong>, using same-pack Freesound loops as positive examples.</li>
-    <li><strong>Beat Fit</strong> uses the project tempo and clip positions to put the first ten seconds of the session and the sketch on the same beat grid. It compares <strong>12-bin CQT chroma</strong> beat by beat with cosine similarity. For rhythm, it compares peak onset strengths in eight slots per beat using <strong>Pearson correlation</strong>. It needs at least four beats where both are sounding.</li>
+    <li><strong>Rules</strong> (default): a weighted sum of seven metadata cues, including tempo, role gap, stated intent, and recency. It needs no session audio.</li>
+    <li><strong>Five-signal fusion</strong>: mean and maximum MS-CLAP cosine against the session clips, tempo, key when the intent names one, and tag Jaccard. The linear weights are trained with <strong>source-weighted Bayesian Personalized Ranking (BPR)</strong>, with same-pack Freesound loops as positives.</li>
+    <li><strong>Beat Fit</strong>: aligns the first ten seconds of session and candidate on the project’s beat grid, then compares chroma per beat (cosine) and onset peaks in eight slots per beat (<strong>Pearson correlation</strong>) where both sound. Signals are standardized across candidates and summed, with no fitted weights.</li>
   </ul>
-  <p>Beat Fit shows harmony, rhythm, and the number of shared beats separately. You can <strong>listen to the sketch on its own</strong>, then decide whether to insert it and hear it against your track. The app records the objects created in one DAW transaction so <strong>undo</strong> can remove the insertion. I built the web app with <strong>Next.js</strong> and <strong>FastAPI</strong>.</p>
+  <p>An insertion is one recorded DAW transaction, so <strong>undo</strong> removes exactly what it created.</p>
 </div>
 
-<div class="proj-cover">
+<figure class="proj-cover">
   <img src="images/pocketproducer_architecture.png" alt="Original ISMIR demo architecture showing the rules and fusion rankers, ranking evidence, and musician controls">
-</div>
+  <figcaption>The system as shown in the ISMIR demo, before Beat Fit was added.</figcaption>
+</figure>
 
 <div class="proj-content">
-  <h2>Evaluation and reflection</h2>
-  <p>The diagram is from my ISMIR demo. In a follow-up test, I asked which features would pick up on a part arriving four beats late.</p>
-  <p>I scored each original stem and its delayed copy against the same backing. The comparison uses 402 pairs from <strong>MUSDB18-HQ</strong> where the shift changed harmony inside the analysis window.</p>
+  <h2>Evaluation</h2>
+  <p>No dataset says which of a musician’s sketches belongs in their unfinished song, so I trained and tested on a proxy: loops from the same pack count as compatible. On 121 held-out packs, fusion’s gain in pairwise accuracy over embedding cosine on hard-similar negatives was <strong>+9.9 pp</strong> [+4.4, +15.4] with MS-CLAP and source-weighted BPR, and +2.1 pp [−1.0, +5.3] with LAION-CLAP and plain BPR (95% bootstrap intervals). On the 25 query packs with no uploader shared with training, the first figure falls to +3.9 pp [−1.9, +10.3]. The gain varies with encoder, training recipe, and mined negatives, so I report it as configuration sensitivity. Small shifts in labels and audio representation change the ranking substantially, which shows how far an offline metric can sit from what a musician intends.</p>
+  <p>I then built label-free tests: change one musical property and see which scorers respond. Below, each stem is delayed four beats against its own backing.</p>
 
   <table class="results">
-    <caption>Four-beat delay test on MUSDB18-HQ. Intervals resample whole songs.</caption>
+    <caption>Four-beat delay, 402 stem and backing pairs from MUSDB18-HQ. Intervals resample whole songs.</caption>
     <thead>
-      <tr><th>Method</th><th>Original scored higher</th><th>95% interval</th></tr>
+      <tr><th>Scorer</th><th>Win rate of the original</th><th>95% interval</th></tr>
     </thead>
     <tbody>
       <tr>
         <td>Beat-aligned chroma</td>
         <td class="num"><strong>74%</strong></td>
-        <td class="num">69–78%</td>
+        <td class="num">69 to 78%</td>
       </tr>
       <tr>
         <td>Chroma averaged over the clip</td>
-        <td class="num"><strong>45%</strong></td>
-        <td class="num">39–49%</td>
+        <td class="num">45%</td>
+        <td class="num">39 to 49%</td>
+      </tr>
+      <tr>
+        <td>Mean MS-CLAP cosine</td>
+        <td class="num">44%</td>
+        <td class="num">39 to 49%</td>
+      </tr>
+      <tr>
+        <td>Five-signal fusion</td>
+        <td class="num">49%</td>
+        <td class="num">44 to 54%</td>
       </tr>
     </tbody>
   </table>
 
-  <p>Moving a stem also changes which audio falls inside the window. These scores tell me how the features respond to the edit. Deciding which version sounds better takes listening.</p>
-  <p>In a second test, onset patterns alone ranked the original first <strong>53.2%</strong> of the time among 50 candidates of the same stem type. Adding chroma reached <strong>52.7%</strong>, with no clear gain.</p>
-  <p><strong>A loop can land right on the beat and still crowd the vocal.</strong> That’s something I judge by ear. I show the rhythm and harmony measurements separately so there’s something specific to listen for, and I made the insertion reversible so you can try a part before you commit. Next, I’d ask musicians to try their own sketches and tell me why they kept, moved, or removed one.</p>
+  <p>Beat-aligned chroma prefers the original. MS-CLAP cosine and the fusion score stay at or below 50%. In retrieval among 50 stems of the same type, onset patterns alone reached 53.2% Recall@1, and chroma plus onsets reached 52.7%.</p>
+
+  <h2>Human in the loop</h2>
+  <p>None of these scores has been checked against musician preference, so every model output can be corrected or undone: the musician can edit the generated analysis, audition a suggestion, and accept or reject it. Tag and title edits are summarized into later Gemini prompts (prompt conditioning, fixed model weights). The session log records what was shown, previewed, inserted, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
+
+  <h2>Limitations</h2>
+  <ul>
+    <li>No listening study has been run. Grouping and edit conditioning are unevaluated.</li>
+    <li>The delay test measures a response to one edit, and shifting a stem also changes which audio falls inside the analysis window.</li>
+    <li>The onset comparison was chosen after the first results on the same recordings. The deployed rhythm measure has synthetic tests only.</li>
+    <li>Beat Fit ignores region loop and offset settings and cannot score fragments uploaded before it.</li>
+  </ul>
 </div>
 
 <div class="proj-paper">
   <h3><a href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal</a></h3>
   <p class="authors">Chuling Li</p>
   <p class="venue">ISMIR 2026 Late-Breaking Demo · Abu Dhabi, UAE</p>
-  <p class="abstract">The demo paper explains how I trained the fusion ranker and how the choice of examples changed the results.</p>
+  <p class="abstract">The demo paper covers the system, the fusion training, and how the choice of labels and encoder changed the results.</p>
 </div>
 
 <nav class="proj-next" aria-label="Next project">
-  <a href="project-harp.html"><span class="proj-next-label">Next project</span><span class="proj-next-title">HARP →</span></a>
+  <a href="project-secondself.html"><span class="proj-next-label">Next project</span><span class="proj-next-title">Second Self →</span></a>
 </nav>
 
 <div class="proj-foot">
