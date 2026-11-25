@@ -4,19 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Second Self · Chuling LI</title>
-<meta name="description" content="Second Self: an individual project by Chuling Li.">
+<meta name="description" content="A singer duets with her own voice from earlier in the same song. Second Self records, analyses and recalls her phrases in real time in Max for Live, with nobody operating the software.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
 <meta property="og:title" content="Second Self · Chuling LI">
-<meta property="og:description" content="Second Self: an individual project by Chuling Li.">
+<meta property="og:description" content="A singer duets with her own voice from earlier in the same song. Second Self records, analyses and recalls her phrases in real time in Max for Live, with nobody operating the software.">
 <meta property="og:url" content="https://imchuling.github.io/project-secondself.html">
 <meta property="og:image" content="https://imchuling.github.io/assets/hero/chuling-live.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/shared.css">
 <link rel="stylesheet" href="css/project.css">
+<style>
+  .proj-content strong{font-weight:700;color:var(--ink)}
+  .results{width:100%;border-collapse:collapse;margin:1.2rem 0 .6rem;font-family:var(--mono);font-weight:300;font-size:.86rem;line-height:1.6;color:var(--muted)}
+  .results caption{text-align:left;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+  .results th,.results td{padding:.6rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .results th{font-weight:400;color:var(--ink)}
+  .results td.act{white-space:nowrap;color:var(--ink)}
+  .ss-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:1.6rem 0 .8rem}
+  .ss-flow div{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.45);padding:1rem .9rem}
+  .ss-flow b{display:block;font-family:var(--display);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:.5rem}
+  .ss-flow span{display:block;font-family:var(--mono);font-weight:300;font-size:.76rem;line-height:1.55;color:var(--muted)}
+  .proj-content p.ss-note{font-size:.78rem}
+  @media (max-width:760px){.ss-flow{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.results{font-size:.8rem}.results th,.results td{padding:.5rem .35rem}.results td.act{white-space:normal}}
+  @media (max-width:420px){.ss-flow{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
@@ -25,48 +41,64 @@
 <div class="proj-hero">
   <h1>Second Self</h1>
   <div class="proj-meta">
-    <span class="tag">Individual Project</span>
-    <span class="tag">[Tag]</span>
+    <span class="tag">Independent Project · Ongoing</span>
+    <span class="tag">Interactive Vocal Performance</span>
+    <span class="tag">Max for Live · FluCoMa</span>
+    <span class="tag">Real-Time Audio</span>
   </div>
-  <p class="subtitle">[占位符：一句话项目描述。]</p>
-</div>
-
-<div class="proj-cover">
-  <div class="ph" style="background:var(--rose)">[ project cover image ]</div>
+  <p class="subtitle">A singer duets with her own voice from earlier in the same song, with nobody operating the software.</p>
 </div>
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>[占位符：项目背景介绍。2-3段。]</p>
+  <p>Second Self began with a problem I kept meeting on stage: operating software while singing pulls attention away from the performance. In this system the performer <strong>only sings</strong>. There is no operator, no controller and no screen to watch.</p>
+  <p>Nothing is prepared in advance. <strong>Every sound the system makes is derived from what was sung that night</strong>: it records the voice, cuts it into phrases, and brings them back as a second voice whose independence grows over four acts. I designed and built it on my own as three Max for Live devices. It runs on a laptop CPU with no neural inference.</p>
 
   <h2>How it works</h2>
-  <p>[占位符：技术方法概述。2-3段。]</p>
+  <div class="ss-flow" role="group" aria-label="Processing stages">
+    <div><b>Listen</b><span>Record continuously, cut at onsets, describe each segment</span></div>
+    <div><b>Remember</b><span>Tag each segment with its chord, its offset and its place in the form</span></div>
+    <div><b>Recall</b><span>Return a phrase over the same chord, at the same offset</span></div>
+    <div><b>Fit</b><span>Attenuate what lies off the chord and place the voice in space</span></div>
+  </div>
+  <p><strong>Listening.</strong> The vocal is recorded continuously and cut at detected onsets into segments of 0.4 to 4 seconds. Each segment is described by its <strong>chroma</strong>, a <strong>Tonal Interval Vector</strong> and six timbral descriptors, and is separated into harmonic and percussive parts (<strong>FluCoMa</strong>).</p>
+  <p><strong>Remembering in place.</strong> The accompaniment is a four-bar chord loop. Each segment is tagged with the chord it was sung over, its offset from that chord’s onset, and its position in the song’s strophic form.</p>
+  <p><strong>Recalling.</strong> A phrase returns only over the chord it was sung on and at the same offset, so it is on the harmony and on the pulse by construction. Where the system queries by harmony, it searches a <strong>k-d tree</strong> with the current chord’s Tonal Interval Vector and penalises pitch-class conflicts.</p>
+  <p><strong>Fitting.</strong> A conflict score between phrase and chord sets how strongly a pitch-class spectral mask (FFT) attenuates the parts of the voice that lie off the chord. <strong>The same score</strong> also sets how far away the phrase is placed in the stereo field, so one measure decides which phrase returns, how much of it is left, and where it stands.</p>
 
-  <h2>Key features</h2>
+  <h2>Four acts</h2>
+  <p>Autonomy is composed as <strong>distance from the singer within the song’s form</strong>. In parallel, the processing removes one layer of the voice per act.</p>
+  <table class="results">
+    <caption>What the second voice does in each act</caption>
+    <thead><tr><th>Act</th><th>Where it sings from</th><th>What leaves its voice</th></tr></thead>
+    <tbody>
+      <tr><td class="act">I · Mirror</td><td>It is silent and only records.</td><td>Nothing</td></tr>
+      <tr><td class="act">II · Trace</td><td>It shadows the phrase being sung, a third below, and doubles it with the previous verse’s take.</td><td>The consonants</td></tr>
+      <tr><td class="act">III · Wall</td><td>It sings in canon one loop away, and builds an inner line from single held notes re-harmonised under other chords.</td><td>The spectral body</td></tr>
+      <tr><td class="act">IV · Departure</td><td>It sings half a verse ahead of her. After she stops, it sings the verse through once and falls silent.</td><td>The voice itself: pure tones follow her pitch</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Research gap</h2>
+  <p>Corpus-based co-improvisers such as <strong>OMax</strong>, <strong>Somax2</strong> and <strong>DYCI2</strong> are designed for free improvisation and are typically steered by an operator. Loop-based systems such as the <strong>Reflexive Looper</strong> align a performer’s own material to a chord grid, but treat their behaviour as fixed.</p>
+  <p>Less explored is a system for song-form performance in which the performer’s own past is the only material, nobody operates the software, and the system’s independence changes over the piece as a composed arc that the singer steers only by singing. That leads to the question I want to study next: how can a performer anticipate and steer a musical partner through singing alone, without breaking expressive flow?</p>
+
+  <h2>Limitations</h2>
   <ul>
-    <li>[占位符：特性1]</li>
-    <li>[占位符：特性2]</li>
-    <li>[占位符：特性3]</li>
+    <li>Decisions are rule-based, not learned, and are tuned to one song with a fixed loop and strophic form.</li>
+    <li>The harmony comes from a MIDI clip that follows the backing track, not from audio analysis of the accompaniment.</li>
+    <li>The pitch shifter has no formant correction, so recorded voice is only shifted downward. The real-time shadow arrives roughly 130 ms after the singer.</li>
+    <li>Onset slicing can split a sung phrase in the middle of a note.</li>
+    <li>The system has not yet been evaluated with other performers or with listeners. The retrieval strategies can be compared in an ablation mode, but that study has not been run.</li>
   </ul>
-</div>
 
-<div class="proj-video">
-  <div class="video-wrap">[ demo video embed: YouTube / Vimeo ]</div>
-  <p class="caption">Demo video</p>
-</div>
-
-<div class="proj-links">
-  <a class="primary" href="#">Demo ↗</a>
-  <a class="secondary" href="#">Source Code ↗</a>
-</div>
-
-<div class="proj-content">
-  <h2>Results</h2>
-  <p>[占位符：实验结果、用户反馈。]</p>
+  <h2>Status</h2>
+  <p>The system runs in Ableton Live 12 with my own voice and is in rehearsal. A recording of the complete performance will be added to this page.</p>
+  <p class="ss-note">Stack: Max for Live (Max 9), FluCoMa, JavaScript logic covered by an offline test suite of about 160 tests.</p>
 </div>
 
 <nav class="proj-next" aria-label="Next project">
-  <a href="project-pocketproducer.html"><span class="proj-next-label">Next project</span><span class="proj-next-title">PocketProducer →</span></a>
+  <a href="project-harp.html"><span class="proj-next-label">Next project</span><span class="proj-next-title">HARP →</span></a>
 </nav>
 
 <div class="proj-foot">

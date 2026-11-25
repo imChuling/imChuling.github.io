@@ -538,6 +538,8 @@ footer{
 
 .harp-thumb{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:clamp(1rem,3vw,2.8rem);background:linear-gradient(135deg,var(--butter),var(--sky));color:var(--ink)}
 .ph.harp-thumb span{color:var(--ink);padding:0;text-align:left}
+.harp-thumb.ss-thumb{background:linear-gradient(140deg,var(--rose),var(--peach))}
+.ph.harp-thumb.ss-thumb .harp-thumb-title{font-size:clamp(2rem,4.6vw,4.6rem)}
 .ph.harp-thumb .harp-thumb-label,.ph.harp-thumb .harp-thumb-note{font-family:var(--mono);font-size:clamp(.7rem,.85vw,.76rem);line-height:1.5;letter-spacing:.08em;text-transform:uppercase}
 .ph.harp-thumb .harp-thumb-title{font-family:var(--stamp);font-size:clamp(2.5rem,6vw,6rem);line-height:1;font-weight:400;letter-spacing:.03em}
 </style>
@@ -650,19 +652,19 @@ footer{
         </div>
       </a>
 
-      <div class="proj-card reveal proj-card-soon">
+      <a class="proj-card reveal" href="project-secondself.html" data-hover>
         <div class="proj-thumb">
-          <div class="ph stage dim"><span>[ Second Self thumbnail ]</span></div>
+          <div class="ph harp-thumb ss-thumb" aria-hidden="true"><span class="harp-thumb-label">Interactive vocal performance</span><span class="harp-thumb-title">Second Self</span><span class="harp-thumb-note">Max for Live · Ongoing</span></div>
         </div>
         <div class="proj-card-body">
           <div class="proj-card-head">
             <h3>Second Self<em>Independent project · Live performance system</em></h3>
-            <span class="proj-card-go coming-soon-label">Coming soon</span>
+            <span class="proj-card-go">→</span>
           </div>
-          <p class="proj-desc">A Max for Live system that lets a singer duet with themselves from a few minutes earlier. It slices and stores vocals in real time, retrieves fragments by live chord input, and locks them to the beat. Four acts gradually shift the system from follower to active vocal partner.</p>
+          <p class="proj-desc">A Max for Live system that lets a singer duet with her own voice from earlier in the same song, with nobody operating the software. It slices and analyses the vocal in real time and brings each phrase back over the chord it was sung on, at the same place in the bar. Over four acts the second voice moves from shadowing her to singing ahead of her.</p>
           <div class="tag-row"><span class="tag">Max/MSP</span><span class="tag">Live Performance</span><span class="tag">Real-Time Audio</span><span class="tag">Ableton Live</span></div>
         </div>
-      </div>
+      </a>
 
       <a class="proj-card reveal" href="project-harp.html" data-hover>
         <div class="proj-thumb">
