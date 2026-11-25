@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Second Self · Chuling LI</title>
-<meta name="description" content="A singer duets with her own voice from earlier in the same song. Second Self records, analyses and recalls her phrases in real time in Max for Live, with nobody operating the software.">
+<meta name="description" content="A vocal performance system in Max for Live. A singer duets with her own voice recorded earlier in the same song, with no operator and no controller.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
 <meta property="og:title" content="Second Self · Chuling LI">
-<meta property="og:description" content="A singer duets with her own voice from earlier in the same song. Second Self records, analyses and recalls her phrases in real time in Max for Live, with nobody operating the software.">
+<meta property="og:description" content="A vocal performance system in Max for Live. A singer duets with her own voice recorded earlier in the same song, with no operator and no controller.">
 <meta property="og:url" content="https://imchuling.github.io/project-secondself.html">
 <meta property="og:image" content="https://imchuling.github.io/assets/hero/chuling-live.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -24,14 +24,8 @@
   .results th,.results td{padding:.6rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
   .results th{font-weight:400;color:var(--ink)}
   .results td.act{white-space:nowrap;color:var(--ink)}
-  .ss-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:1.6rem 0 .8rem}
-  .ss-flow div{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.45);padding:1rem .9rem}
-  .ss-flow b{display:block;font-family:var(--display);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:.5rem}
-  .ss-flow span{display:block;font-family:var(--mono);font-weight:300;font-size:.76rem;line-height:1.55;color:var(--muted)}
   .proj-content p.ss-note{font-size:.78rem}
-  @media (max-width:760px){.ss-flow{grid-template-columns:1fr 1fr}}
   @media (max-width:640px){.results{font-size:.8rem}.results th,.results td{padding:.5rem .35rem}.results td.act{white-space:normal}}
-  @media (max-width:420px){.ss-flow{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -46,55 +40,50 @@
     <span class="tag">Max for Live · FluCoMa</span>
     <span class="tag">Real-Time Audio</span>
   </div>
-  <p class="subtitle">A singer duets with her own voice from earlier in the same song, with nobody operating the software.</p>
+  <p class="subtitle">A singer duets with her own voice recorded earlier in the same song. No operator, no controller.</p>
 </div>
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>Second Self began with a problem I kept meeting on stage: operating software while singing pulls attention away from the performance. In this system the performer <strong>only sings</strong>. There is no operator, no controller and no screen to watch.</p>
-  <p>Nothing is prepared in advance. <strong>Every sound the system makes is derived from what was sung that night</strong>: it records the voice, cuts it into phrases, and brings them back as a second voice whose independence grows over four acts. I designed and built it on my own as three Max for Live devices. It runs on a laptop CPU with no neural inference.</p>
+  <p>Second Self is a vocal performance system built as three Max for Live devices. The singer performs a duet with her own voice recorded earlier in the same song. Once the take starts, the system has no operator and no controller.</p>
+  <p>All output is derived from the voice recorded during the performance. The system runs on an M2 MacBook Air CPU and uses no neural models.</p>
 
   <h2>How it works</h2>
-  <div class="ss-flow" role="group" aria-label="Processing stages">
-    <div><b>Listen</b><span>Record continuously, cut at onsets, describe each segment</span></div>
-    <div><b>Remember</b><span>Tag each segment with its chord, its offset and its place in the form</span></div>
-    <div><b>Recall</b><span>Return a phrase over the same chord, at the same offset</span></div>
-    <div><b>Fit</b><span>Attenuate what lies off the chord and place the voice in space</span></div>
-  </div>
-  <p><strong>Listening.</strong> The vocal is recorded continuously and cut at detected onsets into segments of 0.4 to 4 seconds. Each segment is described by its <strong>chroma</strong>, a <strong>Tonal Interval Vector</strong> and six timbral descriptors, and is separated into harmonic and percussive parts (<strong>FluCoMa</strong>).</p>
-  <p><strong>Remembering in place.</strong> The accompaniment is a four-bar chord loop. Each segment is tagged with the chord it was sung over, its offset from that chord’s onset, and its position in the song’s strophic form.</p>
-  <p><strong>Recalling.</strong> A phrase returns only over the chord it was sung on and at the same offset, so it is on the harmony and on the pulse by construction. Where the system queries by harmony, it searches a <strong>k-d tree</strong> with the current chord’s Tonal Interval Vector and penalises pitch-class conflicts.</p>
-  <p><strong>Fitting.</strong> A conflict score between phrase and chord sets how strongly a pitch-class spectral mask (FFT) attenuates the parts of the voice that lie off the chord. <strong>The same score</strong> also sets how far away the phrase is placed in the stereo field, so one measure decides which phrase returns, how much of it is left, and where it stands.</p>
+  <p><strong>Segmentation and analysis.</strong> The vocal is recorded into a buffer and cut at onsets into segments of 0.4 to 4 s (<strong>FluCoMa</strong>). Each segment gets a 12-bin <strong>chroma</strong> vector, a <strong>Tonal Interval Vector</strong> and six descriptors (RMS, zero-crossing rate, crest factor, chroma entropy, chroma flux, duration). Harmonic-percussive separation stores the percussive part of each segment in a second buffer.</p>
+  <p><strong>Indexing.</strong> The accompaniment is a four-bar chord loop. A MIDI clip of triads supplies the current chord. Each segment is stored with the chord sounding at its start, its offset from that chord’s onset in milliseconds, and its position in the verse form (A, A, AB, AB).</p>
+  <p><strong>Recall.</strong> A segment plays back over the chord it was sung on, at its stored offset. Consecutive segments of one phrase play as a single span. When no chord clip is running, the system queries a <strong>k-d tree</strong> (k = 5) with the Tonal Interval Vector of the pitch classes just sung and ranks candidates by pitch-class conflict.</p>
+  <p><strong>Fitting.</strong> Each recalled phrase gets a conflict score from 0 to 1 against the current chord. The score sets the depth of a pitch-class spectral mask (8192-point FFT) that attenuates partials outside the chord by up to about 9 dB. The same score moves the phrase outward in the stereo field and increases its low-pass filtering and reverb send.</p>
 
   <h2>Four acts</h2>
-  <p>Autonomy is composed as <strong>distance from the singer within the song’s form</strong>. In parallel, the processing removes one layer of the voice per act.</p>
+  <p>The act sets which part of the verse the second voice draws from, relative to the singer’s position. Acts advance on elapsed time, onset count, vocal density, dynamics and silence.</p>
   <table class="results">
-    <caption>What the second voice does in each act</caption>
-    <thead><tr><th>Act</th><th>Where it sings from</th><th>What leaves its voice</th></tr></thead>
+    <caption>Behaviour of the second voice by act</caption>
+    <thead><tr><th>Act</th><th>Source material</th><th>Processing</th></tr></thead>
     <tbody>
-      <tr><td class="act">I · Mirror</td><td>It is silent and only records.</td><td>Nothing</td></tr>
-      <tr><td class="act">II · Trace</td><td>It shadows the phrase being sung, a third below, and doubles it with the previous verse’s take.</td><td>The consonants</td></tr>
-      <tr><td class="act">III · Wall</td><td>It sings in canon one loop away, and builds an inner line from single held notes re-harmonised under other chords.</td><td>The spectral body</td></tr>
-      <tr><td class="act">IV · Departure</td><td>It sings half a verse ahead of her. After she stops, it sings the verse through once and falls silent.</td><td>The voice itself: pure tones follow her pitch</td></tr>
+      <tr><td class="act">I</td><td>None. The system records and stays silent.</td><td>None</td></tr>
+      <tr><td class="act">II</td><td>The phrase being sung, read about 40 ms behind the record head and shifted down 3 to 5 semitones, plus the same line from the previous verse.</td><td>Percussive part partly subtracted from the earlier take</td></tr>
+      <tr><td class="act">III</td><td>The line one loop away from the singer (canon), plus single sustained notes placed under other chords that contain them, chosen by voice-leading cost.</td><td>Spectral mask at the current chord</td></tr>
+      <tr><td class="act">IV</td><td>The line half a verse ahead of the singer, from the earliest recording. After the last verse the system plays the verse once and stops.</td><td>Sine tones driven by the tracked pitch and loudness of the recording</td></tr>
     </tbody>
   </table>
 
   <h2>Research gap</h2>
-  <p>Corpus-based co-improvisers such as <strong>OMax</strong>, <strong>Somax2</strong> and <strong>DYCI2</strong> are designed for free improvisation and are typically steered by an operator. Loop-based systems such as the <strong>Reflexive Looper</strong> align a performer’s own material to a chord grid, but treat their behaviour as fixed.</p>
-  <p>Less explored is a system for song-form performance in which the performer’s own past is the only material, nobody operates the software, and the system’s independence changes over the piece as a composed arc that the singer steers only by singing. That leads to the question I want to study next: how can a performer anticipate and steer a musical partner through singing alone, without breaking expressive flow?</p>
+  <p><strong>OMax</strong>, <strong>Somax2</strong> and <strong>DYCI2</strong> recombine a performer’s material for improvisation and are often steered by an operator. The <strong>Reflexive Looper</strong> aligns a performer’s recordings to a chord grid and selects its behaviour from the performer’s current playing mode.</p>
+  <p>I found little prior work that combines song form, material limited to the current performance, and no operator. In Second Self the system’s independence is also composed over the form of the song: it increases act by act. The open question is how a singer can predict and steer such a partner with her voice alone.</p>
 
   <h2>Limitations</h2>
   <ul>
-    <li>Decisions are rule-based, not learned, and are tuned to one song with a fixed loop and strophic form.</li>
-    <li>The harmony comes from a MIDI clip that follows the backing track, not from audio analysis of the accompaniment.</li>
-    <li>The pitch shifter has no formant correction, so recorded voice is only shifted downward. The real-time shadow arrives roughly 130 ms after the singer.</li>
-    <li>Onset slicing can split a sung phrase in the middle of a note.</li>
-    <li>The system has not yet been evaluated with other performers or with listeners. The retrieval strategies can be compared in an ablation mode, but that study has not been run.</li>
+    <li>All decisions are hand-written rules, tuned to one song with a fixed loop and verse form.</li>
+    <li>Chord input is a MIDI clip. The accompaniment audio is ignored.</li>
+    <li>The pitch shifter has no formant correction and adds 85 ms of latency at 48 kHz. Recorded voice is shifted downward only.</li>
+    <li>The act II shadow is heard about 130 ms after the singer (estimate).</li>
+    <li>Onset detection can cut a sustained note in two.</li>
+    <li>No study with listeners or other performers has been run. An ablation mode for comparing retrieval strategies is implemented and unused.</li>
   </ul>
 
   <h2>Status</h2>
-  <p>The system runs in Ableton Live 12 with my own voice and is in rehearsal. A recording of the complete performance will be added to this page.</p>
-  <p class="ss-note">Stack: Max for Live (Max 9), FluCoMa, JavaScript logic covered by an offline test suite of about 160 tests.</p>
+  <p>The system runs in Ableton Live 12 with my own voice and is in rehearsal. The act III sustained-note line and the stereo placement are implemented and tested offline and have not yet been run in a full take. A performance recording will be added here.</p>
+  <p class="ss-note">Max for Live (Max 9) · FluCoMa · JavaScript logic with 161 offline tests · Ableton Live 12</p>
 </div>
 
 <nav class="proj-next" aria-label="Next project">
