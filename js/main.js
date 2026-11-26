@@ -351,7 +351,7 @@ function rainify(container){
   let fade=0,current=activePh();
   new MutationObserver(()=>{
     const ph=activePh();if(ph===current)return;
-    current=ph;if(REDUCE)repaint();else fade=30;
+    current=ph;if(REDUCE)retint(ph);else fade=30;
   }).observe(container,{subtree:true,attributes:true,attributeFilter:['class']});
 
   /* --- droplet state machines --- */
@@ -408,15 +408,28 @@ function rainify(container){
   container.addEventListener('pointerleave',()=>wiping=false);
   container.addEventListener('pointerup',e=>{if(e.pointerType==='touch')wiping=false;});
   container.addEventListener('pointercancel',()=>wiping=false);
-  let wipeLast=0,refrostDelay=180;
+  /* the glass mists over again only slowly : nothing for 20 s after the hand leaves it, then one thin
+     layer every 120 ms (about half back after a quarter of a minute). Timed on the clock, not in frames,
+     so a 120 Hz screen doesn't fog twice as fast. A layer thinner than this can't be used instead :
+     on an 8-bit canvas it would round away to nothing */
+  let leftAt=-1e9,layerAt=0;const REST=20000,EVERY=120;
 
   function step(){
     if(!w||!h)return;
-    if(wiping){wasWiping=true;}else{if(wasWiping){wipeLast=0;wasWiping=false;}wipeLast++;}
+    const now=performance.now();
+    if(wiping){wasWiping=true;}else if(wasWiping){leftAt=now;wasWiping=false;}
     /* slow re-frosting with the blurred snapshot (not flat white) */
+    const doRefrost=warmup||(!wiping&&now-leftAt>REST&&now-layerAt>EVERY);
+    if(doRefrost&&!warmup)layerAt=now;
+    if(fade>0){
+      /* a new chapter : the frost that is on the glass takes the new photo's colours, and only that.
+         What has been wiped clear, and the trails drops have left, stay as they are : it is one pane of
+         glass for all the chapters, not a fresh one each time */
+      fade--;x.globalCompositeOperation='source-atop';x.globalAlpha=.1;
+      x.drawImage(snap(),0,0);
+    }
     x.globalCompositeOperation='source-over';
-    const doRefrost=warmup||wipeLast>refrostDelay;
-    x.globalAlpha=fade>0?(fade--,.1):doRefrost?(warmup?.004:.006):0;
+    x.globalAlpha=doRefrost?(warmup?.004:.006):0;
     if(x.globalAlpha>0)x.drawImage(snap(),0,0);
     x.globalAlpha=1;
 
