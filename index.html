@@ -273,6 +273,22 @@ html.sheet-open body>nav{opacity:0;pointer-events:none;transition:opacity .4s}
 .s-notes{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--line);font:300 .7rem/1.45 var(--mono);color:var(--muted)}
 .s-notes li{padding-left:.9rem;text-indent:-.9rem}
 .s-notes li::before{content:'·';margin-right:.5rem}
+/* performances : the name of each one shows, what was sung or played opens under it, one at a time */
+.s-acc{gap:.1rem}
+.s-acc li{padding-left:0;text-indent:0}
+.s-acc li::before{content:none}
+.s-acc summary,.s-acc .s-row{display:flex;gap:.55rem;align-items:baseline;padding:.3rem 0;line-height:1.5}
+.s-acc summary{list-style:none;cursor:pointer;transition:color .3s}
+.s-acc summary::-webkit-details-marker{display:none}
+.s-acc summary::before,.s-acc .s-row::before{flex:none;width:.7rem;text-align:center;color:var(--violet)}
+.s-acc summary::before{content:'+'}
+.s-acc details[open]>summary::before{content:'\2013'}
+.s-acc .s-row::before{content:'·';color:var(--muted)}
+.s-acc summary:hover{color:var(--ink)}
+.s-acc summary:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:3px}
+.s-acc .s-more{padding:0 0 .55rem 1.25rem;line-height:1.6}
+.s-acc .s-role{display:block}
+.s-acc .s-piece{padding-left:0;margin:0}
 .s-notes strong{font-weight:700;color:var(--ink)}.s-piece{display:block;padding-left:1.2rem;margin-bottom:.1rem}
 .s-piece::before{content:'♫ '}
 .s-label{font:400 .72rem var(--stamp);letter-spacing:.06em;color:var(--muted)}
@@ -743,26 +759,26 @@ footer{
           <span class="s-num">CHAPTER 01 / 05</span>
           <p>I began studying <strong>classical piano</strong> at an early age and passed the <strong>China Conservatory of Music's Grade 6</strong> examination when I was seven. I later joined the <strong>Banlam Grand Theatre</strong> Children's Choir in Xiamen, China, where I had the opportunity to perform alongside choirs from Austria, France, and New York, including <strong>Les Petits Chanteurs de Saint-Marc</strong>, the choir featured in the film <em>Les Choristes</em>. Around the same time, I also began training in <strong>bel canto</strong>. My interest in singing continued into high school, where I was admitted to <strong>Xiamen No.1 High School</strong> as a <strong>vocal specialist</strong> and performed with <strong>both its children's and mixed choirs</strong>.</p>
           <p class="s-label">Selected Performances</p>
-          <ul class="s-notes">
-            <li>With the Banlam Grand Theatre Children's Choir, shared stages with the <strong>Wilten Boys' Choir</strong> (Austria), <strong>Les Petits Chanteurs de Saint-Marc</strong> and <strong>Les Petits Chanteurs à la Croix de Bois</strong> (France), and a gospel choir from Harlem, New York</li>
-            <li>The 13th <strong>China International Chorus Festival</strong> and <strong>IFCM World Choral Education Conference</strong>: opening ceremony at the <strong>Great Hall of the People</strong>; <strong>"Four Outstanding Chinese Children's Choirs"</strong> concert at the Beijing Tianqiao Performing Arts Center</li>
-            <li>Artistic exchange with Les Petits Chanteurs à la Croix de Bois in Autun, France, <strong>received at the Town Hall by the Mayor of Autun</strong></li>
-            <li>Xiamen No.1 High School Choir: <strong>Gold Award and first place</strong>, Folklore category, <strong>2017 World Youth &amp; Children's Choir Festival – Hong Kong (WYCCF)</strong>, with folk songs of China's Yi and Tujia ethnic minorities ("Spring Has Come" and "Dong Dong Kui") and the Balinese "Janger"</li>
+          <ul class="s-notes s-acc">
+            <li><details><summary><strong>Shared stages with choirs from Austria, France and New York</strong></summary><div class="s-more"><span class="s-role">With the Banlam Grand Theatre Children's Choir: the Wilten Boys' Choir (Austria), Les Petits Chanteurs de Saint-Marc and Les Petits Chanteurs à la Croix de Bois (France), and a gospel choir from Harlem, New York</span></div></details></li>
+            <li><details><summary><strong>The 13th China International Chorus Festival and IFCM World Choral Education Conference</strong></summary><div class="s-more"><span class="s-role">Opening ceremony at the Great Hall of the People; "Four Outstanding Chinese Children's Choirs" concert at the Beijing Tianqiao Performing Arts Center</span></div></details></li>
+            <li><details><summary>Artistic exchange with Les Petits Chanteurs à la Croix de Bois in Autun, France</summary><div class="s-more"><span class="s-role">Received at the Town Hall by the Mayor of Autun</span></div></details></li>
+            <li><details><summary><strong>Gold Award and first place, 2017 World Youth &amp; Children's Choir Festival – Hong Kong (WYCCF)</strong></summary><div class="s-more"><span class="s-role">Xiamen No.1 High School Choir, Folklore category, with folk songs of China's Yi and Tujia ethnic minorities ("Spring Has Come" and "Dong Dong Kui") and the Balinese "Janger"</span></div></details></li>
           </ul>
         </div>
         <div class="story-step" data-step="1" id="story-panel-1" role="tabpanel" aria-labelledby="story-tab-1" tabindex="0" hidden>
           <span class="s-num">CHAPTER 02 / 05</span>
           <p>Since high school, I have remained active as a solo singer, performing at campus music festivals and other events. I won <strong>first place</strong> in the Xiamen No.1 High School Singing Competition in 2021, placed in the <strong>Top 10 of UNNC Voice</strong> in 2023, and was <strong>runner-up</strong> in the University of Nottingham CSSA Singing Competition in 2025. Beyond competing, I was invited to serve as a <strong>mentor and judge</strong> for UNNC Voice in 2024 and to perform at the <strong>CSSA-UK Southern Performing Arts Festival</strong> in 2026, along with various other events.</p>
           <p class="s-label">Selected Performances</p>
-          <ul class="s-notes">
-            <li>2021 · Xiamen No.1 High School Inter-School Music Festival, piano and vocal<span class="s-piece">画 (Painting) by G.E.M.</span></li>
-            <li><strong>2021 · 1st place, Xiamen No.1 High School Singers Competition</strong><span class="s-piece">Baby, До свидания (Baby, Goodbye) + Ой, цветёт калина (The Snowball Tree Is Blooming) by Pu Shu / Soviet song, Listen by Beyoncé, Vaga luna, che inargenti by Bellini etc.</span></li>
-            <li><strong>2022 · Gaokao send-off concert for an audience of 3,000+</strong><span class="s-piece">夜空中最亮的星 (The Brightest Star in the Night Sky) by Escape Plan</span></li>
-            <li><strong>2023 · Top 10, UNNC Voice, University of Nottingham Ningbo China</strong><span class="s-piece">Still Loving You by Scorpions etc.</span></li>
-            <li><strong>2024 · Lead vocal on 星火 (Fiery Stars), the original song for UNNC's 20th anniversary</strong></li>
-            <li><strong>2024 · Mentor and judge at UNNC Voice, opening the final</strong><span class="s-piece">The Voice Within by Christina Aguilera</span></li>
-            <li><strong>2025 · Runner-up, University of Nottingham CSSA Singing Competition</strong><span class="s-piece">Stop! by Sam Brown</span></li>
-            <li>2026 · Invited performer, CSSA-UK Southern Performing Arts Festival<span class="s-piece">Language by Tori Kelly</span></li>
+          <ul class="s-notes s-acc">
+            <li><details><summary>2021 · Xiamen No.1 High School Inter-School Music Festival</summary><div class="s-more"><span class="s-role">Piano and vocal</span><span class="s-piece">画 (Painting) by G.E.M.</span></div></details></li>
+            <li><details><summary><strong>2021 · 1st place, Xiamen No.1 High School Singers Competition</strong></summary><div class="s-more"><span class="s-piece">Baby, До свидания (Baby, Goodbye) + Ой, цветёт калина (The Snowball Tree Is Blooming) by Pu Shu / Soviet song, Listen by Beyoncé, Vaga luna, che inargenti by Bellini etc.</span></div></details></li>
+            <li><details><summary><strong>2022 · Gaokao send-off concert for an audience of 3,000+</strong></summary><div class="s-more"><span class="s-piece">夜空中最亮的星 (The Brightest Star in the Night Sky) by Escape Plan</span></div></details></li>
+            <li><details><summary><strong>2023 · Top 10, UNNC Voice, University of Nottingham Ningbo China</strong></summary><div class="s-more"><span class="s-piece">Still Loving You by Scorpions etc.</span></div></details></li>
+            <li><details><summary><strong>2024 · Lead vocal on 星火 (Fiery Stars)</strong></summary><div class="s-more"><span class="s-role">The original song for UNNC's 20th anniversary</span></div></details></li>
+            <li><details><summary><strong>2024 · Mentor and judge at UNNC Voice</strong></summary><div class="s-more"><span class="s-role">Opened the final</span><span class="s-piece">The Voice Within by Christina Aguilera</span></div></details></li>
+            <li><details><summary><strong>2025 · Runner-up, University of Nottingham CSSA Singing Competition</strong></summary><div class="s-more"><span class="s-piece">Stop! by Sam Brown</span></div></details></li>
+            <li><details><summary>2026 · Invited performer, CSSA-UK Southern Performing Arts Festival</summary><div class="s-more"><span class="s-piece">Language by Tori Kelly</span></div></details></li>
           </ul>
         </div>
         <div class="story-step" data-step="2" id="story-panel-2" role="tabpanel" aria-labelledby="story-tab-2" tabindex="0" hidden>
@@ -770,14 +786,13 @@ footer{
           <p>In September 2023, four of us, all science and engineering students with a shared love of music, formed <strong>Richard Bird</strong>, a band rooted in blues and hard rock that later expanded into funk and R&amp;B. I take on <strong>lead vocals and keyboard/synthesizer</strong>. Since then, we have opened the evening stage at the <strong>CACA Music Festival</strong>, performed at multi-band showcases including To Be Found and Cracking Seeds, and played at countless other campus music festivals.</p>
           <p class="s-quote">"You know some birds are not meant to be caged,<br>their feathers are just too bright."</p>
           <p class="s-label">Selected Performances</p>
-          <ul class="s-notes">
-            <li>2023 · T!NY Vol.1, our first show, lead vocal<span class="s-piece">Whole Lotta Love by Led Zeppelin, Come as You Are by Nirvana etc.</span></li>
-            <li>2023 · T!NY Vol.2 "Peace in Pieces", lead vocal<span class="s-piece">Heartbreaker by Led Zeppelin, Hammer to Fall by Queen etc.</span></li>
-            <li><strong>2024 · Cracking Seeds, UNNC Bands Club special performance</strong>, lead vocal and keyboard<span class="s-piece">Higher Ground by Stevie Wonder, Perfect Story (original), On Your Right (original) etc.</span></li>
-
-            <li>2024 · Wonderland Music Festival and UNNC Show Night, guest keyboardist<span class="s-piece">Rick Rice Rock (original) etc.</span></li>
-            <li><strong>2025 · CACA Music Festival, invited opening act for the evening stage</strong>, lead vocal and keyboard<span class="s-piece">Superstition by Stevie Wonder, 艷火 (Pyrojewel) by Deserts Chang etc.</span></li>
-            <li><strong>2025 · To Be Found, UNNC Bands Club special performance</strong>, lead vocal, keyboard and live programming<span class="s-piece">Rio Funk by Lee Ritenour, Heartbreaker by Led Zeppelin, Still by Brian McKnight etc.</span></li>
+          <ul class="s-notes s-acc">
+            <li><details><summary>2023 · T!NY Vol.1, our first show</summary><div class="s-more"><span class="s-role">Lead vocal</span><span class="s-piece">Whole Lotta Love by Led Zeppelin, Come as You Are by Nirvana etc.</span></div></details></li>
+            <li><details><summary>2023 · T!NY Vol.2 "Peace in Pieces"</summary><div class="s-more"><span class="s-role">Lead vocal</span><span class="s-piece">Heartbreaker by Led Zeppelin, Hammer to Fall by Queen etc.</span></div></details></li>
+            <li><details><summary><strong>2024 · Cracking Seeds, UNNC Bands Club special performance</strong></summary><div class="s-more"><span class="s-role">Lead vocal and keyboard</span><span class="s-piece">Higher Ground by Stevie Wonder, Perfect Story (original), On Your Right (original) etc.</span></div></details></li>
+            <li><details><summary>2024 · Wonderland Music Festival and UNNC Show Night</summary><div class="s-more"><span class="s-role">Guest keyboardist</span><span class="s-piece">Rick Rice Rock (original) etc.</span></div></details></li>
+            <li><details><summary><strong>2025 · CACA Music Festival, invited opening act for the evening stage</strong></summary><div class="s-more"><span class="s-role">Lead vocal and keyboard</span><span class="s-piece">Superstition by Stevie Wonder, 艷火 (Pyrojewel) by Deserts Chang etc.</span></div></details></li>
+            <li><details><summary><strong>2025 · To Be Found, UNNC Bands Club special performance</strong></summary><div class="s-more"><span class="s-role">Lead vocal, keyboard and live programming</span><span class="s-piece">Rio Funk by Lee Ritenour, Heartbreaker by Led Zeppelin, Still by Brian McKnight etc.</span></div></details></li>
           </ul>
         </div>
         <div class="story-step" data-step="3" id="story-panel-3" role="tabpanel" aria-labelledby="story-tab-3" tabindex="0" hidden>
@@ -848,7 +863,7 @@ footer{
   </div>
 </footer>
 
-<script src="js/main.js?v=51"></script>
+<script src="js/main.js?v=52"></script>
 <script src="js/sheet.js?v=9"></script>
 <script type="module" src="assets/as-you-read/site-score.mjs?v=40"></script>
 </body>

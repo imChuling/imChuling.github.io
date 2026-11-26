@@ -70,6 +70,7 @@ addEventListener('scroll',()=>{
   /* a chapter longer than the room it has scrolls inside it; its last lines fade while more is below */
   const more=()=>stage.classList.toggle('more',stage.scrollHeight-stage.scrollTop-stage.clientHeight>6);
   stage.addEventListener('scroll',more,{passive:true});
+  stage.addEventListener('toggle',more,true);   /* a performance opening or closing changes what is below */
   /* one curve for anything that moves, one for plain fades */
   const MOVE='cubic-bezier(.22,1,.36,1)',FADE='cubic-bezier(.4,0,.2,1)';
   const shown=el=>el.hidden?0:parseFloat(getComputedStyle(el).opacity)||0;
