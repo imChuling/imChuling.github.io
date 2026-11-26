@@ -385,7 +385,8 @@ section{padding:9rem 4vw}
 .proj-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;margin-bottom:.5rem}
 .proj-card h3{font-family:var(--stamp);font-weight:400;font-size:clamp(1rem,1.5vw,1.6rem);line-height:1.2;letter-spacing:.02em;margin-left:-.05em}
 .proj-card h3 em{font-style:normal;font-weight:400;display:block;font-size:.7em;color:var(--muted);margin-top:.3rem;font-family:var(--mono);letter-spacing:0}
-.proj-desc{font-family:var(--mono);font-weight:300;font-size:.78rem;line-height:1.6;color:var(--muted);margin-top:.6rem}
+.proj-desc{font-family:var(--mono);font-weight:300;font-size:.78rem;line-height:1.6;color:var(--muted);margin-top:.6rem;text-align:justify;hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:8 4 4;text-wrap:pretty}
+@media(max-width:640px){.proj-desc{text-align:left;hyphens:manual;-webkit-hyphens:manual}}
 .proj-card-links{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
 .proj-card-links span{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .65rem;border-radius:99px;background:var(--ink);color:var(--paper);cursor:pointer;transition:opacity .3s}
 .proj-card-links span:hover{opacity:.75}
