@@ -370,18 +370,20 @@ section{padding:9rem 4vw}
 .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(2rem,5vw,7rem);margin:0 auto}
 .proj-grid .reveal:nth-child(even){transition-delay:.15s}
 .proj-card{
-  display:block;text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;text-decoration:none;color:inherit;
   border-radius:20px;overflow:hidden;
   background:rgba(255,255,255,.5);border:1px solid var(--line);
   box-shadow:0 1px 3px rgba(24,21,31,.04),0 4px 12px rgba(24,21,31,.03);
   transition:transform .6s cubic-bezier(.22,1,.36,1),box-shadow .6s cubic-bezier(.22,1,.36,1),border-color .4s;
 }
 .proj-card:hover{transform:translateY(-8px);box-shadow:0 8px 24px rgba(24,21,31,.08),0 32px 64px -16px rgba(24,21,31,.18);border-color:transparent}
-.proj-thumb{aspect-ratio:16/9;overflow:hidden;position:relative}
+.proj-thumb{aspect-ratio:16/9;overflow:hidden;position:relative;flex:none}
 .proj-thumb .ph{position:absolute;inset:0;transition:transform .7s cubic-bezier(.22,1,.36,1)}
 .proj-thumb .ph img{width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
 .proj-card:hover .proj-thumb .ph{transform:scale(1.04)}
-.proj-card-body{padding:clamp(.9rem,1.4vw,1.4rem) clamp(1rem,1.5vw,1.4rem) clamp(1rem,1.5vw,1.4rem)}
+/* the tags (and the link under them) sit on the bottom edge of every card, however long its text is */
+.proj-card-body{flex:1;display:flex;flex-direction:column;padding:clamp(.9rem,1.4vw,1.4rem) clamp(1rem,1.5vw,1.4rem) clamp(1rem,1.5vw,1.4rem)}
+.proj-card-body .tag-row{margin-top:auto;padding-top:clamp(.6rem,1vw,1.1rem)}
 .proj-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;margin-bottom:.5rem}
 .proj-card h3{font-family:var(--stamp);font-weight:400;font-size:clamp(1rem,1.5vw,1.6rem);line-height:1.2;letter-spacing:.02em;margin-left:-.05em}
 .proj-card h3 em{font-style:normal;font-weight:400;display:block;font-size:.7em;color:var(--muted);margin-top:.3rem;font-family:var(--mono);letter-spacing:0}
