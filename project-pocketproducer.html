@@ -111,8 +111,15 @@
   <p>Beat-aligned chroma prefers the original. MS-CLAP cosine and the fusion score stay at or below 50%. In retrieval among 50 stems of the same type, onset patterns alone reached 53.2% Recall@1, and chroma plus onsets reached 52.7%.</p>
 
   <h2>Human in the loop</h2>
-  <p>None of these scores has been checked against musician preference, so every model output can be corrected or undone: the musician can edit the generated analysis, audition a suggestion, and accept or reject it. Tag and title edits are summarized into later Gemini prompts (prompt conditioning, fixed model weights). The session log records what was shown, previewed, inserted, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
+  <p>None of these scores has been checked against musician preference, so every model output can be corrected or undone: the musician can edit the generated analysis, audition a suggestion, and accept or reject it. Tag and title edits are summarized into later Gemini prompts (prompt conditioning, fixed model weights). The session log records what was shown, previewed, inserted, skipped, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
+</div>
 
+<figure class="proj-cover">
+  <img src="images/pocketproducer_human_loop.png" alt="Human in the loop: musician edits to Gemini tags and titles are summarized into future prompts; in a session the musician previews, inserts, skips, or undoes proposals, and every action is logged; a manual refit of the fusion weights replaces them only if behavioral tests pass">
+  <figcaption>Human in the loop. Edits shape later Gemini prompts, every session action is logged, and a refit replaces the fusion weights only if it passes the behavioral tests.</figcaption>
+</figure>
+
+<div class="proj-content">
   <h2>Limitations</h2>
   <ul>
     <li>No listening study has been run. Grouping and edit conditioning are unevaluated.</li>
