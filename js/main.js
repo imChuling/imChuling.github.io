@@ -192,6 +192,17 @@ addEventListener('scroll',()=>{
       e.preventDefault();tabs[next].focus();
     });
   });
+  /* a click or a tap on the photograph turns to the next chapter (and round to the first again).
+     Dragging across it is wiping the glass, so a press that travelled or lingered doesn't count */
+  const frame=story.querySelector('.story-visual');
+  if(frame){
+    let downX=0,downY=0,downAt=0;
+    frame.addEventListener('pointerdown',e=>{downX=e.clientX;downY=e.clientY;downAt=performance.now();});
+    frame.addEventListener('click',e=>{
+      if(Math.hypot(e.clientX-downX,e.clientY-downY)>8||performance.now()-downAt>450)return;
+      clearTimeout(pending);select((active+1)%tabs.length);
+    });
+  }
   /* previous / next under the chapter : on a phone the timeline is a long scroll back up */
   const pager=document.createElement('div');pager.className='story-pager';pager.setAttribute('role','group');pager.setAttribute('aria-label','Previous and next chapter');
   const label=i=>tabs[i].querySelector('.story-node-label').textContent.trim();
