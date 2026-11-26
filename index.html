@@ -85,9 +85,6 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;backg
 /* between phone and desktop the row tightens instead of breaking a name or a link in two */
 @media(max-width:900px){.nav-links a,.nav-sound{font-size:.72rem;letter-spacing:.12em}.nav-sound{margin-left:0}}
 @keyframes soundLoad{0%,100%{opacity:.25}50%{opacity:1}}
-.nav-sound-scene{color:var(--muted);letter-spacing:.14em;transition:opacity .22s ease,transform .22s ease}
-.nav-sound-scene:not(:empty)::before{content:'·';margin-right:.55rem;color:var(--line)}
-.nav-sound-scene.is-swapping{opacity:0;transform:translateY(-3px)}
 
 /* ---------- detail sheet : a page slides up over the portfolio ---------- */
 .sheet{position:fixed;inset:0;z-index:9000;overflow-y:auto;overscroll-behavior:contain;background:rgba(243,242,239,.94);-webkit-backdrop-filter:blur(22px) saturate(1.05);backdrop-filter:blur(22px) saturate(1.05);transform:translateY(4vh);opacity:0;transition:transform .8s cubic-bezier(.22,1,.36,1),opacity .6s ease}
@@ -852,7 +849,7 @@ footer{
 </footer>
 
 <script src="js/main.js?v=51"></script>
-<script src="js/sheet.js?v=8"></script>
-<script type="module" src="assets/as-you-read/site-score.mjs?v=39"></script>
+<script src="js/sheet.js?v=9"></script>
+<script type="module" src="assets/as-you-read/site-score.mjs?v=40"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
   const body=sheet.querySelector('.sheet-body'),title=sheet.querySelector('.sheet-title');
   const styles=new Set();let open=false,players=[],scrollAt=0,ytReady=null,unmount=null;
   /* a lifted page arrives without its scripts; the field guide is the one that needs its own */
-  const GUIDE=new URL('assets/as-you-read/wood-demo.mjs?v=7',document.baseURI).href;
+  const GUIDE=new URL('assets/as-you-read/wood-demo.mjs?v=8',document.baseURI).href;
   const dropGuide=()=>{if(unmount){try{unmount();}catch(e){}unmount=null;}};
   /* audio clip buttons (the Quill listening matrix) : one clip at a time, and the score steps aside */
   const clip=new Audio();let clipBtn=null;

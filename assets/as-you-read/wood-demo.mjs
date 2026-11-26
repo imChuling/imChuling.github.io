@@ -1,7 +1,7 @@
 /* Wood Wide Web: field guide. Plays the same Max/RNBO patch as the front page, with the same
    section presets and scales, so every button here sounds exactly like the gesture it explains. */
 import {RNBOSound} from './rnbo-engine.mjs?v=4';
-import {SCENES,SCALES,LABEL,LIB,daylight} from './site-score.mjs?v=39';
+import {SCENES,SCALES,LABEL,LIB,daylight} from './site-score.mjs?v=40';
 
 /* mount(root) wires one field guide and returns a function that shuts it down again. The standalone
    page mounts its own; on the homepage the detail sheet mounts the copy it lifts in (scripts don't

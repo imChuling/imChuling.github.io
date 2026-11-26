@@ -41,7 +41,7 @@ const button=document.querySelector('.nav-sound');
 if(button){
   const sections=Object.keys(SCENES).filter(id=>id!=='detail').map(id=>[id,document.getElementById(id)]).filter(([,el])=>el);
   let engine=null,ctx=null,enabled=false,busy=false,ticker=0,ducked=false,detail=false;
-  let wantsSound=false,suspendTimer,labelTimer;
+  let wantsSound=false,suspendTimer;
   const autoplay=new AbortController();
   let scene='top',visits={top:1},since=performance.now(),lastInput=performance.now();
   let motion=0,focus=0,focusTarget=0,swell=0,turn=0,drift=0,hoverPitch=0;
@@ -64,24 +64,9 @@ if(button){
   const beds={};                       /* id → {source,gain} once loaded */
   let bedId=null,bedsReady=false,scope=null,lastLvl='';
 
-  const label=document.createElement('span');label.className='nav-sound-scene';
-  button.appendChild(label);
   function setState(state){
     button.dataset.state=state;
     button.setAttribute('aria-pressed',String(state==='on'));
-    if(state==='on')return;
-    clearTimeout(labelTimer);
-    label.textContent='';
-    label.classList.remove('is-swapping');
-  }
-  function setLabel(text){
-    clearTimeout(labelTimer);
-    label.classList.toggle('is-swapping', label.textContent!==text);
-    if(label.textContent===text)return;
-    labelTimer=setTimeout(()=>{
-      label.textContent=text;
-      label.classList.remove('is-swapping');
-    },220);
   }
 
   /* ---------- what the visitor is doing ---------- */
@@ -265,7 +250,6 @@ if(button){
     if(next!==scene){
       scene=next;since=now;turn=1;
       if(scene!=='detail'){visits[scene]=(visits[scene]||0)+1;scale=scene;motif(visits[scene]%2===1);}
-      setLabel(LABEL[scene]);
     }
     motion*=.9;swell*=.9;turn*=.93;drift*=.97;focus+=(focusTarget-focus)*.12;
     hx*=.88;vy*=.88;wipeVel*=.75;wipe*=.985;stutter*=.86;      /* wipe lingers ~6 s, like a clearing that fogs back */
@@ -498,7 +482,7 @@ if(button){
         return;
       }
       compose();engine.volume(level(),.9);
-      enabled=true;setState('on');setLabel(LABEL[scene]);
+      enabled=true;setState('on');
       clearInterval(ticker);ticker=setInterval(compose,50);
     }catch(e){if(wantsSound)setState('error');console.warn('[score]',e);}
     finally{busy=false;}
