@@ -22,11 +22,12 @@
   .proj-cover figcaption{font-family:var(--mono);font-size:.74rem;line-height:1.6;color:var(--muted);margin-top:.8rem}
   .demo-note{font-size:.8rem;color:var(--muted);margin:.9rem 0 0;max-width:40rem}
   .results{width:100%;border-collapse:collapse;margin:1.2rem 0 .6rem;font-size:.92rem}
-  .results caption{text-align:left;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+  .results td:not(.num){text-align:justify;hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:8 4 4}
+  .results caption{text-align:justify;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
   .results th,.results td{padding:.55rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
   .results th{font-weight:500;color:var(--muted)}
   .results td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
-  @media (max-width:640px){.results{font-size:.84rem}.results th,.results td{padding:.45rem .4rem}}
+  @media (max-width:640px){.results{font-size:.84rem}.results caption,.results td:not(.num){text-align:left;hyphens:manual}.results th,.results td{padding:.45rem .4rem}}
 </style>
 </head>
 <body>
@@ -133,7 +134,7 @@
   <h3><a href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">Pocket Producer: Session-Conditioned Retrieval as User-Controlled Proposal</a></h3>
   <p class="authors">Chuling Li</p>
   <p class="venue">ISMIR 2026 Late-Breaking Demo · Abu Dhabi, UAE</p>
-  <p class="abstract">The demo paper covers the system, the fusion training, and how the choice of labels and encoder changed the results.</p>
+  <p class="abstract">Which fragments could grow into a piece of music with the ones already in a musician’s open project? This target has no direct labels at cold start, and audio similarity is only one observable signal for it. Pocket Producer, a retrieval prototype evaluated offline, treats this missing-label problem as a ranking and an interaction-design challenge. It fingerprints the open session and ranks candidates with a rules default and a selectable fusion of five interpretable signals trained on pack co-membership as cold-start weak supervision. On the Freesound Loop Dataset, the learned fusion’s apparent advantage varies with label construction, negative regime, and representation/training configuration. Pack co-membership is only a stand-in for the real target, and the conclusions shift with how the proxy is built and evaluated. We therefore surface retrieval as <em>proposals</em> the musician can inspect, preview, insert, and undo, not as automated decisions.</p>
 </div>
 
 <nav class="proj-next" aria-label="Next project">

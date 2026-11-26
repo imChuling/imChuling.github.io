@@ -1,5 +1,8 @@
 /* ===== project.css: shared styles for project & music detail pages ===== */
 
+/* running text is justified everywhere; headings, tags and buttons are not */
+p,li,figcaption,caption,.caption{text-align:justify;hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:8 4 4;text-wrap:pretty}
+
 /* layout */
 .proj-hero{padding:0 4vw 5rem;max-width:1100px;margin:0 auto}
 .proj-hero h1{font-family:var(--stamp);font-weight:400;font-size:clamp(2rem,7.5vw,4.8rem);line-height:1.1;margin-bottom:1rem;overflow-wrap:anywhere}
@@ -8,7 +11,7 @@
   font-family:var(--display);font-weight:400;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
   padding:.35rem .7rem;border:1px solid var(--line);border-radius:99px;color:var(--muted);background:rgba(255,255,255,.4);
 }
-.proj-hero .subtitle{font-family:var(--mono);font-weight:300;font-size:.88rem;color:var(--muted);line-height:1.5;max-width:60ch}
+.proj-hero .subtitle{font-family:var(--mono);font-weight:300;font-size:clamp(.95rem,.8rem + .35vw,1.1rem);color:var(--muted);line-height:1.6}
 
 /* cover image */
 .proj-cover{max-width:1100px;margin:0 auto 4rem;padding:0 4vw}
@@ -20,10 +23,17 @@
 .proj-cover img{width:100%;height:auto;border-radius:16px}
 
 /* content */
-.proj-content{max-width:760px;margin:0 auto;padding:0 4vw}
+.proj-content{max-width:1100px;margin:0 auto;padding:0 4vw}
 .proj-content h2{font-family:var(--stamp);font-weight:400;font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;margin:3.5rem 0 1.2rem}
-.proj-content p{font-family:var(--mono);font-weight:300;font-size:.92rem;line-height:1.7;color:var(--muted);margin-bottom:1.2rem}
-.proj-content ul{font-family:var(--mono);font-weight:300;font-size:.92rem;line-height:1.7;color:var(--muted);margin-bottom:1.2rem;padding-left:1.4rem}
+/* Body copy runs the full figure width, so the type grows a little with the
+   viewport and the leading opens up to keep long lines easy to track.
+   Justified text only hyphenates long words and avoids a lone last word. */
+.proj-content p,.proj-content ul{
+  font-family:var(--mono);font-weight:300;color:var(--muted);
+  font-size:clamp(.92rem,.8rem + .25vw,1rem);line-height:1.85;margin-bottom:1.3rem;
+  text-align:justify;hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:8 4 4;text-wrap:pretty;
+}
+.proj-content ul{padding-left:1.4rem}
 .proj-content li{margin-bottom:.4rem}
 
 /* video embed */
@@ -38,7 +48,7 @@
 
 /* links row */
 .proj-links{
-  max-width:760px;margin:3rem auto;padding:0 4vw;
+  max-width:1100px;margin:3rem auto;padding:0 4vw;
   display:flex;flex-wrap:wrap;gap:1rem;
 }
 .proj-links a{
@@ -54,7 +64,7 @@
 
 /* paper section */
 .proj-paper{
-  max-width:760px;margin:3rem auto;padding:2rem 2.4rem;
+  max-width:calc(min(1100px, 100vw) - 8vw);margin:3rem auto;padding:clamp(1.4rem,3vw,2.6rem) clamp(1.4rem,3.5vw,3rem);
   background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:16px;
 }
 .proj-paper h3{font-family:var(--stamp);font-weight:400;font-size:1.1rem;line-height:1.3;margin-bottom:.6rem}
@@ -62,10 +72,10 @@
 .proj-paper h3 a:hover{border-color:var(--violet)}
 .proj-paper .authors{font-family:var(--mono);font-weight:300;font-size:.82rem;color:var(--muted);margin-bottom:.3rem}
 .proj-paper .venue{font-family:var(--display);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:1rem}
-.proj-paper .abstract{font-family:var(--mono);font-weight:300;font-size:.84rem;line-height:1.6;color:var(--muted)}
+.proj-paper .abstract{font-family:var(--mono);font-weight:300;font-size:.9rem;line-height:1.8;color:var(--muted);text-align:justify;hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:8 4 4;text-wrap:pretty}
 
 /* next project */
-.proj-next{max-width:760px;margin:5rem auto 0;padding:0 4vw}
+.proj-next{max-width:1100px;margin:5rem auto 0;padding:0 4vw}
 .proj-next a{
   display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
   padding:1.6rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
@@ -85,6 +95,9 @@
 .proj-hero.compact{padding-bottom:3rem}
 
 @media(max-width:640px){
+  /* phones : a narrow column justifies into wide gaps, so text sets ragged right */
+  p,li,figcaption,caption,.caption,.results td:not(.num),
+  .proj-content p,.proj-content ul,.proj-paper .abstract{text-align:left;hyphens:manual;-webkit-hyphens:manual}
   /* phones : less air between the heading, the video and the text */
   .proj-hero{padding-bottom:2.4rem}
   .proj-hero.compact{padding-bottom:2rem}

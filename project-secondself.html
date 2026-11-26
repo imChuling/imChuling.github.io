@@ -20,12 +20,13 @@
 <style>
   .proj-content strong{font-weight:700;color:var(--ink)}
   .results{width:100%;border-collapse:collapse;margin:1.2rem 0 .6rem;font-family:var(--mono);font-weight:300;font-size:.86rem;line-height:1.6;color:var(--muted)}
-  .results caption{text-align:left;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+  .results td:not(.num){text-align:justify;hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:8 4 4}
+  .results caption{text-align:justify;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
   .results th,.results td{padding:.6rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
   .results th{font-weight:400;color:var(--ink)}
   .results td.act{white-space:nowrap;color:var(--ink)}
   .proj-content p.ss-note{font-size:.78rem}
-  @media (max-width:640px){.results{font-size:.8rem}.results th,.results td{padding:.5rem .35rem}.results td.act{white-space:normal}}
+  @media (max-width:640px){.results{font-size:.8rem}.results caption,.results td:not(.num){text-align:left;hyphens:manual}.results th,.results td{padding:.5rem .35rem}.results td.act{white-space:normal}}
 </style>
 </head>
 <body>
