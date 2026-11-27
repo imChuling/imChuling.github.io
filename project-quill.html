@@ -39,7 +39,7 @@
 @media(max-width:420px){.quill-matrix{gap:.3rem;grid-template-columns:minmax(3.5rem,1.1fr) repeat(4,minmax(0,1fr))}.quill-matrix span{font-size:.61rem;letter-spacing:.03em}.qm-corner{font-size:.52rem !important}.proj-paper{margin-left:4vw;margin-right:4vw;padding:1.4rem}}
 
 .quill-architecture-frame{overflow:hidden;border-radius:16px;background:#fff}
-.quill-architecture-frame img{display:block;width:196%;max-width:none;margin-left:-48%;border-radius:0}
+.quill-architecture-frame img{display:block;width:100%;max-width:none;border-radius:0}
 </style>
 </head>
 <body>
@@ -99,8 +99,8 @@
 <p><strong>Retrieval and rendering.</strong> For each MIDI note, <strong>articulation-conditioned nearest-neighbor retrieval</strong> filters entries by label and selects the one with the smallest Euclidean distance over the standardized context features. Its trajectories are resampled to the note duration, adding or removing whole vibrato cycles to keep the recorded rate. Pitch deviation sets <strong>f0</strong> and energy modulates <strong>loudness</strong>. The two assets exchange only these two signals.</p>
 </div>
 <figure class="proj-cover">
-<div class="quill-architecture-frame"><img alt="DDSP branch: extract a labeled behavior library, train a separate timbre model, then retrieve and adapt trajectories to render a new MIDI score" loading="lazy" src="images/quill_architecture.png"/></div>
-<figcaption>The neural branch, from capture to rendering.</figcaption></figure>
+<div class="quill-architecture-frame"><img alt="Quill system overview in three parts: capture and build timbre and behavior assets from recordings; play live from MIDI with real-time spectral synthesis; render a phrase with behavior retrieval and optional DDSP" loading="lazy" src="images/quill_architecture.png"/></div>
+<figcaption>System overview: capture, live play, and phrase rendering. Icons generated with GPT-6.2 Astra.</figcaption></figure>
 <div class="proj-content">
 <p><strong>In the app.</strong> Live playing uses the spectral synthesizer with optional real-time behavior retrieval. Rendering and WAV export can use the DDSP model.</p>
 <figure class="quill-app">
