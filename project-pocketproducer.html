@@ -79,7 +79,9 @@
 
 <div class="proj-content">
   <h2>Evaluation</h2>
-  <p>No dataset says which of a musician’s sketches belongs in their unfinished song, so I trained and tested on a proxy: loops from the same pack count as compatible. On 121 held-out packs, fusion’s gain in pairwise accuracy over embedding cosine on hard-similar negatives was <strong>+9.9 pp</strong> [+4.4, +15.4] with MS-CLAP and source-weighted BPR, and +2.1 pp [−1.0, +5.3] with LAION-CLAP and plain BPR (95% bootstrap intervals). On the 25 query packs with no uploader shared with training, the first figure falls to +3.9 pp [−1.9, +10.3]. The gain varies with encoder, training recipe, and mined negatives, so I report it as configuration sensitivity. Small shifts in labels and audio representation change the ranking substantially, which shows how far an offline metric can sit from what a musician intends.</p>
+  <p>No dataset says which of a musician’s sketches belongs in their unfinished song, so I trained and tested on a proxy: loops from the same pack count as compatible.</p>
+  <p>How much the learned fusion improved on plain embedding similarity depended on the setup. On 121 held-out packs, its gain in pairwise accuracy over embedding cosine on hard-similar negatives was <strong>+9.9 percentage points (pp)</strong> [+4.4, +15.4] with MS-CLAP and source-weighted BPR, and +2.1 pp [−1.0, +5.3] with LAION-CLAP and plain BPR (95% bootstrap intervals). On the 25 query packs with no uploader shared with training, the first figure falls to +3.9 pp [−1.9, +10.3].</p>
+  <p>The gain varies with encoder, training recipe, and mined negatives, so I report it as configuration sensitivity. Small shifts in labels and audio representation change the ranking substantially, which shows how far an offline metric can sit from what a musician intends.</p>
   <p>I then built label-free tests: change one musical property and see which scorers respond. Below, each stem is delayed four beats against its own backing.</p>
 
   <table class="results">
@@ -111,7 +113,8 @@
     </tbody>
   </table>
 
-  <p>Beat-aligned chroma prefers the original. MS-CLAP cosine and the fusion score stay at or below 50%. In retrieval among 50 stems of the same type, onset patterns alone reached 53.2% Recall@1, and chroma plus onsets reached 52.7%.</p>
+  <p>Beat-aligned chroma prefers the original. MS-CLAP cosine and the fusion score stay at or below 50%, which is chance.</p>
+  <p>In retrieval among 50 stems of the same type, onset patterns alone reached 53.2% Recall@1, and chroma plus onsets reached 52.7%.</p>
 
   <h2>Human in the loop</h2>
   <p>None of these scores has been checked against musician preference, so every model output can be corrected or undone: the musician can edit the generated analysis, audition a suggestion, and accept or reject it. Tag and title edits are summarized into later Gemini prompts (prompt conditioning, fixed model weights). The session log records what was shown, previewed, inserted, skipped, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
