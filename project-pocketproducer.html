@@ -60,16 +60,6 @@
 <div class="proj-content">
   <h2>Overview</h2>
   <p>Pocket Producer grew out of my frustration with unfinished songs and scattered musical ideas. In the library, a multi-agent system organizes audio clips and lyrics into cohesive projects. In an open <strong>Audiotool</strong> session, it ranks your own fragments against the arrangement, shows the evidence, and lets you preview, insert, and undo.</p>
-
-  <h2>System</h2>
-  <p><strong>Library.</strong> Each upload is analyzed with <strong>librosa</strong> (tempo, key, 12-bin CQT chroma, onset strength) and embedded with a frozen <strong>MS-CLAP</strong> encoder. <strong>Gemini</strong> proposes a title and tags for emotion, theme, and style. Two <strong>Google ADK</strong> agents retrieve neighbors with <strong>Voyage-3</strong> text embeddings and decide whether the fragment joins a project, with my audio fusion score as one cue.</p>
-  <p><strong>Session ranking.</strong> Through the Nexus SDK the app reads project tempo, region positions, and up to eight audio samples. The app includes nine rankers; the three that matter most are described here.</p>
-  <ul>
-    <li><strong>Rules</strong> (default): a weighted sum of seven metadata cues, including tempo, role gap, stated intent, and recency. It needs no session audio.</li>
-    <li><strong>Five-signal fusion</strong>: mean and maximum MS-CLAP cosine against the session clips, tempo, key when the intent names one, and tag Jaccard. The linear weights are trained with <strong>source-weighted Bayesian Personalized Ranking (BPR)</strong>, with same-pack Freesound loops as positives.</li>
-    <li><strong>Beat Fit</strong>: aligns the first ten seconds of session and candidate on the project’s beat grid, then compares chroma per beat (cosine) and onset peaks in eight slots per beat (<strong>Pearson correlation</strong>) where both sound. Signals are standardized across candidates and summed, with no fitted weights.</li>
-  </ul>
-  <p>An insertion is one recorded DAW transaction, so <strong>undo</strong> removes exactly what it created.</p>
 </div>
 
 <figure class="proj-cover">
@@ -78,9 +68,30 @@
 </figure>
 
 <div class="proj-content">
+  <h2>Pipeline</h2>
+  <p><strong>Capture and describe.</strong> A fragment is a browser recording, an uploaded audio file, a typed lyric, or the samples of an Audiotool project. Each one is analyzed once: <strong>librosa</strong> measures tempo, key, 12-bin CQT chroma, and onset strength; a frozen <strong>MS-CLAP</strong> encoder embeds the audio; <strong>Gemini</strong> proposes a title, tags for emotion, theme, and style, and a transcript of any vocals; <strong>Voyage-3</strong> embeds the text.</p>
+  <p><strong>Group.</strong> Two <strong>Google ADK</strong> agents decide where a new fragment belongs. The memory agent retrieves related fragments with Voyage-3 vector search. The producer agent adds the fragment to a project, starts a new one, or leaves it standalone, and writes a title and a next step. The agents also see my audio fusion score against the closest fragments as one cue. Audio similarity alone would group by instrument: for 586 of 594 MUSDB18-HQ stems, the nearest MS-CLAP neighbor was the same instrument from another song.</p>
+  <p><strong>Rank for the session.</strong> Through the Nexus SDK the app reads project tempo, track types, region positions, and up to eight audio samples. A typed intent is parsed by Gemini into tags and roles, and into a key only when one is stated. The app includes nine rankers; the three that matter most are described here.</p>
+  <ul>
+    <li><strong>Rules</strong> (default): a weighted sum of seven metadata cues, including tempo, role gap, stated intent, and recency. It needs no session audio.</li>
+    <li><strong>Five-signal fusion</strong>: mean and maximum MS-CLAP cosine against the session clips, tempo, key when the intent names one, and tag Jaccard. The linear weights are trained with <strong>source-weighted Bayesian Personalized Ranking (BPR)</strong>, with same-pack Freesound loops as positives.</li>
+    <li><strong>Beat Fit</strong>: aligns the first ten seconds of session and candidate on the project’s beat grid, then compares chroma per beat (cosine) and onset peaks in eight slots per beat (<strong>Pearson correlation</strong>) where both sound. Signals are standardized across candidates and summed, with no fitted weights.</li>
+  </ul>
+  <p><strong>Preview, insert, undo.</strong> Each suggestion lists the evidence behind its score. An insertion is one recorded DAW transaction, so <strong>undo</strong> removes exactly what it created.</p>
+
+  <h2>Tech stack</h2>
+  <ul>
+    <li><strong>Frontend:</strong> Next.js and TypeScript on Vercel, with the Audiotool Nexus SDK in the browser.</li>
+    <li><strong>Backend:</strong> FastAPI on Google Cloud Run.</li>
+    <li><strong>Data:</strong> MongoDB Atlas with vector search, and Google Cloud Storage for audio.</li>
+    <li><strong>Models:</strong> Gemini through Google ADK, Voyage-3, MS-CLAP, and librosa.</li>
+  </ul>
+</div>
+
+<div class="proj-content">
   <h2>Evaluation</h2>
   <p>No dataset says which of a musician’s sketches belongs in their unfinished song, so I trained and tested on a proxy: loops from the same pack count as compatible.</p>
-  <p>How much the learned fusion improved on plain embedding similarity depended on the setup. On 121 held-out packs, its gain in pairwise accuracy over embedding cosine on hard-similar negatives was <strong>+9.9 percentage points (pp)</strong> [+4.4, +15.4] with MS-CLAP and source-weighted BPR, and +2.1 pp [−1.0, +5.3] with LAION-CLAP and plain BPR (95% bootstrap intervals). On the 25 query packs with no uploader shared with training, the first figure falls to +3.9 pp [−1.9, +10.3].</p>
+  <p>On 121 held-out packs, the learned fusion’s gain in pairwise accuracy over embedding cosine on hard-similar negatives was <strong>+9.9 percentage points (pp)</strong> [+4.4, +15.4] with MS-CLAP and source-weighted BPR, and +2.1 pp [−1.0, +5.3] with LAION-CLAP and plain BPR (95% bootstrap intervals). On the 25 query packs with no uploader shared with training, the first figure falls to +3.9 pp [−1.9, +10.3].</p>
   <p>The gain varies with encoder, training recipe, and mined negatives, so I report it as configuration sensitivity. Small shifts in labels and audio representation change the ranking substantially, which shows how far an offline metric can sit from what a musician intends.</p>
   <p>I then built label-free tests: change one musical property and see which scorers respond. Below, each stem is delayed four beats against its own backing.</p>
 
@@ -113,26 +124,27 @@
     </tbody>
   </table>
 
-  <p>Beat-aligned chroma prefers the original. MS-CLAP cosine and the fusion score stay at or below 50%, which is chance.</p>
+  <p>Only beat-aligned chroma prefers the original; MS-CLAP cosine and the fusion score are at or below chance.</p>
   <p>In retrieval among 50 stems of the same type, onset patterns alone reached 53.2% Recall@1, and chroma plus onsets reached 52.7%.</p>
 
   <h2>Human in the loop</h2>
-  <p>None of these scores has been checked against musician preference, so every model output can be corrected or undone: the musician can edit the generated analysis, audition a suggestion, and accept or reject it. Tag and title edits are summarized into later Gemini prompts (prompt conditioning, fixed model weights). The session log records what was shown, previewed, inserted, skipped, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
+  <p>Every model output can be corrected or undone: the musician can edit the generated analysis, audition a suggestion, and insert or skip it. Tag and title edits are summarized into later Gemini prompts (prompt conditioning, fixed model weights). The session log records what was shown, previewed, inserted, skipped, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
 </div>
 
 <figure class="proj-cover">
   <img src="images/pocketproducer_human_loop.png" alt="Human in the loop: musician edits to Gemini tags and titles are summarized into future prompts; in a session the musician previews, inserts, skips, or undoes proposals, and every action is logged; a manual refit of the fusion weights replaces them only if behavioral tests pass">
-  <figcaption>Human in the loop. Edits shape later Gemini prompts, every session action is logged, and a refit replaces the fusion weights only if it passes the behavioral tests. Icons generated with GPT-6.2 Astra.</figcaption>
+  <figcaption>Human in the loop. Icons generated with GPT-6.2 Astra.</figcaption>
 </figure>
 
 <div class="proj-content">
-  <h2>Limitations</h2>
+  <h2>Limitations and reflection</h2>
   <ul>
     <li>No listening study has been run. Grouping and edit conditioning are unevaluated.</li>
     <li>The delay test measures a response to one edit, and shifting a stem also changes which audio falls inside the analysis window.</li>
     <li>The onset comparison was chosen after the first results on the same recordings. The deployed rhythm measure has synthetic tests only.</li>
     <li>Beat Fit ignores region loop and offset settings and cannot score fragments uploaded before it.</li>
   </ul>
+  <p>The main lesson was that sounding alike and fitting together are different relationships. So the rules ranker stays the default and every score is shown with its evidence.</p>
 </div>
 
 <div class="proj-paper">
