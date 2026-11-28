@@ -40,6 +40,7 @@
 
 .quill-architecture-frame{overflow:hidden;border-radius:16px;background:#fff}
 .quill-architecture-frame img{display:block;width:100%;max-width:none;border-radius:0}
+.proj-cover .ai-note{font-family:var(--mono);font-size:.7rem;line-height:1.6;color:var(--muted);font-style:italic;margin-top:.35rem;opacity:.85}
 </style>
 </head>
 <body>
@@ -93,27 +94,46 @@
 </div>
 <p class="qm-note">Outlined cells use the timbre’s own behavior. The clips are pre-rendered.</p>
 <p aria-live="polite" class="qm-status" role="status"></p>
-<h2>How it works</h2>
-<p>Quill has two ways to build a timbre, one library of playing behavior, and a retrieval step that joins them.</p>
-<p><strong>Spectral timbre (real time).</strong> This is the timbre you play live. <strong>PESTO</strong> estimates the fundamental frequency (f0). On an STFT I measure up to 60 harmonic amplitudes per frame by <strong>parabolic peak interpolation</strong> and store the residual as a 40-band noise envelope. An additive synthesizer written in <strong>NumPy and Numba</strong> resynthesizes the sound from MIDI and resamples the spectral envelope at the target harmonics, which preserves formants under transposition. Sixteen voices render a 256-sample block in a median of 2.65 ms (budget 5.8 ms, Apple M2).</p>
-<p><strong>Neural timbre (offline).</strong> This version is for rendering and export. Each instrument can have a <strong>DDSP harmonic-plus-noise</strong> model. An MLP and GRU decoder with <strong>494,718 parameters</strong> maps f0 and loudness to 60 harmonic and 65 noise-band amplitudes at 16 kHz.</p>
-<p><strong>Behavior library.</strong> This is where a way of playing is stored, note by note. <strong>pYIN</strong> tracks f0. Note boundaries are the union of detected onsets and f0 steps. Rules on the pitch contour label each note <strong>plain, vibrato or slide</strong>. Each note stores <strong>four 48-point trajectories</strong> (pitch deviation, energy, brightness, noisiness) and six context features: pitch, duration, the gaps before and after, and phrase-initial and phrase-final flags.</p>
-<p><strong>Retrieval and rendering.</strong> Each MIDI note borrows the gesture of a similar recorded note. <strong>Articulation-conditioned nearest-neighbor retrieval</strong> filters entries by label and selects the one with the smallest Euclidean distance over the standardized context features. By default the app then reranks the eight nearest candidates for smoother joins between notes. The chosen trajectories are resampled to the note duration. When a note is much longer or shorter than its source, the app adds or removes whole vibrato cycles to keep the recorded rate. Pitch deviation sets <strong>f0</strong> and energy modulates <strong>loudness</strong>. With the neural timbre and in live playing, the two assets exchange only these two signals. Offline rendering with a captured spectral timbre also uses the brightness and noisiness curves.</p>
+<h2>System architecture</h2>
+<p>Quill has three layers. One take can feed all three: a spectral timbre that plays at once, a behavior library if the take has at least two notes, and a DDSP timbre if it lasts 8 seconds or more. Every timbre takes the same two control signals, <strong>f0 and loudness</strong>, so a behavior library can drive any of them without a learned adapter.</p>
 </div>
 <figure class="proj-cover">
 <div class="quill-architecture-frame"><a href="images/quill_architecture.png" target="_blank" rel="noopener" aria-label="Open the system overview at full size"><img alt="Quill system overview in three parts: capture and build timbre and behavior assets from recordings; play live from MIDI with real-time spectral synthesis; render a phrase with behavior retrieval and optional DDSP" loading="lazy" src="images/quill_architecture.png"/></a></div>
-<figcaption>System overview: capture, live play, and phrase rendering. Select the figure to open it at full size.</figcaption></figure>
+<figcaption>System overview: capture, live play, and phrase rendering. Select the figure to open it at full size.</figcaption>
+<p class="ai-note">AI disclosure: the icons in this figure were generated with GPT-6.2 Astra.</p>
+</figure>
+<div class="proj-content">
+<p><strong>Spectral core (real time).</strong> This is the timbre you play live. <strong>PESTO</strong> estimates the fundamental frequency (f0). On an STFT I measure up to 60 harmonic amplitudes per frame by <strong>parabolic peak interpolation</strong> and store the residual as a 40-band noise envelope. An additive synthesizer written in <strong>NumPy and Numba</strong> resynthesizes the sound from MIDI and resamples the spectral envelope at the target harmonics, which preserves formants under transposition. Sixteen voices render a 256-sample block in a median of 2.65 ms (budget 5.8 ms, Apple M2).</p>
+<p><strong>Behavior library.</strong> This is where a way of playing is stored, note by note. Each entry holds <strong>four 48-point trajectories</strong> (pitch deviation, energy, brightness, noisiness), a label (<strong>plain, vibrato or slide</strong>) and six context features: pitch, duration, the gaps before and after, and phrase-initial and phrase-final flags.</p>
+<p><strong>Neural timbre (offline).</strong> This version is for rendering and export. Each instrument can have a <strong>DDSP harmonic-plus-noise</strong> model. An MLP and GRU decoder with <strong>494,718 parameters</strong> maps f0 and loudness to 60 harmonic and 65 noise-band amplitudes at 16 kHz.</p>
+<p><strong>Between the layers.</strong> Pitch deviation sets <strong>f0</strong> and energy modulates <strong>loudness</strong>. With the neural timbre and in live playing, the two assets exchange only these two signals. Offline rendering with a captured spectral timbre also uses the brightness and noisiness curves.</p>
+<h2>Pipeline</h2>
+<p><strong>Segment and label.</strong> <strong>pYIN</strong> tracks f0. Note boundaries are the union of detected onsets and f0 steps, so a legato note change with no new attack is still split. Rules on each note’s pitch contour assign its label: a range under 30 cents is plain, a mostly one-way drift above 60 cents is a slide, and four or more direction changes make a vibrato.</p>
+<p><strong>Retrieve.</strong> Each MIDI note borrows the gesture of a similar recorded note. <strong>Articulation-conditioned nearest-neighbor retrieval</strong> filters entries by label and selects the one with the smallest Euclidean distance over the standardized context features. By default the app then reranks the eight nearest candidates for smoother joins between notes.</p>
+<p><strong>Adapt.</strong> The chosen trajectories are resampled to the note duration at 250 frames per second. When a note is much longer or shorter than its source, whole vibrato cycles are added or removed to keep the recorded rate. Label rules then shape the pitch: plain notes are low-passed at 3 Hz, vibrato notes lose drift below 2 Hz, and slides take their interval from the score.</p>
+</div>
 <figure class="proj-cover">
 <div class="quill-architecture-frame"><a href="images/quill_articulation.png" target="_blank" rel="noopener" aria-label="Open the articulation example at full size"><img alt="The same C4 to D4 phrase rendered three times with the D4 label set to plain, vibrato and slide: the retrieved pitch trajectory, the label rule applied to it, the output pitch over the full phrase, and a close-up of D4 within plus or minus 40 cents" loading="lazy" src="images/quill_articulation.png" width="2400" height="715"/></a></div>
-<figcaption>One phrase, three labels. Only the label on D4 changes. Each label retrieves a different note from the URMP violin library, and its rule shapes the pitch: plain notes are low-passed at 3 Hz, vibrato notes lose drift below 2 Hz, and slides take the 200-cent interval from the score. The right column zooms into D4. Expressive timing is off.</figcaption></figure>
+<figcaption>One phrase, three labels. Only the label on D4 changes, and each label retrieves a different note from the URMP violin library. The right column zooms into D4. Expressive timing is off.</figcaption>
+<p class="ai-note">AI disclosure: the icons in this figure were generated with GPT-6.2 Astra.</p>
+</figure>
 <div class="proj-content">
-<p><strong>Using it.</strong> Capture records up to 60 seconds from the microphone, an audio file, or one stem that <strong>Demucs</strong> separates from a full song. Texture mode takes unpitched sounds such as rain or wind, as a timbre only. The spectral timbre is playable at once. Saving a take with at least two notes also extracts its behavior library, so one recording yields both assets.</p>
+<p><strong>Render.</strong> The adapted f0 and loudness drive the chosen timbre. Notes inside a phrase join with a 20 ms loudness crossfade. Live playing uses the spectral core, and rendering and WAV export can use either the spectral timbre or a DDSP model.</p>
+<h2>Using Quill</h2>
+<p>Capture records up to 60 seconds from the microphone, an audio file, or one stem that <strong>Demucs</strong> separates from a full song. Texture mode takes unpitched sounds such as rain or wind, as a timbre only. The spectral timbre is playable at once, and one save stores both assets.</p>
 <p>On the keyboard, a <strong>gesture interpreter</strong> turns overlapping keys within two semitones into legato and wider overlaps into slides. Three notes within 80 ms become a strum, and the mod wheel sets vibrato depth. When a behavior library drives live playing instead, each key press retrieves a trajectory, with the note length estimated from recent playing. Brightness applies a spectral tilt of up to 6 dB per octave, Air / Noise sets the level of the noise layer, and an LFO adds vibrato at 2 to 10 Hz.</p>
-<p>In the piano roll, each note carries a label: plain, vibrato, slide or legato. Playback renders the notes with the current timbre and behavior pair, and the result exports as MIDI or WAV. Any take of 8 seconds or more can be baked into a DDSP timbre, in about four minutes on an Apple M2.</p>
+<p>In the piano roll, each note carries a label: plain, vibrato, slide or legato. Playback renders the notes with the current timbre and behavior pair, and the result exports as MIDI or WAV. Baking a take into a DDSP timbre takes about four minutes on an Apple M2.</p>
 <figure class="quill-app">
 <img alt="Quill desktop prototype showing capture analysis, a piano roll, sound controls and an on-screen keyboard" decoding="async" height="1200" loading="lazy" src="images/quill-cover.jpg" width="1600"/>
 <figcaption>The desktop prototype.</figcaption>
 </figure>
+<h2>Tech stack</h2>
+<ul>
+<li><strong>Real-time engine:</strong> Python with NumPy and Numba, sounddevice for audio, mido and python-rtmidi for MIDI. PyTorch and librosa stay outside the audio callback.</li>
+<li><strong>Analysis:</strong> PESTO and pYIN for f0, librosa for spectral features, Demucs for stem separation.</li>
+<li><strong>Neural timbre:</strong> DDSP in PyTorch, trained with a multi-scale spectral loss.</li>
+<li><strong>App:</strong> a pywebview desktop window with an HTML and JavaScript interface, and a local FastAPI render service.</li>
+</ul>
 <h2>Evaluation and limitations</h2>
 <p>The evaluation asks whether timbre and behavior really stay separate, and whether listeners can hear it. Cross-rendering violin, trumpet and guitar passed <strong>12 of 12</strong> source-attribution checks: behavior features (pitch modulation, pitch drift, RMS) followed the behavior source and <strong>MFCC</strong> features followed the timbre source. In a pre-registered study with <strong>19 listeners</strong>, all 19 rated retrieved behavior more human-like than no behavior, and <strong>109 of 114</strong> cross-instrument ABX responses identified the behavior source.</p>
 <p>To check that the label itself drives the result, I rendered each of 29 notes twice, changing only its label from plain to vibrato. Vibrato-band energy rose by a median of 7.0 times in the control signal and 4.7 times in the audio. Most of that contrast comes from the label-specific clean-up rules: with them switched off, the control-signal ratio fell to 1.55. The glass timbre model and its 24-note library were both built from about 82 seconds of rubbed-glass recordings from the decent|SAMPLES Wine Glasses library.</p>
