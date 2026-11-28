@@ -102,6 +102,9 @@
 <figure class="proj-cover">
 <div class="quill-architecture-frame"><a href="images/quill_architecture.png" target="_blank" rel="noopener" aria-label="Open the system overview at full size"><img alt="Quill system overview in three parts: capture and build timbre and behavior assets from recordings; play live from MIDI with real-time spectral synthesis; render a phrase with behavior retrieval and optional DDSP" loading="lazy" src="images/quill_architecture.png"/></a></div>
 <figcaption>System overview: capture, live play, and phrase rendering. Select the figure to open it at full size.</figcaption></figure>
+<figure class="proj-cover">
+<div class="quill-architecture-frame"><a href="images/quill_articulation.png" target="_blank" rel="noopener" aria-label="Open the articulation example at full size"><img alt="The same C4 to D4 phrase rendered three times with the D4 label set to plain, vibrato and slide: the retrieved pitch trajectory, the label rule applied to it, the output pitch over the full phrase, and a close-up of D4 within plus or minus 40 cents" loading="lazy" src="images/quill_articulation.png" width="2400" height="715"/></a></div>
+<figcaption>One phrase, three labels. Only the label on D4 changes. Each label retrieves a different note from the URMP violin library, and its rule shapes the pitch: plain notes are low-passed at 3 Hz, vibrato notes lose drift below 2 Hz, and slides take the 200-cent interval from the score. The right column zooms into D4. Expressive timing is off.</figcaption></figure>
 <div class="proj-content">
 <p><strong>In the app.</strong> Live playing uses the spectral synthesizer with optional real-time behavior retrieval. Rendering and WAV export can use the DDSP model.</p>
 <figure class="quill-app">
