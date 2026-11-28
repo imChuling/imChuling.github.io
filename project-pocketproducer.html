@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pocket Producer · Chuling LI</title>
-<meta name="description" content="Pocket Producer helps musicians record or upload their own audio sketches, rediscover them during arranging, and decide what to keep by listening in context.">
+<meta name="description" content="Pocket Producer collects a musician’s unfinished fragments, groups the ones that could become one song, and explains why they connect and what to do next.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
 <meta property="og:title" content="Pocket Producer · Chuling LI">
-<meta property="og:description" content="Pocket Producer helps musicians record or upload their own audio sketches, rediscover them during arranging, and decide what to keep by listening in context.">
+<meta property="og:description" content="Pocket Producer collects a musician’s unfinished fragments, groups the ones that could become one song, and explains why they connect and what to do next.">
 <meta property="og:url" content="https://imchuling.github.io/project-pocketproducer.html">
 <meta property="og:image" content="https://imchuling.github.io/images/pocketproducer_overview.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -42,7 +42,7 @@
     <span class="tag">Audiotool Let's Build 2026 · 3rd Place, Ideation</span>
     <span class="tag">Music Information Retrieval</span>
   </div>
-  <p class="subtitle">Try a recording you saved months ago in the song you’re working on now.</p>
+  <p class="subtitle">Find the hidden links between your unfinished musical ideas, and see how they could become a song.</p>
   <div class="proj-links hero-links">
     <a class="primary" href="https://ismir2026program.ismir.net/lbd_609.html#details" target="_blank">ISMIR Page ↗</a>
     <a class="secondary" href="https://github.com/imChuling/pocket-producer" target="_blank">Source Code ↗</a>
@@ -59,7 +59,7 @@
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>Pocket Producer grew out of my frustration with unfinished songs and scattered musical ideas. In the library, a multi-agent system organizes audio clips and lyrics into cohesive projects. In an open <strong>Audiotool</strong> session, it ranks your own fragments against the arrangement, shows the evidence, and lets you preview, insert, and undo.</p>
+  <p>Pocket Producer grew out of my frustration with unfinished songs and scattered musical ideas: voice memos, riffs, and half-written lyrics that never grow past the fragment stage. It collects them in one library, finds the fragments that could become one song, and groups them into projects that explain why they connect and suggest a next step. Inside an open <strong>Audiotool</strong> session, it can also rank those fragments against the arrangement.</p>
 </div>
 
 <figure class="proj-cover">
@@ -69,8 +69,8 @@
 
 <div class="proj-content">
   <h2>Pipeline</h2>
-  <p><strong>Capture and describe.</strong> A fragment is a browser recording, an uploaded audio file, a typed lyric, or the samples of an Audiotool project. Each one is analyzed once: <strong>librosa</strong> measures tempo, key, 12-bin CQT chroma, and onset strength; a frozen <strong>MS-CLAP</strong> encoder embeds the audio; <strong>Gemini</strong> proposes a title, tags for emotion, theme, and style, and a transcript of any vocals; <strong>Voyage-3</strong> embeds the text.</p>
-  <p><strong>Group.</strong> Two <strong>Google ADK</strong> agents decide where a new fragment belongs. The memory agent retrieves related fragments with Voyage-3 vector search. The producer agent adds the fragment to a project, starts a new one, or leaves it standalone, and writes a title and a next step. The agents also see my audio fusion score against the closest fragments as one cue. Audio similarity alone would group by instrument: for 586 of 594 MUSDB18-HQ stems, the nearest MS-CLAP neighbor was the same instrument from another song.</p>
+  <p><strong>Capture and describe.</strong> A fragment is a browser recording, an uploaded audio file, a typed lyric, or the samples of an Audiotool project. Each one is analyzed once: <strong>librosa</strong> measures tempo, key, 12-bin CQT chroma, and onset strength; a frozen <strong>MS-CLAP</strong> encoder embeds the audio; <strong>Gemini</strong> proposes a title, tags for emotion, theme, style, and song section (such as verse or chorus), a potential rating, and a transcript of any vocals; <strong>Voyage-3</strong> embeds the text.</p>
+  <p><strong>Group.</strong> Two <strong>Google ADK</strong> agents decide where a new fragment belongs. The memory agent retrieves related fragments with Voyage-3 vector search. The producer agent adds the fragment to a project, starts a new one, or leaves it standalone, and writes a title and a next step. The agents also see my audio fusion score against the closest fragments as one cue. Each project page explains why its fragments connect, summarizes their key, tempo, and shared traits, and shows a Rescue Score: a 0 to 100 heuristic computed in code from richness, structure completeness, emotional coherence, and freshness, used to suggest which project to pick up next. Audio similarity alone would group by instrument: for 586 of 594 MUSDB18-HQ stems, the nearest MS-CLAP neighbor was the same instrument from another song.</p>
   <p><strong>Rank for the session.</strong> Through the Nexus SDK the app reads project tempo, track types, region positions, and up to eight audio samples. A typed intent is parsed by Gemini into tags and roles, and into a key only when one is stated. The app includes nine rankers; the three that matter most are described here.</p>
   <ul>
     <li><strong>Rules</strong> (default): a weighted sum of seven metadata cues, including tempo, role gap, stated intent, and recency. It needs no session audio.</li>
@@ -128,7 +128,7 @@
   <p>In retrieval among 50 stems of the same type, onset patterns alone reached 53.2% Recall@1, and chroma plus onsets reached 52.7%.</p>
 
   <h2>Human in the loop</h2>
-  <p>Every model output can be corrected or undone: the musician can edit the generated analysis, audition a suggestion, and insert or skip it. Tag and title edits are summarized into later Gemini prompts (prompt conditioning, fixed model weights). The session log records what was shown, previewed, inserted, skipped, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
+  <p>Every model output can be corrected or undone. In the library, the musician sets how strict grouping is (strict, balanced, or loose), edits the generated tags and titles, and adds notes or comments. Saving a note or comment, or pressing refresh, makes the agents decide the fragment’s project again. Tag and title edits are also summarized into later Gemini prompts (prompt conditioning, fixed model weights). In a session, the musician auditions a suggestion and inserts or skips it. The session log records what was shown, previewed, inserted, skipped, and undone. Refitting ranker weights from it is an offline prototype, and a guardrail rejects weights that fail a behavioral test the deployed weights pass.</p>
 </div>
 
 <figure class="proj-cover">
