@@ -500,10 +500,10 @@ section{padding:9rem 4vw}
 
 /* ---------- about-me strip ---------- */
 .me-wrap{position:relative;padding:0;border-top:1px solid var(--line)}
-.me-scroll{height:140vh}
-.me{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;padding:8rem 4vw 4rem}
+/* the last section is as tall as what it holds, so a tall window shows the section before it rather than empty paper */
+.me{display:flex;align-items:center;padding:8rem 4vw 5rem}
 .me .shell{width:100%;display:grid;grid-template-columns:.8fr 1.2fr;gap:2.5rem 5rem;align-items:center}
-@media(max-width:880px){.me-scroll{height:auto}.me{position:static;min-height:0;padding:5rem 4vw}}
+@media(max-width:880px){.me{padding:5rem 4vw}}
 .me-photo{aspect-ratio:3/4;border-radius:24px;overflow:hidden;position:relative;max-width:380px;box-shadow:0 4px 16px rgba(24,21,31,.06),0 24px 56px -20px rgba(24,21,31,.24);transition:box-shadow 1.4s cubic-bezier(.22,1,.36,1)}
 .me-photo img{display:block;transition:transform 1.6s cubic-bezier(.22,1,.36,1)}
 .me-photo:hover{box-shadow:0 40px 80px -40px rgba(24,21,31,.38)}
