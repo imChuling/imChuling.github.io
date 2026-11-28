@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Second Self · Chuling LI</title>
-<meta name="description" content="A vocal performance system in Max for Live. A singer duets with her own voice recorded earlier in the same song, with no operator and no controller.">
+<meta name="description" content="An automated performance system in Max for Live. A singer sings with phrases of herself from earlier in the same performance, with nobody operating the software.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuling Li">
 <meta property="og:title" content="Second Self · Chuling LI">
-<meta property="og:description" content="A vocal performance system in Max for Live. A singer duets with her own voice recorded earlier in the same song, with no operator and no controller.">
+<meta property="og:description" content="An automated performance system in Max for Live. A singer sings with phrases of herself from earlier in the same performance, with nobody operating the software.">
 <meta property="og:url" content="https://imchuling.github.io/project-secondself.html">
 <meta property="og:image" content="https://imchuling.github.io/assets/hero/chuling-live.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -41,25 +41,26 @@
     <span class="tag">Max for Live · FluCoMa</span>
     <span class="tag">Real-Time Audio</span>
   </div>
-  <p class="subtitle">Sing a verse, and your own earlier takes sing with you: on the same chord, at the same place in the bar, with nobody at the laptop.</p>
+  <p class="subtitle">An automated performance system in Max for Live: a singer sings with phrases of herself from earlier in the same performance.</p>
 </div>
 
 <div class="proj-content">
   <h2>Overview</h2>
-  <p>Second Self grew out of the friction of operating software while performing. It is a vocal performance system built as three Max for Live devices. It records and slices the vocal in real time, brings earlier phrases back over the chord they were sung on, and keeps them in time with Ableton Live. Once the take starts, nothing is operated by hand.</p>
-  <p>Everything the second voice sings comes from the voice recorded in that performance. The system runs on the CPU of an M2 MacBook Air and uses no neural models.</p>
-  <p>Related systems solve parts of this. <strong>OMax</strong>, <strong>Somax2</strong> and <strong>DYCI2</strong> recombine a performer’s material for improvisation and are often steered by an operator. The <strong>Reflexive Looper</strong> aligns a performer’s recordings to a chord grid and selects its behavior from the performer’s current playing mode. I found little prior work that combines a song form, material limited to the current performance, and no operator.</p>
+  <p>Second Self grew out of the friction of operating software while performing. It is a vocal performance system built as three Max for Live devices: it records and slices the vocal in real time, recalls earlier phrases according to the chord being played, and keeps them in time with Ableton Live. Once the take starts, I don’t touch the computer.</p>
+  <p>The idea comes from a short dialogue in the <em>Qiwulun</em> chapter of the <em>Zhuangzi</em>. The Penumbra asks the Shadow why it keeps walking and stopping with no will of its own, and the Shadow says it doesn’t know. Maybe it depends on something, and that something depends on something else. I think of the second voice as that shadow. Everything it sings is my own voice from the same performance, yet the system decides when it comes in and which of my earlier takes it brings back. Across the four acts it goes from following me to leading me. By the end I am thinking of the butterfly dream, where Zhuang Zhou wakes up and can’t tell whether he dreamed the butterfly or the butterfly is dreaming him.</p>
+  <p>It all runs on the CPU of an M2 MacBook Air, with no neural models.</p>
+  <p>Other systems do parts of this. <strong>OMax</strong>, <strong>Somax2</strong> and <strong>DYCI2</strong> recombine a performer’s material for improvisation, often with someone steering them. The <strong>Reflexive Looper</strong> lines up a performer’s recordings with a chord grid and picks what to do based on how they are playing. I haven’t found much that brings these together inside a fixed song form, using only material from that night, with nobody at the controls.</p>
 
-  <h2>How it works</h2>
-  <p><strong>Listen and slice.</strong> The vocal is recorded into a buffer and cut at onsets into segments of 0.4 to 4 s (<strong>FluCoMa</strong>). Each segment gets a 12-bin <strong>chroma</strong> vector, a <strong>Tonal Interval Vector</strong> (a compact description of its harmony) and six descriptors (RMS, zero-crossing rate, crest factor, chroma entropy, chroma flux, duration). Harmonic-percussive separation stores the percussive part of each segment in a second buffer.</p>
-  <p><strong>Index by place in the song.</strong> The accompaniment is a four-bar chord loop, and a MIDI clip of triads supplies the current chord. Each segment is stored with the chord sounding at its start, its offset from that chord’s onset in milliseconds, and its position in the verse form (A, A, AB, AB).</p>
-  <p><strong>Recall in place.</strong> A segment plays back over the chord it was sung on, at its stored offset, so it lands on the harmony and on the pulse. Consecutive segments of one phrase play as a single span. When no chord clip is running, the system queries a <strong>k-d tree</strong> (k = 5) with the Tonal Interval Vector of the pitch classes just sung and ranks candidates by pitch-class conflict.</p>
-  <p><strong>Fit by taking away.</strong> Each recalled phrase gets a conflict score from 0 to 1 against the current chord. The score sets the depth of a pitch-class spectral mask (8192-point FFT) that attenuates partials outside the chord by up to about 9 dB. The same score moves the phrase outward in the stereo field and increases its low-pass filtering and reverb send. One number decides which phrase returns, how much of it is left, and where it stands.</p>
-  <p><strong>Place and move.</strong> Each returning voice gets a position from its role: beside the singer, to one side, or far away. A phrase also moves while it sounds. The reversed line in a rest approaches, the canon crosses toward the other side, and the lead voice of the last act recedes.</p>
-  <p><strong>Controlled chance.</strong> Where the system chooses by score (the interval of a harmony part, the note of an inner voice), it takes the second-best option one time in ten while it stays close to the singer and three in ten once it acts on its own, and only when that option scores nearly as well. The same place in the loop does not always get the same answer.</p>
+  <h2>System architecture</h2>
+  <p><strong>Listen and slice.</strong> While I sing, my voice is recorded into a buffer and cut wherever a new sound starts, into pieces between 0.4 and 4 seconds long (<strong>FluCoMa</strong>). For each piece the system works out a 12-bin <strong>chroma</strong> vector, a <strong>Tonal Interval Vector</strong> that sums up its harmony, and six simple descriptors such as loudness, brightness and duration. It also splits off the percussive part, the consonants and breath, and keeps it in a second buffer.</p>
+  <p><strong>Index by place in the song.</strong> The backing is a four-bar chord loop, and a silent MIDI clip of triads tells the system which chord is playing. Every piece is filed under the chord it started on, how many milliseconds into that chord it began, and where it falls in the verse form (A, A, AB, AB).</p>
+  <p><strong>Recall in place.</strong> When a phrase comes back, it comes back over the same chord and at the same point in the bar, so it lands on the harmony and on the beat. The pieces of one phrase play back together as a whole line. If no chord clip is running, the system searches by harmony instead: a <strong>k-d tree</strong> (k = 5) finds the pieces whose Tonal Interval Vector is closest to what I just sang, ranked by how much they clash with it.</p>
+  <p><strong>Fit by taking away.</strong> A phrase won’t always fit the chord that is playing now, so each one gets a conflict score between 0 and 1. That score sets how strongly a spectral mask (8192-point FFT) pulls down the partials outside the chord, by up to about 9 dB. I use the same score for space as well. The worse a phrase fits, the further out to the side it sits, and the darker and more reverberant it sounds.</p>
+  <p><strong>Place and move.</strong> Each returning voice has its own place: right beside me, off to one side, or far away. Voices also move while they sing. A backwards line in a rest drifts in toward the middle, the canon crosses to the other side, and in the last act the lead voice slowly backs away.</p>
+  <p><strong>A little chance.</strong> Where the system picks something by score, like the interval for a harmony part or the next note of the inner voice, it sometimes takes the second-best option, as long as it scores almost as well. That happens about one time in ten while it stays close to me and three in ten once it is on its own, so the same spot in the loop doesn’t always get the same answer.</p>
 
-  <h2>Four acts</h2>
-  <p>Over four acts the system shifts from a passive follower to an active musical partner. The act sets which part of the verse the second voice draws from, relative to the singer’s position. Acts advance on elapsed time, onset count, vocal density, dynamics and silence.</p>
+  <h2>Performance structure</h2>
+  <p>The four acts follow the verses of the song. Each act changes which part of the verse the second voice takes from, counted from where I am. The system moves on to the next act by itself, based on how long the take has run, how much I have sung, how dense and loud my singing is, and how long I stay silent.</p>
   <table class="results">
     <caption>Behavior of the second voice by act</caption>
     <thead><tr><th>Act</th><th>Source material</th><th>Processing</th></tr></thead>
@@ -77,35 +78,35 @@
     <li><strong>Analysis:</strong> FluCoMa for onset slicing, chroma, harmonic-percussive separation, nearest-neighbor search, and pitch and loudness tracking.</li>
     <li><strong>Decisions:</strong> JavaScript inside Max, with 175 offline tests in Node and a simulated full take.</li>
     <li><strong>Audio:</strong> MSP patching: eight playback voices, an FFT mask, an eight-line feedback delay reverb, and an output limiter.</li>
-    <li><strong>Show control:</strong> before a take, a status line on the device names the first missing connection (input, clock, transport, chord clip). A mute can be mapped to a foot switch.</li>
+    <li><strong>Show control:</strong> before a take, a status line on the device names the first thing that isn’t connected yet (input, clock, transport, chord clip). A mute can be mapped to a foot switch.</li>
     <li><strong>Logging:</strong> OSC to CSV, one row per recall.</li>
   </ul>
 
   <h2>Evaluation and limitations</h2>
-  <p>The system has been checked as an instrument. It has not yet been studied with listeners.</p>
+  <p>So far I have tested it as an instrument. I haven’t run a study with listeners yet.</p>
   <ul>
-    <li>The decision logic and the patch files pass 175 offline tests. A simulated take of the whole song prints every return by loop, bar and source verse. At most four of the eight voices sound at once and none has to be taken over.</li>
-    <li>Measured in Max 9: with the interval at 0 the pitch shifter is switched out and the output nulls against the patch without it. Its latency is a constant 4096 samples (85 ms at 48 kHz), and shifted phrases start that much earlier to compensate.</li>
-    <li>A click at phrase starts was traced to message order: in 4 of 40 recalls the gain opened 1 to 8 ms before the playhead had jumped. The gains are now sent last.</li>
-    <li>The whole output chain was rendered in Max 9 for 64 recalls across the four acts. No sample exceeded 0.98, no value was invalid, and every phrase start, phrase end and voice change faded smoothly.</li>
-    <li>On loudspeakers the act II shadow can feed back through the microphone. With the shadow’s output fed back into the recording, the loop died within a second at a loop gain of 0.7, rang for 3 to 5 s at 1.4 and ran away at 2.8. A soundcheck measures the loop gain in the room and turns the shadow down from 0.25 and off from 0.5.</li>
+    <li>The decision logic and the patch files pass 175 offline tests. I also run a simulated take of the whole song that prints every return by loop, bar and source verse. In that take no more than four of the eight voices ever sound at once, and none has to be cut off to make room for another.</li>
+    <li>In Max 9, with the interval set to 0, the pitch shifter switches out completely and the output cancels exactly against the patch without it. Its latency is a constant 4096 samples (85 ms at 48 kHz), so shifted phrases are started that much earlier.</li>
+    <li>There was a click at the start of some phrases. It came from message order: in 4 of 40 recalls the gain opened 1 to 8 ms before the playhead had jumped. Sending the gains last fixed it.</li>
+    <li>I rendered the full output chain in Max 9 for 64 recalls across all four acts. Nothing went above 0.98, there were no invalid values, and every phrase start, ending and voice change faded in or out smoothly.</li>
+    <li>On loudspeakers the act II shadow can feed back through the microphone. I fed its output back into the recording to see how bad it gets. At a loop gain of 0.7 it died out within a second, at 1.4 it rang for 3 to 5 seconds, and at 2.8 it ran away. At soundcheck the system now measures the loop gain in the room and turns the shadow down from 0.25 and off from 0.5.</li>
   </ul>
   <p>Limitations:</p>
   <ul>
-    <li>All decisions are hand-written rules, tuned to one song with a fixed loop and verse form.</li>
-    <li>Chord input is a MIDI clip. The accompaniment audio is ignored.</li>
-    <li>The pitch shifter has no formant correction, so recorded voice is shifted downward only.</li>
-    <li>The act II shadow is heard about 130 ms after the singer (estimate): the 40 ms read offset plus the pitch shifter’s latency.</li>
-    <li>Onset detection can cut a sustained note in two.</li>
-    <li>On loudspeakers the microphone also records the second voice, and it returns later as part of her memory. Only isolation prevents this: in-ear monitoring and a close microphone.</li>
-    <li>The sustained-note line, the movement in space and the shortening in act IV are tested offline and have not yet been rehearsed in a full take.</li>
-    <li>No study with listeners or other performers has been run. An ablation mode for comparing retrieval strategies is implemented and unused.</li>
+    <li>The responses are worked out live, during the take, from what I have just sung and the chord that is playing: which phrase returns, at what interval, and which note the inner voice takes. The rules that make those choices are written by hand, and nothing is learned from data. They are tuned to one song with a fixed loop and verse form.</li>
+    <li>The chords come from a MIDI clip. The system doesn’t listen to the backing track itself.</li>
+    <li>The pitch shifter has no formant correction, so I only ever shift my recorded voice down.</li>
+    <li>The act II shadow lands about 130 ms behind me. That is an estimate: 40 ms of read offset plus the shifter’s latency.</li>
+    <li>Onset detection sometimes cuts a long held note in two.</li>
+    <li>On loudspeakers the microphone also picks up the second voice, so it ends up in the memory and comes back later. Only isolation fixes that: in-ear monitoring and a close microphone.</li>
+    <li>The inner-voice line, the movement in space and the shortening in act IV have only been tested offline. I haven’t rehearsed them in a full take yet.</li>
+    <li>I haven’t run a study with listeners or other performers. There is an ablation mode for comparing retrieval strategies, and I haven’t used it yet.</li>
   </ul>
 
   <h2>Reflection</h2>
-  <p>The first full take changed the design. I heard the second voice as too quiet and as a repeat of what I had just sung. A returning phrase is now sung at an interval chosen for that phrase, and each act draws its material from a different distance in the verse.</p>
-  <p>Tests cannot hear. Returning only the consonants in the rests passed every test and sounded like noise in rehearsal, so it is off by default. An octave double, a spectral freeze and comb resonators were also built, heard and removed. Rendering the chain in Max later showed that the harmony switch turned itself off every time the device loaded, which no test had caught. After each rule change I now run the simulated take, render the chain, and then listen.</p>
-  <p>The open question is how a performer can anticipate and steer such a partner through singing alone. Next I will rehearse the newer layers, record a performance, and run the ablation with listeners.</p>
+  <p>My first full take changed a lot. The second voice was too quiet, and mostly it just repeated what I had sung a moment before. Now a returning phrase is sung at an interval picked for that phrase, and each act takes its material from a different distance in the verse.</p>
+  <p>I have also learned not to trust tests alone. Bringing back only the consonants in the rests passed every test and sounded like noise when I rehearsed it, so it is switched off. An octave double, a spectral freeze and comb resonators were built and then taken out after listening. Later, rendering the chain in Max showed that the harmony switch turned itself off every time the device loaded, and no test had caught it. Now after every rule change I run the simulated take, render the chain, and then listen.</p>
+  <p>The question I am still working on is how a performer can anticipate and steer a partner like this with nothing but her voice. Next I want to rehearse the newer layers, record a full performance, and run the ablation with listeners.</p>
   <p class="ss-note">Max for Live (Max 9) · FluCoMa · JavaScript logic with 175 offline tests · Ableton Live 12</p>
 </div>
 
