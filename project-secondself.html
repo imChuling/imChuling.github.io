@@ -73,8 +73,8 @@
     <thead><tr><th>Act</th><th>Source material</th><th>Processing</th></tr></thead>
     <tbody>
       <tr><td class="act">I</td><td>None. The system records and stays silent.</td><td>None</td></tr>
-      <tr><td class="act">II</td><td>The phrase being sung, read about 40 ms behind the record head and shifted down 3 to 5 semitones, plus the same line from the previous verse. In the rest between verses, the last line played backwards.</td><td>Percussive part partly subtracted from the earlier take</td></tr>
-      <tr><td class="act">III</td><td>The line one loop away from the singer (canon), plus single sustained notes placed under other chords that contain them, chosen by voice-leading cost. Rests as in act II.</td><td>Spectral mask at the current chord</td></tr>
+      <tr><td class="act">II</td><td>The phrase being sung, read about 40 ms behind the record head and shifted down 3 to 5 semitones, plus the same line from the previous verse. In the rest between verses, the last line played backwards.</td><td>Consonants and breath partly removed from the earlier take</td></tr>
+      <tr><td class="act">III</td><td>The line one loop away from the singer (canon), plus an inner voice: single held notes placed under other chords that contain them, chosen by voice-leading cost. Rests as in act II.</td><td>Spectral mask at the current chord</td></tr>
       <tr><td class="act">IV</td><td>The line half a verse ahead of the singer, from the earliest recording. On each pass of the loop it keeps less of every phrase, down to a single note that fades over the part that was cut. After the last verse the system sings the verse once and stops.</td><td>Tones synthesized from the tracked pitch and loudness of the recording, brighter when louder</td></tr>
     </tbody>
   </table>
@@ -83,7 +83,7 @@
   <ul>
     <li><strong>Host:</strong> Ableton Live 12 with three Max for Live devices (Max 9).</li>
     <li><strong>Analysis:</strong> FluCoMa for onset slicing, chroma, harmonic-percussive separation, nearest-neighbor search, and pitch and loudness tracking.</li>
-    <li><strong>Decisions:</strong> JavaScript inside Max, with 175 offline tests in Node and a simulated full take.</li>
+    <li><strong>Decisions:</strong> JavaScript inside Max, tested offline in Node.</li>
     <li><strong>Audio:</strong> MSP patching: eight playback voices, an FFT mask, an eight-line feedback delay reverb, and an output limiter.</li>
     <li><strong>Show control:</strong> before a take, a status line on the device names the first thing that isn’t connected yet (input, clock, transport, chord clip). A mute can be mapped to a foot switch.</li>
     <li><strong>Logging:</strong> OSC to CSV, one row per recall.</li>
@@ -94,19 +94,19 @@
   <ul>
     <li>The decision logic and the patch files pass 175 offline tests, and a simulated take of the whole song prints every return by loop, bar and source verse.</li>
     <li>I rendered the full output chain in Max 9 for 64 recalls across all four acts. Nothing went above 0.98, and every phrase start, ending and voice change faded in or out smoothly.</li>
-    <li>On loudspeakers the act II shadow can feed back through the microphone. I measured where it starts to ring, and at soundcheck the system now measures the loop gain in the room and turns the shadow down or off.</li>
+    <li>On loudspeakers the act II shadow can feed back through the microphone. I found the point where it starts to ring, and at soundcheck the system now checks the room and turns the shadow down or off.</li>
   </ul>
   <p>Limitations:</p>
   <ul>
     <li>The responses are worked out live from what I have just sung and the chord that is playing, by rules I wrote by hand for this song’s loop and verse form.</li>
     <li>The chords come from a MIDI clip. The system doesn’t listen to the backing track itself.</li>
-    <li>The newest layers have only been tested offline, and I haven’t yet run a study with listeners.</li>
+    <li>The latest features have only been tested offline, and I haven’t yet run a study with listeners.</li>
   </ul>
 
   <h2>Reflection</h2>
   <p>My first full take changed a lot. The second voice was too quiet, and mostly it just repeated what I had sung a moment before. Now a returning phrase is sung at an interval picked for that phrase, and each act takes its material from a different distance in the verse.</p>
   <p>I have also learned not to trust tests alone. Bringing back only the consonants in the rests passed every test and sounded like noise when I rehearsed it, so it is switched off. An octave double, a spectral freeze and comb resonators were built and then taken out after listening. Later, rendering the chain in Max showed that the harmony switch turned itself off every time the device loaded, and no test had caught it. Now after every rule change I run the simulated take, render the chain, and then listen.</p>
-  <p>The question I am still working on is how a performer can anticipate and steer a partner like this with nothing but her voice. Next I want to rehearse the newer layers, record a full performance, and run the ablation with listeners.</p>
+  <p>The question I am still working on is how a performer can anticipate and steer a partner like this with nothing but her voice. Next I want to rehearse the latest features in a full take, record the performance, and compare retrieval strategies in a listening study.</p>
   <p class="ss-note">Max for Live (Max 9) · FluCoMa · JavaScript logic with 175 offline tests · Ableton Live 12</p>
 </div>
 
